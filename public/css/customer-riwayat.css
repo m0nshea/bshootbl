@@ -1,0 +1,239 @@
+/* ================================
+   CUSTOMER RIWAYAT - WHITE THEME
+   ================================ */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: #ffffff !important;
+    color: #333333;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR & FOOTER - USE DEFAULT FROM LAYOUT
+   ================================ */
+/* Removed custom navbar and footer styling to use default from layout */
+
+/* ================================
+   MAIN CONTAINER
+   ================================ */
+.container {
+    max-width: 1200px;
+}
+
+/* ================================
+   PAGE HEADER
+   ================================ */
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333333;
+    margin: 40px 0 15px 0;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: #666666;
+}
+
+/* ================================
+   STATUS INFO SECTION
+   ================================ */
+.status-info {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.status-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.status-title i {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #135f3a;
+}
+
+.status-items {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-badge.siap-main {
+    background: #22c55e;
+    color: white;
+}
+
+.status-badge.expired {
+    background: #6c757d;
+    color: white;
+}
+
+.status-description {
+    color: #666666;
+    font-size: 14px;
+}
+
+/* ================================
+   TABLE SECTION
+   ================================ */
+.table-container {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    margin-bottom: 55px;
+}
+
+.riwayat-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.riwayat-table thead {
+    background: #135f3a;
+}
+
+.riwayat-table th {
+    padding: 15px 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: #ffffff;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.riwayat-table tbody tr {
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    transition: background 0.3s ease;
+}
+
+.riwayat-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.riwayat-table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 13px;
+    color: #333333;
+    border: none;
+    vertical-align: middle;
+}
+
+/* ================================
+   TABLE BADGES
+   ================================ */
+.table-badge {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-badge.siap-main {
+    background: #22c55e;
+    color: white;
+}
+
+.table-badge.expired {
+    background: #6c757d;
+    color: white;
+}
+
+/* ================================
+   FOOTER & NAVBAR - USE DEFAULT FROM LAYOUT
+   ================================ */
+/* All footer and navbar styling removed to use default from customer layout */
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 992px) {
+    .riwayat-table th,
+    .riwayat-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+    
+    .status-items {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .status-info {
+        padding: 20px;
+    }
+    
+    .status-items {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .riwayat-table th,
+    .riwayat-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+    
+    .table-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
+
+/* ================================
+   SCROLLABLE TABLE FOR MOBILE
+   ================================ */
+@media (max-width: 576px) {
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .riwayat-table {
+        min-width: 700px;
+    }
+}

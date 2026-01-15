@@ -1,0 +1,9 @@
+<svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="150" fill="#4a148c"/>
+  <rect x="20" y="40" width="160" height="80" fill="#6a1b9a" rx="8"/>
+  <rect x="30" y="50" width="140" height="60" fill="#2e7d32" rx="4"/>
+  <circle cx="60" cy="70" r="8" fill="#ffeb3b"/>
+  <circle cx="100" cy="80" r="6" fill="#f44336"/>
+  <circle cx="140" cy="70" r="8" fill="#2196f3"/>
+  <text x="100" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffd700" text-anchor="middle">VIP TABLE</text>
+</svg>

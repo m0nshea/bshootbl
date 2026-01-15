@@ -1,0 +1,257 @@
+/* Customer Navbar CSS */
+
+.navbar {
+    background: #135f3a !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.75rem 0;
+}
+
+.nav-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #fff !important;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+    font-size: 16px;
+}
+
+.nav-link:hover {
+    color: #afffca !important;
+}
+
+.navbar .text-white {
+    color: #fff !important;
+}
+
+.navbar .text-dark {
+    color: #fff !important;
+}
+
+.nav-title .text-dark {
+    color: #fff !important;
+}
+
+.nav-title div {
+    color: #fff !important;
+}
+
+/* Pastikan teks Bshoot Billiard berwarna putih, tebal dan besar */
+.navbar .nav-title div,
+.navbar .nav-title .text-dark,
+.nav-title .fw-bold,
+.navbar .nav-title *,
+.nav-title span {
+    color: #fff !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+}
+
+.nav-title {
+    display: flex;
+    align-items: center;
+}
+
+.nav-title div {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.nav-title span {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff !important;
+}
+
+/* Override semua kemungkinan CSS yang mempengaruhi navbar title */
+.navbar .nav-title {
+    color: #fff !important;
+}
+
+/* CSS paling kuat untuk memastikan warna putih, tebal dan besar */
+.nav-title span[style*="color"] {
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+}
+
+.nav-title div[style*="color"] {
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem !important;
+}
+
+/* Styling khusus untuk brand text */
+.nav-title .brand-text {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    letter-spacing: 0.5px;
+}
+
+/* Profile Icon Styling */
+.profile-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    transition: background 0.25s ease, border 0.25s ease;
+    font-size: 18px;
+}
+
+.profile-icon:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Logout Button */
+.btn-logout {
+    background: #fff;
+    color: #135f3a !important;
+
+    padding: 7px 14px;
+    border-radius: 8px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    display: inline-flex;
+    align-items: center;
+
+    border: none;
+    text-decoration: none;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn-logout:hover {
+    background: #f0f0f0;
+    color: #135f3a !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Biar jarak menu rapi */
+.nav-actions a {
+    margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+    .nav-custom {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .nav-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .nav-actions {
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .nav-actions .nav-link {
+        margin: 0 8px;
+        font-size: 16px;
+    }
+    
+    .profile-icon {
+        width: 35px;
+        height: 35px;
+        margin: 0 8px;
+    }
+    
+    .btn-logout {
+        padding: 8px 16px;
+        font-size: 16px;
+        margin: 0 8px;
+    }
+}
+/* --- FIX SPASI LOGO & TEKS --- */
+.nav-title img{
+    margin-right: 10px;
+}
+
+/* --- ALIGN NAVBAR TENGAH --- */
+.navbar{
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+/* --- BIAR ISI NAVBAR SEJEJAR --- */
+.nav-custom{
+    height: 100%;
+    align-items: center;
+}
+
+/* --- FIX TINGGI TOMBOL KELUAR --- */
+.btn-logout{
+    height: 36px;
+    line-height: 20px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.nav-title img{
+    margin-right: 12px;
+}
+
+.nav-actions {
+    gap: 28px; /* sebelumnya 20px */
+}
+
+.btn-logout{
+    padding: 6px 14px;
+    border-radius: 8px;
+    height: 34px;
+}
+
+.nav-custom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:100%;
+}
+
+.navbar {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.profile-icon{
+    width: 34px;
+    height: 34px;
+}

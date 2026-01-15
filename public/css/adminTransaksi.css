@@ -1,0 +1,401 @@
+/* Admin Transaksi - Modern Clean Style */
+
+/* Page Header */
+.page-title {
+  color: #1f2937;
+  font-weight: 700;
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.page-subtitle {
+  color: #6b7280;
+  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item a {
+  color: #22c55e;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #6b7280;
+}
+
+/* Enhanced Card Styling */
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(240, 16, 16, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.card-header {
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-bottom: 2px solid #dee2e6;
+  border-radius: 15px 15px 0 0 !important;
+  padding: 20px;
+}
+
+.card-title {
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Admin Transaksi Specific Cards */
+.admin-transaksi-summary-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.admin-transaksi-summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.admin-transaksi-summary-card .card-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.admin-transaksi-summary-card h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.admin-transaksi-summary-card h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.admin-transaksi-summary-card small {
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+.admin-transaksi-filter-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.admin-transaksi-filter-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.admin-transaksi-filter-card .card-header {
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-bottom: 2px solid #dee2e6;
+  border-radius: 15px 15px 0 0 !important;
+  padding: 20px;
+}
+
+.admin-transaksi-filter-card .card-title {
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.admin-transaksi-filter-card .form-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-transaksi-filter-card .form-select,
+.admin-transaksi-filter-card .form-control {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.3s ease;
+}
+
+.admin-transaksi-filter-card .form-select:focus,
+.admin-transaksi-filter-card .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+.admin-transaksi-filter-card .btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.admin-transaksi-main-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.admin-transaksi-main-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.admin-transaksi-main-card .card-header {
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-bottom: 2px solid #dee2e6;
+  border-radius: 15px 15px 0 0 !important;
+  padding: 20px;
+}
+
+.admin-transaksi-main-card .card-title {
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Table Styling */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.table thead th {
+  background: linear-gradient(45deg, #007bff, #0056b3) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
+  padding: 15px !important;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.table tbody td {
+  padding: 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table tbody tr:hover {
+  background: #f8f9ff;
+  transition: all 0.3s ease;
+}
+
+/* Invoice Code Styling */
+.invoice-code {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #495057;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  font-size: 0.85rem;
+}
+
+/* Amount Text */
+.amount-text {
+  font-weight: 700;
+  color: #28a745;
+  font-size: 1.1rem;
+}
+
+/* Alert Styling */
+.admin-transaksi-alert {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Table Badges */
+.badge {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.bg-warning {
+  background-color: #f59e0b !important;
+  color: white;
+}
+
+.badge.bg-primary {
+  background-color: #3b82f6 !important;
+}
+
+.badge.bg-success {
+  background-color: #10b981 !important;
+}
+
+.badge.bg-info {
+  background-color: #06b6d4 !important;
+}
+
+/* Button Styling */
+.btn-info {
+  background: linear-gradient(45deg, #17a2b8, #138496);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 8px 15px;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.btn-info:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+/* Customer Info Styling */
+.fw-semibold {
+  font-weight: 600;
+  color: #374151;
+}
+
+.text-muted {
+  color: #6b7280 !important;
+  font-size: 0.8rem;
+}
+
+/* DataTables Customization */
+.dataTables_wrapper .dataTables_length select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 6px !important;
+  margin: 0 2px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .table {
+    font-size: 0.8rem;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 10px 6px;
+  }
+  
+  .status-badge {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+  
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+  
+  .invoice-code {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+  
+  .amount-text {
+    font-size: 1rem;
+  }
+  
+  .btn-sm {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+}
+
+/* Loading Animation */
+.card {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover Effects */
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+.invoice-code:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+/* Stats Animation */
+.stats-card {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

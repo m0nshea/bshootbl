@@ -1,0 +1,339 @@
+/* ================================
+   CUSTOMER MEJA - WHITE THEME
+   ================================ */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: #ffffff !important;
+    color: #333333;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR - USE DEFAULT FROM LAYOUT
+   ================================ */
+/* Removed custom navbar styling to use default from layout */
+
+/* ================================
+   OVERRIDE CONTAINER BACKGROUNDS
+   ================================ */
+
+
+/* ================================
+   PAGE TITLE
+   ================================ */
+.page-title {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 25px;
+    background: #f8f9fa;
+    border: 2px solid #135f3a;
+    color: #135f3a;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* ================================
+   MEJA CARDS CONTAINER (4 COLUMNS LAYOUT)
+   ================================ */
+.meja-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 15px;
+}
+
+/* Ensure Bootstrap grid works properly for 4 columns */
+.meja-row > div {
+    display: flex;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+/* Force 4 columns on large screens */
+@media (min-width: 1200px) {
+    .meja-row .col-xl-3 {
+        flex: 0 0 23%;
+        max-width: 23%;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .meja-row .col-lg-3 {
+        flex: 0 0 23%;
+        max-width: 23%;
+    }
+}
+
+/* Legacy container - hide it */
+.meja-container {
+    display: none;
+}
+
+/* ================================
+   MEJA CARD (OPTIMIZED FOR 4 COLUMNS)
+   ================================ */
+.meja-card {
+    width: 100%;
+    max-width: 280px;
+    background: #ffffff !important;
+    border-radius: 20px;
+    border: 2px solid #e9ecef !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+}
+
+.meja-card:hover {
+    transform: translateY(-8px);
+    background: #f8f9fa !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+    border-color: #135f3a !important;
+}
+
+/* ================================
+   VIP MEJA CARD STYLING
+   ================================ */
+.meja-card.meja-vip {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 50%, #d4af37 100%) !important;
+    border: 3px solid #ff9933 !important;
+    box-shadow: 0 10px 40px rgba(255, 153, 51, 0.4) !important;
+}
+
+.meja-card.meja-vip:hover {
+    background: linear-gradient(135deg, #ff8800 0%, #ffbb33 50%, #b8941f 100%) !important;
+    border-color: #ff8800 !important;
+    box-shadow: 0 15px 50px rgba(255, 136, 0, 0.6) !important;
+    transform: translateY(-10px) scale(1.02);
+}
+
+/* VIP Badge */
+.vip-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%);
+    color: #ffffff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    animation: vipPulse 2s ease-in-out infinite;
+}
+
+.vip-badge i {
+    font-size: 14px;
+    animation: starRotate 3s linear infinite;
+}
+
+@keyframes vipPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(255, 153, 51, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(255, 153, 51, 0.7);
+    }
+}
+
+@keyframes starRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* VIP Card Title */
+.meja-card.meja-vip .meja-title {
+    color: #ff8800 !important;
+    text-shadow: 0 2px 4px rgba(255, 136, 0, 0.2);
+}
+
+.meja-card.meja-vip .meja-title:hover {
+    color: #cc6600 !important;
+}
+
+/* VIP Card Details */
+.meja-card.meja-vip .meja-details p {
+    color: #cc6600 !important;
+    font-weight: 600;
+}
+
+/* ================================
+   MEJA IMAGE
+   ================================ */
+.meja-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 18px 18px 0 0;
+}
+
+/* ================================
+   MEJA CONTENT
+   ================================ */
+.meja-content {
+    padding: 20px;
+    text-align: center;
+    background: transparent !important;
+}
+
+.meja-title {
+    color: #333333 !important;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-decoration: none;
+    display: block;
+}
+
+.meja-title:hover {
+    color: #135f3a !important;
+    text-decoration: none;
+}
+
+.meja-details {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.meja-details p {
+    color: #666666 !important;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ================================
+   BOOKING BUTTON
+   ================================ */
+.btn-booking {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background: #135f3a !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-booking:hover {
+    background: #0f4a2e !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(19, 95, 58, 0.3);
+    text-decoration: none;
+}
+
+.btn-booking i {
+    margin-right: 8px;
+}
+
+/* VIP Booking Button */
+.btn-booking.btn-booking-vip {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 5px 20px rgba(255, 153, 51, 0.5);
+}
+
+.btn-booking.btn-booking-vip:hover {
+    background: linear-gradient(135deg, #ff8800 0%, #ffbb33 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 136, 0, 0.7);
+}
+
+/* ================================
+   OVERRIDE OLD STYLES
+   ================================ */
+.team-item,
+.team-content {
+    background: transparent !important;
+    border: none !important;
+}
+
+.bg-primary {
+    background: transparent !important;
+}
+
+/* Empty state styling */
+.text-muted {
+    color: #666666 !important;
+}
+
+.text-muted h4 {
+    color: #333333 !important;
+}
+
+.text-muted p {
+    color: #666666 !important;
+}
+
+.text-muted i {
+    color: #135f3a !important;
+}
+
+/* ================================
+   FOOTER - USE DEFAULT FROM LAYOUT
+   ================================ */
+/* Footer will use default styling from customer layout */
+
+/* Hide copyright section specifically for meja page */
+.copyright {
+    display: none !important;
+}
+
+/* Force remove Bootstrap row/col styling for this page */
+.row.g-5 {
+    display: none !important;
+}
+
+/* ================================
+   RESPONSIVE DESIGN (4 COLUMNS LAYOUT)
+   ================================ */
+@media (max-width: 1199px) {
+    .meja-row {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 991px) {
+    .meja-row {
+        gap: 20px;
+    }
+    
+    .meja-card {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .meja-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+    
+    .meja-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}

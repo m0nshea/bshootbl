@@ -1,0 +1,822 @@
+/* Admin Laporan - Modern Clean Style */
+
+/* Content Wrapper */
+.content-wrapper {
+  background: #f8f9fa;
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+/* Page Header */
+.page-title {
+  color: #1f2937;
+  font-weight: 700;
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.page-subtitle {
+  color: #6b7280;
+  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item a {
+  color: #22c55e;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #6b7280;
+}
+
+/* Card Styling - NO ANIMATIONS */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  background: white;
+  margin-bottom: 20px;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.card:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.card:hover .card-body {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+.card-header {
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-bottom: 2px solid #dee2e6;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 20px;
+}
+
+.card-title {
+  color: #495057;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.card-body {
+  padding: 25px;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Filter Section */
+.filter-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+}
+
+.filter-section .form-label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.filter-section .form-control {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.filter-section .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white;
+}
+
+.filter-section .form-control:hover {
+  border-color: #9ca3af;
+  background: white;
+}
+
+/* Export Buttons */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  border: none;
+  white-space: nowrap;
+  min-width: auto;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-info {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+/* Fix button alignment in filter section */
+.col-md-3.d-flex.align-items-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.col-md-3.d-flex.align-items-end .btn-primary {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Summary Cards */
+.summary-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  padding: 25px 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  pointer-events: none;
+}
+
+.summary-card .row {
+  position: relative;
+  z-index: 1;
+}
+
+.summary-item {
+  text-align: center;
+  padding: 20px 15px;
+  position: relative;
+}
+
+.summary-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+.summary-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  line-height: 1;
+}
+
+.summary-label {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Chart Container - NO ANIMATIONS */
+.chart-container {
+  position: relative;
+  height: 450px !important;
+  width: 100% !important;
+  margin: 20px 0;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  min-width: 400px !important;
+}
+
+.chart-container canvas {
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  min-height: 350px !important;
+  min-width: 300px !important;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Chart Error/Loading State */
+.chart-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6b7280;
+  text-align: center;
+}
+
+.chart-error i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #ef4444;
+}
+
+.chart-error h5 {
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.chart-error p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Chart Loading State */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  color: #6b7280;
+  font-size: 1.1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed #d1d5db;
+  flex-direction: column;
+}
+
+.chart-loading i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #3b82f6;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ensure charts are visible */
+#reportChart,
+#pieChart {
+  display: block !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 380px !important;
+  min-width: 300px !important;
+  background: transparent !important;
+}
+
+/* Force chart visibility */
+canvas#reportChart,
+canvas#pieChart {
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Disable all animations on chart cards */
+.card .chart-container,
+.card .chart-container *,
+.card canvas,
+#reportChart,
+#pieChart {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+}
+
+/* Table Styling */
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.table {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.table thead th {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 600 !important;
+  padding: 16px 12px !important;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table tbody td {
+  padding: 14px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.table tbody tr:hover {
+  background: #f8f9ff;
+  transition: all 0.3s ease;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0,0,0,0.02);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Badges */
+.badge {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.bg-success {
+  background-color: #10b981 !important;
+}
+
+.badge.bg-warning {
+  background-color: #f59e0b !important;
+  color: white;
+}
+
+.badge.bg-danger {
+  background-color: #ef4444 !important;
+}
+
+.badge.bg-info {
+  background-color: #06b6d4 !important;
+}
+
+/* DataTables Customization */
+.dataTables_wrapper .dataTables_length select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 6px !important;
+  margin: 0 2px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* DataTables Buttons */
+.dt-buttons {
+  margin-bottom: 15px;
+}
+
+.dt-button {
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  padding: 6px 12px !important;
+  margin-right: 5px !important;
+  border: none !important;
+  font-weight: 500 !important;
+}
+
+.buttons-excel {
+  background: #10b981 !important;
+  color: white !important;
+}
+
+.buttons-pdf {
+  background: #ef4444 !important;
+  color: white !important;
+}
+
+.buttons-print {
+  background: #06b6d4 !important;
+  color: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 15px 0;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .filter-section {
+    padding: 20px 15px;
+  }
+  
+  .filter-section .row > div {
+    margin-bottom: 15px;
+  }
+  
+  .export-buttons {
+    flex-direction: row;
+    gap: 5px;
+    width: 100%;
+  }
+  
+  .export-buttons .btn {
+    flex: 1;
+    font-size: 0.75rem;
+    padding: 6px 8px;
+  }
+  
+  .col-md-3.d-flex.flex-column .btn-primary {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+  
+  .summary-card {
+    padding: 20px 15px;
+  }
+  
+  .summary-value {
+    font-size: 1.8rem;
+  }
+  
+  .summary-label {
+    font-size: 0.85rem;
+  }
+  
+  .summary-item {
+    padding: 15px 10px;
+  }
+  
+  .summary-item:not(:last-child)::after {
+    display: none;
+  }
+  
+  .chart-container {
+    height: 300px;
+    padding: 10px;
+  }
+  
+  .table {
+    font-size: 0.8rem;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 10px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  .card-header {
+    padding: 15px;
+  }
+}
+
+/* Fix for button layout */
+.col-md-3.d-flex.flex-column {
+  gap: 0;
+}
+
+.col-md-3.d-flex.flex-column .btn-primary {
+  margin-bottom: 8px;
+}
+
+.col-md-3.d-flex.flex-column .export-buttons {
+  justify-content: space-between;
+}
+
+/* Ensure charts render properly */
+.card-body canvas {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+/* Loading state improvements */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  color: #6b7280;
+  font-size: 1.1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 2px dashed #d1d5db;
+  flex-direction: column;
+}
+
+.chart-loading i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #3b82f6;
+}
+
+/* Removed card animation */
+.card {
+  opacity: 1;
+}
+
+/* Removed fadeInUp keyframes */
+
+/* Chart Loading */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Removed summary card animation */
+.summary-item {
+  /* No transition */
+}
+
+.summary-item:hover {
+  /* Removed transform effect */
+}
+
+/* Removed filter animation */
+.filter-section {
+  /* No animation */
+}
+
+/* Removed slideDown keyframes */
+
+/* Button Hover Effects */
+.btn {
+  /* No transition */
+}
+
+.btn:hover {
+  /* Removed transform effect */
+}
+
+/* Table Row Hover */
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  .filter-section,
+  .export-buttons,
+  .dt-buttons {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6 !important;
+  }
+  
+  .summary-card {
+    background: #f8f9fa !important;
+    color: #333 !important;
+  }
+}
+
+/* Additional Chart Fixes */
+.card .chart-container {
+  min-height: 400px;
+  display: block !important;
+}
+
+.card .chart-container canvas {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10 !important;
+}
+
+/* Chart specific styling */
+#reportChart {
+  background-color: transparent !important;
+}
+
+#pieChart {
+  background-color: transparent !important;
+}
+
+/* Override any conflicting styles - NO ANIMATIONS */
+.chart-container * {
+  box-sizing: border-box;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* FORCE DISABLE ALL CARD ANIMATIONS - HIGHEST PRIORITY */
+.card,
+.card:hover,
+.card:focus,
+.card:active,
+.card-body,
+.card-body:hover,
+.card-body:focus,
+.card-body:active,
+.chart-container,
+.chart-container:hover,
+.chart-container:focus,
+.chart-container:active,
+canvas,
+canvas:hover,
+canvas:focus,
+canvas:active {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -o-transform: none !important;
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+}
+
+/* Override Bootstrap and Kaiadmin card animations */
+.card {
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+  background: white !important;
+  margin-bottom: 20px !important;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.card:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Completely disable animations on chart elements */
+*[id*="Chart"],
+*[class*="chart"],
+.card:hover,
+.card:hover *,
+.chart-container:hover,
+.chart-container:hover * {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+}
+
+/* FINAL OVERRIDE - NO ANIMATIONS WHATSOEVER */
+body .card,
+body .card:hover,
+body .card:focus,
+body .card:active,
+body .card-body,
+body .card-body:hover,
+body .chart-container,
+body .chart-container:hover,
+body canvas,
+body canvas:hover {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -o-transform: none !important;
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+}
+
+/* Specific override for admin laporan page */
+body .card {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+}
+
+body .card:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+}

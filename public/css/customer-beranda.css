@@ -1,0 +1,367 @@
+/* Customer Beranda CSS */
+
+body {
+    background: #ffffff !important;
+    color: #000 !important;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure main content takes available space */
+main {
+    flex: 1;
+}
+
+/* Main content styling */
+.container {
+    position: relative;
+    z-index: 1;
+    overflow-x: visible; /* Allow horizontal overflow for image positioning */
+}
+
+/* Hero section */
+.min-vh-70 {
+    min-height: 70vh;
+    overflow-x: visible; /* Allow horizontal overflow */
+}
+
+.row.align-items-center {
+    padding: 60px 60px !important;
+    align-items: flex-start !important; /* Changed from center to flex-start */
+    display: flex !important;
+    gap: 2rem !important;
+    min-height: 70vh !important;
+}
+
+/* Content wrapper untuk alignment yang baik */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 0;
+}
+
+/* Hero title */
+.hero-title,
+h1.fw-bold {
+    color: #000 !important;
+    font-weight: 700 !important;
+    font-size: 2.8rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1.5rem !important;
+    margin-top: 0 !important;
+}
+
+/* Hero description */
+.hero-description,
+p.mb-5 {
+    color: #000 !important;
+    font-size: 1.1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2rem !important;
+    max-width: 400px;
+}
+
+.hero-description strong,
+p.mb-5 strong {
+    color: #135f3a;
+    font-weight: 600;
+}
+
+/* Button styling */
+.btn-find {
+    background: #135f3a !important;
+    color: #ffffff !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    font-size: 0.9rem !important;
+    width: fit-content !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.btn-find:hover {
+    background: #0f4a2e !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    /* Removed scaling and shadow animations per user request */
+}
+
+.btn-find .bi-chevron-right {
+    color: white;
+    font-size: 0.9rem;
+    margin-left: 6px;
+}
+
+/* Social media section */
+.social-section {
+    margin-top: 1rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: rgba(19, 95, 58, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.social-icon:hover {
+    background: rgba(19, 95, 58, 0.2);
+    /* Removed scaling animation per user request */
+}
+
+.social-icon i {
+    color: #135f3a !important;
+    font-size: 1.1rem;
+}
+
+.social-handle {
+    color: #666 !important;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Right column positioning - FIXED for side-by-side layout */
+.col-md-6.ps-md-4 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    padding-left: 2rem !important;
+    position: relative !important;
+    height: 100% !important;
+    justify-content: flex-start !important;
+}
+
+/* Image wrapper - positioned to the right */
+.image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Hero image - positioned far to the right with minimal margin from edge */
+.hero-image {
+    border-radius: 15px !important;
+    width: 450px !important;
+    height: 280px !important;
+    object-fit: cover !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    position: relative !important;
+    right: -5rem !important; /* Push to far right edge */
+    max-width: none !important; /* Override any max-width constraints */
+    margin: 0 !important; /* Override any margin constraints */
+}
+
+.hero-image:hover {
+    transform: scale(1.02) !important;
+}
+
+/* Contact section - aligned with image */
+.contact-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.contact-box {
+    background: rgba(19, 95, 58, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid rgba(19, 95, 58, 0.2);
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    color: #333 !important;
+    text-align: right;
+    max-width: 350px;
+    position: relative;
+    z-index: 1;
+    right: -5rem; /* Align with image */
+}
+
+.contact-box b {
+    color: #135f3a !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .row.align-items-center {
+        flex-direction: column;
+        padding: 30px 20px;
+        gap: 2rem;
+        align-items: center !important;
+    }
+    
+    .col-md-6.ps-md-4 {
+        align-items: center;
+        padding-left: 0 !important;
+        width: 100%;
+    }
+    
+    .image-wrapper {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .hero-image {
+        width: 100% !important;
+        max-width: 400px !important;
+        height: 250px !important;
+        right: 0; /* Reset positioning for mobile */
+    }
+    
+    .contact-section {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .contact-box {
+        text-align: center;
+        right: 0; /* Reset positioning for mobile */
+        max-width: 300px;
+    }
+    
+    .content-wrapper {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem !important;
+    }
+    
+    .hero-description {
+        font-size: 1rem !important;
+        max-width: none;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 1.9rem !important;
+    }
+    
+    .hero-description {
+        font-size: 0.95rem !important;
+    }
+    
+    .btn-find {
+        padding: 12px 24px !important;
+        font-size: 1rem !important;
+    }
+    
+    .social-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-icon i {
+        font-size: 1rem;
+    }
+    
+    .hero-image {
+        max-width: 350px !important;
+        height: 250px !important;
+    }
+    
+    .contact-box {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation effects - DISABLED per user request */
+.content-wrapper h1 {
+    opacity: 1;
+}
+
+.content-wrapper p {
+    opacity: 1;
+}
+
+.btn-find {
+    opacity: 1;
+}
+
+.social-section {
+    opacity: 1;
+}
+
+.hero-image {
+    opacity: 1;
+}
+
+.contact-box {
+    opacity: 1;
+}
+
+.hero-image:hover {
+    /* Removed scaling animation per user request */
+    transform: none !important;
+}
+
+/* Keyframes removed - animations disabled per user request */
+
+/* Background pattern overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure content is above background */
+main {
+    position: relative;
+    z-index: 1;
+}
+
+/* Override any conflicting styles */
+* {
+    box-sizing: border-box;
+}
+
+.container-fluid {
+    background: transparent !important;
+}
+
+/* Ensure proper spacing */
+.py-5 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}

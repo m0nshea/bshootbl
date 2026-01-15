@@ -1,0 +1,6 @@
+/* Customer Pages CSS - Import all customer stylesheets */
+
+/* Import individual CSS files */
+@import url('customer-navbar.css');
+@import url('customer-footer.css');
+@import url('customer-pages.css');

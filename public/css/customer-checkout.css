@@ -1,0 +1,404 @@
+/* ================================
+   CUSTOMER CHECKOUT - GREEN THEME
+   ================================ */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0f5b3a 0%, #135f3a 100%) !important;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR - SAME AS BERANDA
+   ================================ */
+
+/* ================================
+   MAIN CONTAINER
+   ================================ */
+
+/* ================================
+   CHECKOUT FORM CARD
+   ================================ */
+.checkout-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+}
+
+/* ================================
+   MEJA INFORMATION SECTION
+   ================================ */
+.meja-info-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.meja-info-section h4 {
+    color: #135f3a;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.selected-meja {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.meja-thumb {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #135f3a;
+    flex-shrink: 0;
+}
+
+.meja-details {
+    flex: 1;
+}
+
+.meja-details h5 {
+    color: #135f3a;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.meja-details p {
+    color: #6c757d;
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+.meja-details .price {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* ================================
+   FORM STYLING
+   ================================ */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-family: "Poppins", sans-serif;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.form-input:disabled {
+    background: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-help {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.form-help.warning {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+/* ================================
+   TWO COLUMN LAYOUT
+   ================================ */
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+/* ================================
+   TOTAL PAYMENT SECTION
+   ================================ */
+.total-section {
+    background: #d4edda;
+    border: 2px solid #28a745;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.total-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #155724;
+    margin-bottom: 10px;
+}
+
+.total-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #155724;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.btn-left {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-back {
+    padding: 12px 25px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-profile {
+    padding: 12px 25px;
+    background: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-profile:hover {
+    background: #e0a800;
+    color: #000;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-submit {
+    padding: 15px 30px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-submit:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ================================
+   BACK BUTTON (TOP)
+   ================================ */
+.btn-back-top {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.btn-back-top:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-back-top i {
+    margin-right: 8px;
+}
+
+/* ================================
+   FOOTER - SAME AS BERANDA
+   ================================ */
+.footer {
+    background: #135f3a !important;
+    color: #fff;
+}
+
+.footer-item h4 {
+    color: #fff !important;
+}
+
+.footer-item p {
+    color: #fff;
+}
+
+.footer .btn-link {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.footer .btn-link:hover {
+    color: #afffca !important;
+}
+
+.copyright {
+    background: #0f4a2e !important;
+}
+
+.back-to-top {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 768px) {
+    .checkout-card {
+        padding: 25px 20px;
+        margin: 10px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .btn-left {
+        justify-content: center;
+    }
+    
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .nav-custom {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .nav-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .nav-actions {
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+/* ================================
+   PLACEHOLDER STYLING
+   ================================ */
+.form-input::placeholder,
+.form-select option[value=""],
+.form-textarea::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* ================================
+   VALIDATION STATES
+   ================================ */
+.form-input.is-invalid,
+.form-select.is-invalid,
+.form-textarea.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-input.is-valid,
+.form-select.is-valid,
+.form-textarea.is-valid {
+    border-color: #28a745;
+}

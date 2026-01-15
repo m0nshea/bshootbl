@@ -1,0 +1,128 @@
+/* ===== HOME HERO SECTION ===== */
+.home-hero-section {
+  padding: 120px 0 80px;
+  background: linear-gradient(135deg, var(--bg-primary), var(--neutral-off-white));
+}
+
+/* LEFT */
+.home-content-wrapper {
+  max-width: 520px;
+}
+
+.home-hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.home-hero-title span {
+  color: var(--primary-green);
+}
+
+.home-hero-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+/* BUTTON */
+.home-btn-find {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-green);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.home-btn-find:hover {
+  background: var(--primary-green-dark);
+  transform: translateY(-2px);
+}
+
+/* SOCIAL */
+.home-social-section {
+  margin-top: 40px;
+}
+
+.home-social-icons {
+  display: flex;
+  gap: 14px;
+  font-size: 1.3rem;
+  color: var(--text-muted);
+}
+
+.home-social-icons i:hover {
+  color: var(--primary-green);
+}
+
+.home-social-handle {
+  margin-top: 8px;
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* RIGHT */
+.home-image-wrapper {
+  width: 100%;
+}
+
+.home-hero-image {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+}
+
+.home-contact-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.home-contact-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 360px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .home-hero-title {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .home-hero-description {
+    text-align: center;
+  }
+
+  .home-btn-find {
+    margin: 0 auto;
+  }
+
+  .home-social-icons {
+    justify-content: center;
+  }
+
+  .home-hero-image {
+    height: 320px;
+    margin-top: 40px;
+  }
+
+  .home-contact-section {
+    justify-content: center;
+  }
+}

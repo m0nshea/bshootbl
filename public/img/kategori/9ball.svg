@@ -1,0 +1,7 @@
+<svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="150" fill="#2d5a27"/>
+  <circle cx="100" cy="75" r="40" fill="#ffeb3b" stroke="#fbc02d" stroke-width="2"/>
+  <rect x="85" y="60" width="30" height="30" fill="#ffffff" rx="3"/>
+  <text x="100" y="80" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#d84315" text-anchor="middle">9</text>
+  <text x="100" y="130" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">9 Ball Pool</text>
+</svg>

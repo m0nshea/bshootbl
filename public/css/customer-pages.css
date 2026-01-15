@@ -1,0 +1,50 @@
+/* === HERO SECTION FIX === */
+
+/* buat seluruh section sejajar tengah */
+.hero-section{
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+/* baris kiri kanan sejajar vertikal - UPDATED for homepage */
+.hero-section .row{
+    width: 100%;
+    min-height: 420px;
+    align-items: flex-start !important; /* Changed from center to flex-start */
+}
+
+/* kolom kiri rata tengah vertikal - UPDATED for homepage */
+.hero-section .col-md-6:first-child{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important; /* Changed from center to flex-start */
+}
+
+/* kolom kanan untuk gambar - UPDATED for homepage */
+.hero-section .col-md-6:last-child{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-end !important; /* Align to right */
+}
+
+/* gambar kanan ukuran pas - UPDATED for homepage */
+.right-image, .hero-image{
+    width: 450px !important;
+    height: 280px !important;
+    max-width: none !important; /* Override max-width */
+    margin: 0 !important; /* Remove auto margin */
+    object-fit: cover;
+    border-radius: 15px;
+    position: relative;
+    right: -5rem; /* Push to far right */
+}
+
+/* tombol tidak melebar 1 baris */
+.btn-find{
+    display: inline-block !important;
+    width: auto !important;
+    padding: 10px 20px;
+    white-space: nowrap !important;
+}

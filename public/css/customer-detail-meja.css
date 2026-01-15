@@ -1,0 +1,465 @@
+/* ================================
+   CUSTOMER DETAIL MEJA - GREEN THEME
+   ================================ */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0f5b3a 0%, #135f3a 100%) !important;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR (CONSISTENT WITH OTHER PAGES)
+   ================================ */
+.navbar {
+    background: #0f5b3a !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+}
+
+.navbar .nav-link,
+.navbar .nav-title,
+.navbar span,
+.navbar div {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.navbar .btn-login,
+.navbar .btn-success {
+    background: #146c43;
+    border: none;
+    font-weight: 600;
+}
+
+/* ================================
+   MAIN CONTAINER
+   ================================ */
+.container {
+    max-width: 1000px;
+    padding: 40px 20px;
+}
+
+/* ================================
+   DETAIL CARD LAYOUT
+   ================================ */
+.detail-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    position: relative;
+}
+
+/* ================================
+   VIP DETAIL CARD STYLING
+   ================================ */
+.detail-card.detail-card-vip {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 50%, #d4af37 100%);
+    border: 4px solid #ff9933;
+    box-shadow: 0 20px 60px rgba(255, 153, 51, 0.5);
+}
+
+.vip-badge-detail {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%);
+    color: #ffffff;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    z-index: 10;
+    box-shadow: 0 6px 20px rgba(255, 153, 51, 0.6);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: vipPulseDetail 2s ease-in-out infinite;
+}
+
+.vip-badge-detail i {
+    font-size: 18px;
+    animation: starRotate 3s linear infinite;
+}
+
+@keyframes vipPulseDetail {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 6px 20px rgba(255, 153, 51, 0.6);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(255, 136, 0, 0.8);
+    }
+}
+
+@keyframes starRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* VIP Left Section */
+.detail-card-vip .left-section {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe4b3 100%);
+}
+
+.detail-card-vip .meja-title {
+    color: #ff8800;
+    text-shadow: 0 2px 4px rgba(255, 136, 0, 0.2);
+}
+
+.detail-card-vip .spec-title {
+    color: #ff8800;
+}
+
+.detail-card-vip .spec-icon {
+    color: #ff9933;
+}
+
+.detail-card-vip .spec-item {
+    color: #cc6600;
+    font-weight: 500;
+}
+
+/* VIP Right Section */
+.detail-card-vip .right-section {
+    background: linear-gradient(135deg, #fffbf5 0%, #fff5e6 100%);
+    border-left: 2px solid #ff9933;
+}
+
+.detail-card-vip .booking-title {
+    color: #ff8800;
+}
+
+.detail-card-vip .form-label {
+    color: #cc6600;
+}
+
+.detail-card-vip .form-input,
+.detail-card-vip .form-select {
+    border-color: #ff9933;
+    background: #ffffff;
+}
+
+.detail-card-vip .form-input:focus,
+.detail-card-vip .form-select:focus {
+    border-color: #ff8800;
+    box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.2);
+}
+
+.detail-card-vip .total-section {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe4b3 100%);
+    border-color: #ff9933;
+}
+
+.detail-card-vip .total-amount {
+    color: #ff8800;
+}
+
+/* VIP Badges */
+.detail-card-vip .availability-badge,
+.detail-card-vip .price-display {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.5);
+}
+
+.detail-card-vip .category-badge {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%);
+    color: #ffffff;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.5);
+}
+
+/* ================================
+   TABLE IMAGE
+   ================================ */
+.table-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+/* ================================
+   CONTENT LAYOUT
+   ================================ */
+.detail-content {
+    display: flex;
+    min-height: 400px;
+}
+
+/* ================================
+   LEFT SECTION - MEJA INFO
+   ================================ */
+.left-section {
+    flex: 1;
+    padding: 30px;
+    background: #f8f9fa;
+    color: #333;
+}
+
+.meja-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #6c757d;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.availability-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #28a745;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.price-display {
+    display: inline-flex;
+    align-items: center;
+    background: #28a745;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* ================================
+   SPECIFICATIONS SECTION
+   ================================ */
+.spec-section {
+    margin-bottom: 25px;
+}
+
+.spec-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.spec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.spec-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    color: #28a745;
+    flex-shrink: 0;
+}
+
+/* ================================
+   RIGHT SECTION - BOOKING FORM
+   ================================ */
+.right-section {
+    width: 300px;
+    padding: 30px;
+    background: #ffffff;
+    border-left: 1px solid #e9ecef;
+}
+
+.booking-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #ffffff;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+/* ================================
+   TOTAL PRICE DISPLAY
+   ================================ */
+.total-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.total-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #28a745;
+}
+
+/* ================================
+   BOOKING BUTTON
+   ================================ */
+.btn-book {
+    width: 100%;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-book:hover {
+    background: #218838;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-book i {
+    margin-right: 8px;
+}
+
+/* VIP Booking Button */
+.btn-book.btn-book-vip {
+    background: linear-gradient(135deg, #ff9933 0%, #ffcc66 100%);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 5px 20px rgba(255, 153, 51, 0.5);
+}
+
+.btn-book.btn-book-vip:hover {
+    background: linear-gradient(135deg, #ff8800 0%, #ffbb33 100%);
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 136, 0, 0.7);
+}
+
+/* ================================
+   BACK BUTTON
+   ================================ */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-back i {
+    margin-right: 8px;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 768px) {
+    .detail-content {
+        flex-direction: column;
+    }
+    
+    .right-section {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .left-section,
+    .right-section {
+        padding: 20px;
+    }
+}

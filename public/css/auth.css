@@ -1,0 +1,527 @@
+/* ================================
+   AUTH PAGES - WHITE THEME MATCHING BERANDA
+   ================================ */
+
+body {
+    font-family: "Poppins", sans-serif !important;
+    background: #ffffff !important;
+    color: #000 !important;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR ACTIVE STATE FOR AUTH PAGES
+   ================================ */
+.nav-link.active {
+    color: #afffca !important;
+    font-weight: 600 !important;
+}
+
+/* ================================
+   MAIN LAYOUT
+   ================================ */
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.min-vh-70 {
+    min-height: 70vh;
+}
+
+.row.align-items-center {
+    padding: 60px 60px;
+    align-items: flex-start !important;
+    display: flex;
+}
+
+/* ================================
+   AUTH FORM WRAPPER
+   ================================ */
+.auth-form-wrapper {
+    max-width: 500px;
+}
+
+.auth-title {
+    color: #000 !important;
+    font-weight: 700 !important;
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+}
+
+.auth-subtitle {
+    color: #333 !important;
+    font-size: 1.1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2rem !important;
+}
+
+/* ================================
+   FORM STYLING
+   ================================ */
+.auth-form {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(19, 95, 58, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper .form-input {
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #135f3a;
+}
+
+.password-toggle i {
+    font-size: 18px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid rgba(19, 95, 58, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-family: "Poppins", sans-serif;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #135f3a;
+    box-shadow: 0 0 0 3px rgba(19, 95, 58, 0.1);
+}
+
+.form-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Select dropdown styling */
+.form-input select,
+select.form-input {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 40px;
+}
+
+.form-input option {
+    padding: 10px;
+    background: #ffffff;
+    color: #333;
+}
+
+/* ================================
+   FORM CHECK (Remember Me)
+   ================================ */
+.form-check-label {
+    color: #333 !important;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.form-check-input {
+    border: 2px solid rgba(19, 95, 58, 0.3);
+    border-radius: 4px;
+}
+
+.form-check-input:checked {
+    background-color: #135f3a;
+    border-color: #135f3a;
+}
+
+/* ================================
+   ERROR MESSAGES
+   ================================ */
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.form-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-input.is-valid {
+    border-color: #28a745;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: #135f3a !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: #0f4a2e !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(19, 95, 58, 0.3);
+}
+
+/* ================================
+   AUTH LINKS
+   ================================ */
+.auth-links {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.auth-link {
+    color: #135f3a;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #0f4a2e;
+    text-decoration: underline;
+}
+
+/* ================================
+   RIGHT SIDE - IMAGE AND INFO
+   ================================ */
+.col-md-6.ps-md-4 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-left: 3rem !important;
+}
+
+.auth-image-wrapper {
+    margin-right: -8rem;
+    margin-bottom: 1rem;
+}
+
+.auth-image {
+    width: 450px !important;
+    height: 280px !important;
+    object-fit: cover !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.3s ease !important;
+    margin-right: 60px;
+}
+
+.auth-image:hover {
+    transform: scale(1.02) !important;
+}
+
+.auth-info-box {
+    background: rgba(19, 95, 58, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid rgba(19, 95, 58, 0.2);
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #333;
+    text-align: right;
+    max-width: 350px;
+    margin-right: -4rem;
+}
+
+.auth-info-box h4 {
+    color: #135f3a !important;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.auth-info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.auth-info-box li {
+    padding: 0.25rem 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.auth-info-box li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #135f3a;
+    font-weight: bold;
+}
+
+.auth-info-box b {
+    color: #135f3a !important;
+    font-weight: 600;
+}
+
+/* ================================
+   ALERT STYLING
+   ================================ */
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+/* ================================
+   LOADING STATE
+   ================================ */
+.btn-primary:disabled {
+    background: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-primary.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 768px) {
+    .row.align-items-center {
+        flex-direction: column;
+        padding: 30px 20px;
+        gap: 2rem;
+    }
+    
+    .auth-form-wrapper {
+        max-width: 100%;
+    }
+    
+    .auth-title {
+        font-size: 2rem !important;
+        text-align: center;
+    }
+    
+    .auth-subtitle {
+        text-align: center;
+    }
+    
+    .auth-form {
+        padding: 25px;
+    }
+    
+    .col-md-6.ps-md-4 {
+        align-items: center;
+        padding-left: 1rem !important;
+    }
+    
+    .auth-image-wrapper {
+        margin-right: 0;
+        text-align: center;
+    }
+    
+    .auth-image {
+        width: 100% !important;
+        max-width: 400px !important;
+        height: 250px !important;
+    }
+    
+    .auth-info-box {
+        text-align: center;
+        margin-right: 0;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .auth-subtitle {
+        font-size: 1rem !important;
+    }
+    
+    .auth-form {
+        padding: 20px;
+    }
+    
+    .form-input {
+        padding: 12px 15px;
+    }
+    
+    .btn-primary {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .auth-image {
+        max-width: 350px !important;
+        height: 220px !important;
+    }
+    
+    .auth-info-box {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ================================
+   ANIMATION EFFECTS
+   ================================ */
+.auth-form-wrapper {
+    opacity: 0;
+    animation: slideInLeft 0.8s ease forwards;
+}
+
+.auth-image-wrapper {
+    opacity: 0;
+    animation: slideInRight 0.8s ease 0.3s forwards;
+}
+
+.auth-info-box {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================
+   BACKGROUND PATTERN
+   ================================ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(19, 95, 58, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(19, 95, 58, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure content is above background */
+main, .container {
+    position: relative;
+    z-index: 1;
+}
