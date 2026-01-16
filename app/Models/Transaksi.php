@@ -178,7 +178,7 @@ class Transaksi extends Model
     public function getFormattedJamSelesaiAttribute()
     {
         $jamMulai = Carbon::parse($this->jam_mulai);
-        return $jamMulai->addHours($this->durasi)->format('H:i');
+        return $jamMulai->addHours((int)$this->durasi)->format('H:i');
     }
 
     /**
@@ -187,7 +187,7 @@ class Transaksi extends Model
     public function calculateJamSelesai()
     {
         $jamMulai = Carbon::parse($this->jam_mulai);
-        return $jamMulai->addHours($this->durasi)->format('H:i:s');
+        return $jamMulai->addHours((int)$this->durasi)->format('H:i:s');
     }
 
     /**
