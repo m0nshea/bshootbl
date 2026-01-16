@@ -43,7 +43,7 @@
     <!-- Filter Section -->
     <div class="card mb-4">
       <div class="card-body">
-        <form method="GET" action="{{ route('admin.pengguna.index') }}" class="row g-3">
+        <form method="GET" action="" class="row g-3">
           <div class="col-md-3">
             <label class="form-label">Role</label>
             <select name="role" class="form-select">
@@ -68,7 +68,7 @@
             <label class="form-label">&nbsp;</label>
             <div class="d-flex gap-2">
               <button type="submit" class="btn btn-primary">Filter</button>
-              <a href="{{ route('admin.pengguna.index') }}" class="btn btn-secondary">Reset</a>
+              <a href="" class="btn btn-secondary">Reset</a>
             </div>
           </div>
         </form>

@@ -176,6 +176,8 @@
   overflow: hidden;
   margin-bottom: 0;
   font-size: 0.9rem;
+  table-layout: fixed !important;
+  width: 100% !important;
 }
 
 .table thead th {
@@ -183,22 +185,54 @@
   color: white !important;
   border: none !important;
   font-weight: 600 !important;
-  padding: 15px !important;
+  padding: 15px 8px !important;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
+  vertical-align: middle !important;
+  text-align: center !important;
 }
 
 .table tbody td {
-  padding: 15px;
+  padding: 12px 8px;
   vertical-align: middle;
   border-bottom: 1px solid #f0f0f0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .table tbody tr:hover {
   background: #f8f9ff;
   transition: all 0.3s ease;
 }
+
+/* Force column widths */
+.table th:nth-child(1),
+.table td:nth-child(1) { width: 5% !important; }
+
+.table th:nth-child(2),
+.table td:nth-child(2) { width: 12% !important; }
+
+.table th:nth-child(3),
+.table td:nth-child(3) { width: 15% !important; }
+
+.table th:nth-child(4),
+.table td:nth-child(4) { width: 10% !important; }
+
+.table th:nth-child(5),
+.table td:nth-child(5) { width: 14% !important; }
+
+.table th:nth-child(6),
+.table td:nth-child(6) { width: 7% !important; }
+
+.table th:nth-child(7),
+.table td:nth-child(7) { width: 12% !important; }
+
+.table th:nth-child(8),
+.table td:nth-child(8) { width: 15% !important; }
+
+.table th:nth-child(9),
+.table td:nth-child(9) { width: 9% !important; }
 
 /* Invoice Code Styling */
 .invoice-code {

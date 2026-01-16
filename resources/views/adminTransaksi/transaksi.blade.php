@@ -38,16 +38,6 @@
               <option value="cancelled" {{ request('status_pembayaran') == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
             </select>
           </div>
-          <div class="col-md-3" style="margin-bottom: 15px; margin-right: 10px;">
-            <label class="form-label" style="font-weight: 600; color: #374151; font-size: 14px; margin-bottom: 8px;">Status Booking</label>
-            <select name="status_booking" class="form-select" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background-color: #fff; font-size: 14px; width: 100%; transition: border-color 0.3s ease;">
-              <option value="">Semua Status</option>
-              <option value="confirmed" {{ request('status_booking') == 'confirmed' ? 'selected' : '' }}>Dikonfirmasi</option>
-              <option value="ongoing" {{ request('status_booking') == 'ongoing' ? 'selected' : '' }}>Berlangsung</option>
-              <option value="completed" {{ request('status_booking') == 'completed' ? 'selected' : '' }}>Selesai</option>
-              <option value="cancelled" {{ request('status_booking') == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
-            </select>
-          </div>
           <div class="col-md-2" style="margin-bottom: 15px; margin-right: 10px;">
             <label class="form-label" style="font-weight: 600; color: #374151; font-size: 14px; margin-bottom: 8px;">Dari Tanggal</label>
             <input type="date" name="tanggal_dari" class="form-control" value="{{ request('tanggal_dari') }}" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background-color: #fff; font-size: 14px; width: 100%; transition: border-color 0.3s ease;">
@@ -90,52 +80,58 @@
         @endif
         
         <div class="table-responsive">
-          <table class="table table-hover align-middle">
+          <table class="table table-hover align-middle" style="table-layout: fixed; width: 100%;">
             <thead class="text-center">
               <tr>
-                <th width="8%">No</th>
-                <th width="12%">Kode Transaksi</th>
-                <th width="15%">Pelanggan</th>
-                <th width="12%">Meja</th>
-                <th width="12%">Tanggal & Jam</th>
-                <th width="8%">Durasi</th>
-                <th width="12%">Total</th>
-                <th width="10%">Status</th>
-                <th width="11%">Aksi</th>
+                <th width="5%" style="width: 5% !important;">NO</th>
+                <th width="12%" style="width: 12% !important;">KODE TRANSAKSI</th>
+                <th width="15%" style="width: 15% !important;">PELANGGAN</th>
+                <th width="10%" style="width: 10% !important;">MEJA</th>
+                <th width="14%" style="width: 14% !important;">TANGGAL & JAM</th>
+                <th width="7%" style="width: 7% !important;">DURASI</th>
+                <th width="12%" style="width: 12% !important;">TOTAL</th>
+                <th width="15%" style="width: 15% !important;">STATUS</th>
+                <th width="9%" style="width: 9% !important;">AKSI</th>
               </tr>
             </thead>
             <tbody>
               @forelse($transaksis as $index => $transaksi)
                 <tr>
-                  <td class="text-center fw-bold">{{ $transaksis->firstItem() + $index }}</td>
-                  <td><span class="invoice-code">{{ $transaksi->kode_transaksi }}</span></td>
-                  <td>
+                  <td class="text-center fw-bold" style="width: 5% !important;">{{ $transaksis->firstItem() + $index }}</td>
+                  <td style="width: 12% !important; word-wrap: break-word;"><span class="invoice-code">{{ $transaksi->kode_transaksi }}</span></td>
+                  <td style="width: 15% !important; word-wrap: break-word;">
                     <div>
-                      <span class="fw-semibold">{{ $transaksi->nama_pelanggan }}</span><br>
-                      <small class="text-muted">{{ $transaksi->email_pelanggan }}</small>
+                      <span class="fw-semibold d-block">{{ $transaksi->nama_pelanggan }}</span>
+                      <small class="text-muted d-block" style="font-size: 0.75rem;">{{ $transaksi->email_pelanggan }}</small>
                     </div>
                   </td>
-                  <td class="text-center">
-                    <span class="badge bg-info">{{ $transaksi->meja->nama_meja }}</span><br>
-                    <small class="text-muted">{{ $transaksi->meja->category->nama }}</small>
+                  <td class="text-center" style="width: 10% !important;">
+                    <span class="fw-semibold">{{ $transaksi->meja->nama_meja }}</span>
                   </td>
-                  <td class="text-center">
-                    <span class="fw-semibold">{{ $transaksi->formatted_tanggal_booking }}</span><br>
-                    <small class="text-muted">{{ $transaksi->formatted_jam_mulai }} - {{ $transaksi->formatted_jam_selesai }}</small>
+                  <td class="text-center" style="width: 14% !important;">
+                    <span class="fw-semibold d-block">{{ $transaksi->formatted_tanggal_booking }}</span>
+                    <small class="text-muted d-block" style="font-size: 0.75rem;">{{ $transaksi->formatted_jam_mulai }} - {{ $transaksi->formatted_jam_selesai }}</small>
                   </td>
-                  <td class="text-center"><span class="fw-semibold">{{ $transaksi->durasi }} Jam</span></td>
-                  <td class="text-center"><span class="amount-text">{{ $transaksi->formatted_total_harga }}</span></td>
-                  <td class="text-center">
-                    <span class="badge {{ $transaksi->status_pembayaran_badge }}">{{ $transaksi->status_pembayaran_text }}</span><br>
-                    <span class="badge {{ $transaksi->status_booking_badge }} mt-1">{{ $transaksi->status_booking_text }}</span>
+                  <td class="text-center" style="width: 7% !important;"><span class="fw-semibold">{{ $transaksi->durasi }} Jam</span></td>
+                  <td class="text-center" style="width: 12% !important;"><span class="amount-text">{{ $transaksi->formatted_total_harga }}</span></td>
+                  <td class="text-center" style="width: 15% !important;">
+                    @if($transaksi->status_pembayaran === 'paid')
+                      <span class="fw-semibold" style="color: #28a745;">Lunas</span>
+                    @elseif($transaksi->status_pembayaran === 'pending')
+                      <span class="fw-semibold" style="color: #ff8c00;">Menunggu Pembayaran</span>
+                    @elseif($transaksi->status_pembayaran === 'failed')
+                      <span class="fw-semibold text-danger">Pembayaran Gagal</span>
+                    @else
+                      <span class="fw-semibold text-secondary">{{ $transaksi->status_pembayaran_text }}</span>
+                    @endif
                   </td>
-                  <td class="text-center">
+                  <td class="text-center" style="width: 9% !important;">
                     <div class="d-flex justify-content-center gap-1 flex-wrap">
-                      <a href="{{ route('admin.transaksi.show', $transaksi->id) }}" class="btn btn-info btn-sm" title="Detail Transaksi">Detail</a>
+                      <a href="{{ route('admin.transaksi.show', $transaksi->id) }}" class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Detail Transaksi">Detail</a>
                       @if($transaksi->status_booking === 'confirmed')
-                        <button onclick="checkinCustomer({{ $transaksi->id }})" class="btn btn-success btn-sm" title="Check In">Check In</button>
+                        <button onclick="checkinCustomer({{ $transaksi->id }})" class="btn btn-success btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Check In">Check In</button>
                       @elseif($transaksi->status_booking === 'ongoing')
-                        <button onclick="checkoutCustomer({{ $transaksi->id }})" class="btn btn-warning btn-sm" title="Check Out">Check Out</button>
+                        <button onclick="checkoutCustomer({{ $transaksi->id }})" class="btn btn-warning btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Check Out">Check Out</button>
                       @endif
                     </div>
                   </td>
