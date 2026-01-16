@@ -27,7 +27,7 @@
                                 <i class="bi bi-star-fill"></i> VIP
                             </div>
                         @endif
-                        <img src="{{ $meja->foto_url }}" 
+                        <img src="/storage/meja/{{ $meja->foto }}" 
                              class="meja-image" 
                              alt="{{ $meja->nama_meja }}" />
                         <div class="meja-content">
