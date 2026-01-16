@@ -156,13 +156,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         return view('adminDashboard.simple');
     });
     
-    Route::get('/dashboard', function () {
-        try {
-            return view('adminDashboard.DashboardAdm');
-        } catch (\Exception $e) {
-            return 'Dashboard Error: ' . $e->getMessage() . ' in ' . $e->getFile() . ' line ' . $e->getLine();
-        }
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     
     // Simple debug route
     Route::get('/debug', function () {

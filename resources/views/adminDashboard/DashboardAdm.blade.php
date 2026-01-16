@@ -35,8 +35,8 @@
                   <div class="card-body">
                     <i class="fas fa-receipt" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.9;"></i>
                     <h5>Total Transaksi</h5>
-                    <h3>25</h3>
-                    <small>Periode ini</small>
+                    <h3>{{ $stats['total_transaksi'] }}</h3>
+                    <small>{{ $stats['transaksi_hari_ini'] }} transaksi hari ini</small>
                   </div>
                 </div>
               </div>
@@ -45,8 +45,8 @@
                   <div class="card-body">
                     <i class="fas fa-money-bill-wave" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.9;"></i>
                     <h5>Total Penghasilan</h5>
-                    <h3>Rp 8.500.000</h3>
-                    <small>Periode ini</small>
+                    <h3>Rp {{ number_format($stats['total_penghasilan'], 0, ',', '.') }}</h3>
+                    <small>Rp {{ number_format($stats['penghasilan_hari_ini'], 0, ',', '.') }} hari ini</small>
                   </div>
                 </div>
               </div>
@@ -55,7 +55,7 @@
                   <div class="card-body">
                     <i class="fas fa-chart-line" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.9;"></i>
                     <h5>Rata-rata per Hari</h5>
-                    <h3>Rp 850.000</h3>
+                    <h3>Rp {{ number_format($stats['rata_rata_per_hari'], 0, ',', '.') }}</h3>
                     <small>10 hari terakhir</small>
                   </div>
                 </div>
@@ -65,8 +65,8 @@
                   <div class="card-body">
                     <i class="fas fa-star" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.9;"></i>
                     <h5>Meja Terfavorit</h5>
-                    <h3>Meja VIP</h3>
-                    <small>12 booking</small>
+                    <h3>{{ $stats['meja_terfavorit'] }}</h3>
+                    <small>{{ $stats['meja_terfavorit_count'] }} booking</small>
                   </div>
                 </div>
               </div>
@@ -109,3 +109,158 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Data from controller
+const dailyData = @json($dailyRevenue);
+const weeklyData = @json($weeklyRevenue);
+const monthlyData = @json($monthlyRevenue);
+const yearlyData = @json($yearlyRevenue);
+
+let revenueChart;
+
+// Initialize chart with daily data
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dailyData.map(item => item.date),
+            datasets: [{
+                label: 'Penghasilan (Rp)',
+                data: dailyData.map(item => item.revenue),
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+
+// Function to switch between different time periods
+function showStats(period, button) {
+    // Update active button
+    document.querySelectorAll('.btn-group button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+    
+    let labels, data;
+    
+    switch(period) {
+        case 'daily':
+            labels = dailyData.map(item => item.date);
+            data = dailyData.map(item => item.revenue);
+            break;
+        case 'weekly':
+            labels = weeklyData.map(item => item.week);
+            data = weeklyData.map(item => item.revenue);
+            break;
+        case 'monthly':
+            labels = monthlyData.map(item => item.month);
+            data = monthlyData.map(item => item.revenue);
+            break;
+        case 'yearly':
+            labels = yearlyData.map(item => item.year);
+            data = yearlyData.map(item => item.revenue);
+            break;
+    }
+    
+    // Update chart
+    revenueChart.data.labels = labels;
+    revenueChart.data.datasets[0].data = data;
+    revenueChart.update();
+}
+</script>
+
+<style>
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.card h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.btn-group .btn.active {
+    background-color: #198754;
+    color: white;
+    border-color: #198754;
+}
+</style>
+@endpush
