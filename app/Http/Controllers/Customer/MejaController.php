@@ -14,10 +14,29 @@ class MejaController extends Controller
      */
     public function index()
     {
-        $mejas = Meja::with('category')
-                    ->where('status', 'available')
+        $mejas = Meja::with(['category', 'transaksis' => function($query) {
+                        $query->where('status_pembayaran', 'paid')
+                              ->where('tanggal_booking', '>=', now()->toDateString())
+                              ->where('status_booking', '!=', 'completed');
+                    }])
+                    ->whereIn('status', ['available', 'reserved']) // Show available and reserved meja
                     ->latest()
                     ->get();
+        
+        // Debug: Log meja data
+        \Log::info('Meja data for customer:', [
+            'count' => $mejas->count(),
+            'mejas' => $mejas->map(function($meja) {
+                return [
+                    'id' => $meja->id,
+                    'nama_meja' => $meja->nama_meja,
+                    'status' => $meja->status,
+                    'category' => $meja->category->nama ?? 'No category',
+                    'foto' => $meja->foto,
+                    'foto_url' => $meja->foto_url
+                ];
+            })
+        ]);
         
         return view('pelangganMeja.meja', compact('mejas'));
     }

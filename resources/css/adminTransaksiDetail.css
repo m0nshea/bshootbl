@@ -1,0 +1,270 @@
+/* Admin Transaksi Detail Page Styles */
+
+/* Gradient Background */
+.detail-transaksi-bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Invoice Code */
+.detail-transaksi-invoice-code {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* Info Box */
+.detail-transaksi-info-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Card Styles */
+.detail-transaksi-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.detail-transaksi-card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+    border: none;
+    background-color: #f8f9fa;
+}
+
+.detail-transaksi-card-header.detail-transaksi-bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.detail-transaksi-card-body {
+    padding: 1.25rem;
+}
+
+/* Table Styles */
+.detail-transaksi-table-bordered {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.detail-transaksi-table-bordered thead {
+    background: #f8f9fa;
+}
+
+/* Breadcrumb Styles */
+.detail-transaksi-breadcrumb {
+    background: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.detail-transaksi-breadcrumb-item a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.detail-transaksi-breadcrumb-item a:hover {
+    color: #28a745;
+}
+
+/* Code Styles */
+.detail-transaksi-code {
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+/* Container Styles */
+.detail-transaksi-container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Button Base Styles */
+.detail-transaksi-btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.detail-transaksi-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Variants - Primary */
+.detail-transaksi-btn-primary {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.detail-transaksi-btn-primary:hover {
+    background-color: #0b5ed7;
+    color: white;
+}
+
+/* Button Variants - Success */
+.detail-transaksi-btn-success {
+    background-color: #198754;
+    color: white;
+}
+
+.detail-transaksi-btn-success:hover {
+    background-color: #157347;
+    color: white;
+}
+
+/* Button Variants - Warning */
+.detail-transaksi-btn-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.detail-transaksi-btn-warning:hover {
+    background-color: #ffbb2d;
+    color: #000;
+}
+
+/* Button Variants - Info */
+.detail-transaksi-btn-info {
+    background-color: #0dcaf0;
+    color: white;
+}
+
+.detail-transaksi-btn-info:hover {
+    background-color: #31d5f8;
+    color: white;
+}
+
+/* Button Variants - Danger */
+.detail-transaksi-btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.detail-transaksi-btn-danger:hover {
+    background-color: #bb2d3b;
+    color: white;
+}
+
+/* Button Variants - Outline Success */
+.detail-transaksi-btn-outline-success {
+    border: 1px solid #198754;
+    color: #198754;
+    background-color: transparent;
+}
+
+.detail-transaksi-btn-outline-success:hover {
+    background-color: #198754;
+    color: white;
+}
+
+/* Button Variants - Outline Primary */
+.detail-transaksi-btn-outline-primary {
+    border: 1px solid #0d6efd;
+    color: #0d6efd;
+    background-color: transparent;
+}
+
+.detail-transaksi-btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Button Size - Small */
+.detail-transaksi-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+/* Row Spacing - Main content area with sidebar */
+.detail-transaksi-main-row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.detail-transaksi-main-content {
+    padding-right: 15px;
+}
+
+.detail-transaksi-sidebar {
+    padding-left: 15px;
+}
+
+/* Animation */
+.detail-transaksi-card {
+    animation: detailTransaksiMaskeFadeInUp 0.5s ease;
+}
+
+@keyframes detailTransaksiMaskeFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .detail-transaksi-invoice-code {
+        font-size: 1rem;
+    }
+
+    .detail-transaksi-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .detail-transaksi-main-content {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+
+    .detail-transaksi-sidebar {
+        padding-left: 0;
+    }
+
+    .detail-transaksi-card {
+        margin-bottom: 1rem;
+    }
+
+    .detail-transaksi-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-transaksi-invoice-code {
+        font-size: 0.9rem;
+        padding: 4px 8px;
+    }
+
+    .detail-transaksi-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

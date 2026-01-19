@@ -32,6 +32,68 @@ class Meja extends Model
     }
 
     /**
+     * Get all transaksis for this meja
+     */
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
+    /**
+     * Check if meja is currently booked (paid booking for today or future)
+     */
+    public function isBooked()
+    {
+        // Check if meja status is reserved
+        if ($this->status === 'reserved') {
+            return true;
+        }
+        
+        // Check if there's a paid booking for today or future
+        return $this->transaksis()
+                   ->where('status_pembayaran', 'paid')
+                   ->where('tanggal_booking', '>=', now()->toDateString())
+                   ->where('status_booking', '!=', 'completed')
+                   ->exists();
+    }
+
+    /**
+     * Get current booking status for display
+     */
+    public function getBookingStatusAttribute()
+    {
+        if ($this->isBooked() || $this->status === 'reserved') {
+            return 'booked';
+        }
+        
+        return $this->status;
+    }
+
+    /**
+     * Get booking status text
+     */
+    public function getBookingStatusTextAttribute()
+    {
+        if ($this->isBooked() || $this->status === 'reserved') {
+            return 'Sudah Dibooking';
+        }
+        
+        return $this->status_text;
+    }
+
+    /**
+     * Get booking status CSS class
+     */
+    public function getBookingStatusClassAttribute()
+    {
+        if ($this->isBooked() || $this->status === 'reserved') {
+            return 'meja-booked';
+        }
+        
+        return $this->status_badge;
+    }
+
+    /**
      * Get the formatted price
      */
     public function getFormattedHargaAttribute()
@@ -47,6 +109,7 @@ class Meja extends Model
         return match($this->status) {
             'available' => 'status-available',
             'occupied' => 'status-occupied',
+            'reserved' => 'status-reserved',
             'maintenance' => 'status-maintenance',
             default => 'status-available'
         };
@@ -60,6 +123,7 @@ class Meja extends Model
         return match($this->status) {
             'available' => 'Tersedia',
             'occupied' => 'Terisi',
+            'reserved' => 'Direservasi',
             'maintenance' => 'Maintenance',
             default => 'Tersedia'
         };

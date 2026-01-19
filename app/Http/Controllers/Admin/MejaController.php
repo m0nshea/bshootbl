@@ -47,7 +47,7 @@ class MejaController extends Controller
             'lantai' => 'required|string|max:10',
             'kategori' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
-            'status' => 'required|in:available,occupied,maintenance',
+            'status' => 'required|in:available,occupied,reserved,maintenance',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'deskripsi' => 'nullable|string'
         ], [
@@ -136,7 +136,7 @@ class MejaController extends Controller
                 'lantai' => 'required|string|max:10',
                 'kategori' => 'required|string|max:255',
                 'harga' => 'required|numeric|min:0',
-                'status' => 'required|in:available,occupied,maintenance',
+                'status' => 'required|in:available,occupied,reserved,maintenance',
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
                 'deskripsi' => 'nullable|string'
             ], [

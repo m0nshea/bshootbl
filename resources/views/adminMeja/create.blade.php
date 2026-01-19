@@ -1,11 +1,11 @@
 @extends('layouts.app2')
 
 @section('content')
-<div class="content-wrapper">
-  <div class="container-fluid">
+<div class="form-wrapper">
+  <div class="form-container">
 
     <!-- Breadcrumb -->
-    <div class="breadcrumb-section mb-4">
+    <div class="form-breadcrumb mb-4">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-success">Home</a></li>
@@ -16,123 +16,130 @@
     </div>
 
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h2 class="page-title">Tambah Meja Baru</h2>
-        <p class="page-subtitle">Tambahkan meja billiard baru ke sistem</p>
+    <div class="form-header mb-4">
+      <div class="form-header-content">
+        <h2 class="form-title">Tambah Meja Baru</h2>
+        <p class="form-subtitle">Tambahkan meja billiard baru ke sistem</p>
       </div>
-      <div>
-        <a href="{{ route('admin.meja.index') }}" class="btn btn-secondary">Kembali</a>
+      <div class="form-header-actions">
+        <a href="{{ route('admin.meja.index') }}" class="form-btn form-btn-secondary">Kembali</a>
       </div>
     </div>
 
     <!-- Form Card -->
-    <div class="card shadow-sm">
-      <div class="card-header bg-light">
-        <h4 class="card-title mb-0">Form Tambah Meja</h4>
+    <div class="form-card">
+      <div class="form-card-header">
+        <h4 class="form-card-title">Form Tambah Meja</h4>
       </div>
-      <div class="card-body p-4">
-        <form action="{{ route('admin.meja.store') }}" method="POST" enctype="multipart/form-data">
+      <div class="form-card-body">
+        <form action="{{ route('admin.meja.store') }}" method="POST" enctype="multipart/form-data" class="admin-form">
           @csrf
           
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="nama_meja" class="form-label fw-semibold">Nama Meja <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('nama_meja') is-invalid @enderror" 
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="nama_meja" class="form-label">Nama Meja <span class="form-required">*</span></label>
+                <input type="text" class="form-input @error('nama_meja') form-input-error @enderror" 
                        id="nama_meja" name="nama_meja" value="{{ old('nama_meja') }}" required>
-                <div class="form-text">Contoh: Meja VIP 1, Meja A, dll.</div>
+                <div class="form-help">Contoh: Meja VIP 1, Meja A, dll.</div>
                 @error('nama_meja')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="lantai" class="form-label fw-semibold">Lantai <span class="text-danger">*</span></label>
-                <select class="form-select @error('lantai') is-invalid @enderror" 
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="lantai" class="form-label">Lantai <span class="form-required">*</span></label>
+                <select class="form-select @error('lantai') form-input-error @enderror" 
                         id="lantai" name="lantai" required>
                   <option value="1" {{ old('lantai') == '1' ? 'selected' : '' }}>Lantai 1</option>
                   <option value="2" {{ old('lantai') == '2' ? 'selected' : '' }}>Lantai 2</option>
                   <option value="3" {{ old('lantai') == '3' ? 'selected' : '' }}>Lantai 3</option>
                 </select>
                 @error('lantai')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="kategori" class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('kategori') is-invalid @enderror" 
-                       id="kategori" name="kategori" value="{{ old('kategori') }}" 
-                       placeholder="Contoh: VIP, Regular, Premium" required>
-                <div class="form-text">Masukkan nama kategori meja</div>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="kategori" class="form-label">Kategori <span class="form-required">*</span></label>
+                <select class="form-select @error('kategori') form-input-error @enderror" 
+                        id="kategori" name="kategori" required>
+                  <option value="">Pilih Kategori</option>
+                  @foreach($categories as $category)
+                    <option value="{{ $category->nama }}" {{ old('kategori') == $category->nama ? 'selected' : '' }}>
+                      {{ $category->nama }}
+                    </option>
+                  @endforeach
+                </select>
+                <div class="form-help">Pilih kategori meja yang tersedia</div>
                 @error('kategori')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="harga" class="form-label fw-semibold">Harga per Jam <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <span class="input-group-text">Rp</span>
-                  <input type="number" class="form-control @error('harga') is-invalid @enderror" 
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="harga" class="form-label">Harga per Jam <span class="form-required">*</span></label>
+                <div class="form-input-group">
+                  <span class="form-input-prefix">Rp</span>
+                  <input type="number" class="form-input form-input-with-prefix @error('harga') form-input-error @enderror" 
                          id="harga" name="harga" value="{{ old('harga') }}" required>
                 </div>
-                <div class="form-text">Masukkan harga dalam rupiah</div>
+                <div class="form-help">Masukkan harga dalam rupiah</div>
                 @error('harga')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                <select class="form-select @error('status') is-invalid @enderror" 
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="status" class="form-label">Status <span class="form-required">*</span></label>
+                <select class="form-select @error('status') form-input-error @enderror" 
                         id="status" name="status" required>
                   <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
                   <option value="occupied" {{ old('status') == 'occupied' ? 'selected' : '' }}>Terisi</option>
+                  <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Direservasi</option>
                   <option value="maintenance" {{ old('status') == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                 </select>
                 @error('status')
-                  <div class="invalid-feedback">{{ $message }}</div>
+                  <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
           </div>
 
-          <div class="mb-3">
-            <label for="foto" class="form-label fw-semibold">Foto Meja</label>
-            <input type="file" class="form-control @error('foto') is-invalid @enderror" 
+          <div class="form-group">
+            <label for="foto" class="form-label">Foto Meja</label>
+            <input type="file" class="form-file @error('foto') form-input-error @enderror" 
                    id="foto" name="foto" accept="image/*">
-            <div class="form-text">Format: JPG, PNG, WEBP. Maksimal 2MB</div>
+            <div class="form-help">Format: JPG, PNG, WEBP. Maksimal 2MB</div>
             @error('foto')
-              <div class="invalid-feedback">{{ $message }}</div>
+              <div class="form-error">{{ $message }}</div>
             @enderror
           </div>
 
-          <div class="mb-4">
-            <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
-            <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
+          <div class="form-group">
+            <label for="deskripsi" class="form-label">Deskripsi</label>
+            <textarea class="form-textarea @error('deskripsi') form-input-error @enderror" 
                       id="deskripsi" name="deskripsi" rows="4" 
                       placeholder="Deskripsi opsional tentang meja...">{{ old('deskripsi') }}</textarea>
-            <div class="form-text">Deskripsi opsional tentang meja</div>
+            <div class="form-help">Deskripsi opsional tentang meja</div>
             @error('deskripsi')
-              <div class="invalid-feedback">{{ $message }}</div>
+              <div class="form-error">{{ $message }}</div>
             @enderror
           </div>
 
-          <div class="d-flex justify-content-end gap-2">
-            <a href="{{ route('admin.meja.index') }}" class="btn btn-secondary px-4">Batal</a>
-            <button type="submit" class="btn btn-success px-4">
+          <div class="form-actions">
+            <a href="{{ route('admin.meja.index') }}" class="form-btn form-btn-secondary">Batal</a>
+            <button type="submit" class="form-btn form-btn-primary">
               <i class="fas fa-save me-1"></i> Simpan Meja
             </button>
           </div>
@@ -145,143 +152,7 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/adminMeja.css') }}">
-<style>
-.card {
-  border: none;
-  border-radius: 10px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.card-header {
-  border-bottom: 1px solid #e9ecef;
-  border-radius: 10px 10px 0 0 !important;
-}
-
-.card-title {
-  color: #495057;
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.form-label {
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.form-control, .form-select {
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 12px 15px;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-.form-control:focus, .form-select:focus {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-  outline: none;
-}
-
-.form-control.is-invalid, .form-select.is-invalid {
-  border-color: #dc3545;
-}
-
-.invalid-feedback {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 5px;
-}
-
-.form-text {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-top: 5px;
-}
-
-.input-group-text {
-  background-color: #f8f9fa;
-  border: 1px solid #d1d5db;
-  border-right: none;
-  padding: 12px 15px;
-  font-size: 0.95rem;
-}
-
-.btn {
-  padding: 12px 24px;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-.btn-success {
-  background-color: #22c55e;
-  color: white;
-}
-
-.btn-success:hover {
-  background-color: #16a34a;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background-color: #6b7280;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #4b5563;
-  color: white;
-  text-decoration: none;
-  transform: translateY(-1px);
-}
-
-.breadcrumb {
-  background: none;
-  padding: 0;
-  margin: 0;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-  content: "›";
-  color: #6b7280;
-}
-
-.page-title {
-  color: #1f2937;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.page-subtitle {
-  color: #6b7280;
-  margin-bottom: 0;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .card-body {
-    padding: 20px;
-  }
-  
-  .btn {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .d-flex.justify-content-end {
-    flex-direction: column;
-  }
-}
-</style>
+<link rel="stylesheet" href="{{ asset('css/form.css') }}">
 @endpush
 
 @push('scripts')

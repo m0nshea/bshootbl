@@ -1,107 +1,121 @@
 @extends('layouts.app2')
 
 @section('content')
-<div class="content-wrapper">
-  <div class="container-fluid">
+<div class="form-wrapper">
+  <div class="form-container">
 
     <!-- Breadcrumb -->
-    <div class="breadcrumb-section mb-4">
+    <div class="form-breadcrumb">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-success">Home</a></li>
-          <li class="breadcrumb-item"><a href="{{ route('admin.pengguna') }}" class="text-success">Pengguna</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('admin.pengguna') }}">Pengguna</a></li>
           <li class="breadcrumb-item active" aria-current="page">Tambah Pengguna</li>
         </ol>
       </nav>
     </div>
 
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="form-header">
       <div>
-        <h2 class="page-title">Tambah Pengguna Baru</h2>
-        <p class="page-subtitle">Tambahkan pengguna baru ke sistem</p>
+        <h2 class="form-title">Tambah Pengguna Baru</h2>
+        <p class="form-subtitle">Tambahkan pengguna baru ke sistem</p>
       </div>
       <div>
-        <a href="{{ route('admin.pengguna') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('admin.pengguna') }}" class="form-btn form-btn-secondary">Kembali</a>
       </div>
     </div>
 
     <!-- Form Card -->
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title mb-0">Form Tambah Pengguna</h4>
+    <div class="form-card">
+      <div class="form-card-header">
+        <h4 class="form-card-title">Form Tambah Pengguna</h4>
       </div>
-      <div class="card-body">
-        <form action="#" method="POST" enctype="multipart/form-data">
+      <div class="form-card-body">
+        <form action="#" method="POST" enctype="multipart/form-data" class="admin-form">
           @csrf
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="nama" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="nama" name="nama" required>
+          
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="nama" class="form-label">Nama Lengkap <span class="form-required">*</span></label>
+                <input type="text" class="form-input" id="nama" name="nama" 
+                       placeholder="Masukkan nama lengkap" required>
+                <div class="form-help">Nama lengkap pengguna</div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" id="email" name="email" required>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="email" class="form-label">Email <span class="form-required">*</span></label>
+                <input type="email" class="form-input" id="email" name="email" 
+                       placeholder="contoh@email.com" required>
+                <div class="form-help">Email untuk login dan notifikasi</div>
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="no_hp" class="form-label">No. HP <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control" id="no_hp" name="no_hp" required>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="no_hp" class="form-label">No. HP <span class="form-required">*</span></label>
+                <input type="tel" class="form-input" id="no_hp" name="no_hp" 
+                       placeholder="08123456789" required>
+                <div class="form-help">Nomor HP untuk kontak</div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="role" class="form-label">Role <span class="form-required">*</span></label>
                 <select class="form-select" id="role" name="role" required>
                   <option value="">Pilih Role</option>
                   <option value="admin">Admin</option>
                   <option value="vip">VIP</option>
                   <option value="user">User</option>
                 </select>
+                <div class="form-help">Hak akses pengguna dalam sistem</div>
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                <input type="password" class="form-control" id="password" name="password" required>
+          <div class="form-row">
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="password" class="form-label">Password <span class="form-required">*</span></label>
+                <input type="password" class="form-input" id="password" name="password" 
+                       placeholder="Minimal 8 karakter" required>
+                <div class="form-help">Password minimal 8 karakter</div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+            <div class="form-col-6">
+              <div class="form-group">
+                <label for="status" class="form-label">Status <span class="form-required">*</span></label>
                 <select class="form-select" id="status" name="status" required>
                   <option value="active">Aktif</option>
                   <option value="inactive">Tidak Aktif</option>
                 </select>
+                <div class="form-help">Status aktif pengguna</div>
               </div>
             </div>
           </div>
 
-          <div class="mb-3">
+          <div class="form-group">
             <label for="avatar" class="form-label">Avatar</label>
-            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-            <div class="form-text">Format: JPG, PNG, WEBP. Maksimal 2MB</div>
+            <input type="file" class="form-file" id="avatar" name="avatar" accept="image/*">
+            <div class="form-help">Format: JPG, PNG, WEBP. Maksimal 2MB</div>
           </div>
 
-          <div class="mb-3">
+          <div class="form-group">
             <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"></textarea>
-            <div class="form-text">Deskripsi opsional tentang pengguna</div>
+            <textarea class="form-textarea" id="deskripsi" name="deskripsi" rows="3" 
+                      placeholder="Deskripsi opsional tentang pengguna..."></textarea>
+            <div class="form-help">Deskripsi opsional tentang pengguna</div>
           </div>
 
-          <div class="d-flex justify-content-end gap-2">
-            <a href="{{ route('admin.pengguna') }}" class="btn btn-secondary">Batal</a>
-            <button type="submit" class="btn btn-success">Simpan Pengguna</button>
+          <div class="form-actions">
+            <a href="{{ route('admin.pengguna') }}" class="form-btn form-btn-secondary">Batal</a>
+            <button type="submit" class="form-btn form-btn-primary">
+              <i class="fas fa-save"></i> Simpan Pengguna
+            </button>
           </div>
         </form>
       </div>
@@ -112,7 +126,7 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/adminPengguna.css') }}">
+<link rel="stylesheet" href="{{ asset('css/form.css') }}">
 @endpush
 
 @push('scripts')

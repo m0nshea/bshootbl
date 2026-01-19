@@ -92,6 +92,9 @@ class WebhookPaymentService
                     $updateData['status_pembayaran'] = 'paid';
                     $updateData['status_booking'] = 'confirmed';
                     $updateData['paid_at'] = now();
+                    
+                    // Update meja status to reserved (not occupied yet, just reserved)
+                    $transaksi->meja->update(['status' => 'reserved']);
                 } else {
                     $updateData['status_pembayaran'] = 'pending';
                 }
@@ -101,6 +104,9 @@ class WebhookPaymentService
                 $updateData['status_pembayaran'] = 'paid';
                 $updateData['status_booking'] = 'confirmed';
                 $updateData['paid_at'] = now();
+                
+                // Update meja status to reserved (not occupied yet, just reserved)
+                $transaksi->meja->update(['status' => 'reserved']);
                 break;
 
             case 'pending':
@@ -112,11 +118,17 @@ class WebhookPaymentService
             case 'cancel':
                 $updateData['status_pembayaran'] = 'failed';
                 $updateData['status_booking'] = 'cancelled';
+                
+                // Make meja available again
+                $transaksi->meja->update(['status' => 'available']);
                 break;
 
             case 'expire':
                 $updateData['status_pembayaran'] = 'expired';
                 $updateData['status_booking'] = 'cancelled';
+                
+                // Make meja available again
+                $transaksi->meja->update(['status' => 'available']);
                 break;
 
             default:
@@ -133,7 +145,8 @@ class WebhookPaymentService
             'transaction_id' => $transaksi->id,
             'kode_transaksi' => $transaksi->kode_transaksi,
             'old_status' => $transaksi->getOriginal('status_pembayaran'),
-            'new_status' => $updateData['status_pembayaran'] ?? 'unchanged'
+            'new_status' => $updateData['status_pembayaran'] ?? 'unchanged',
+            'meja_status' => $transaksi->meja->status
         ]);
     }
 
