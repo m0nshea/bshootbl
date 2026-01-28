@@ -82,6 +82,19 @@
             <h5 class="page-title">
                 Daftar Meja
             </h5>
+            @guest
+            <div style="background: #e3f2fd; border: 1px solid #bbdefb; border-radius: 10px; padding: 15px; margin: 20px auto; max-width: 600px; font-size: 0.9rem;">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                    <i class="bi bi-info-circle" style="color: #1976d2; margin-right: 8px; font-size: 1.1rem;"></i>
+                    <strong style="color: #1976d2;">Informasi Booking</strong>
+                </div>
+                <p style="color: #1976d2; margin: 0; text-align: center;">
+                    Anda dapat melihat ketersediaan meja tanpa login. Untuk melakukan pemesanan, 
+                    silakan <a href="{{ route('login') }}" style="color: #1976d2; font-weight: 600;">masuk</a> 
+                    atau <a href="{{ route('register') }}" style="color: #1976d2; font-weight: 600;">daftar</a> terlebih dahulu.
+                </p>
+            </div>
+            @endguest
         </div>
 
         <!-- Meja Cards -->
@@ -126,6 +139,15 @@
                                         <i class="bi bi-info-circle"></i> 
                                         Meja ini sudah dibooking dan dibayar
                                     </p>
+                                @else
+                                    @guest
+                                    <div class="login-notice" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 0.8rem;">
+                                        <i class="bi bi-info-circle" style="color: #856404;"></i>
+                                        <span style="color: #856404;">
+                                            <strong>Login diperlukan</strong> untuk booking meja
+                                        </span>
+                                    </div>
+                                    @endguest
                                 @endif
                             </div>
                         </div>
@@ -164,4 +186,55 @@
         @endif
     </div>
 </div>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// Handle click on meja detail for guests
+@guest
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handler for meja cards that require login
+    const mejaCards = document.querySelectorAll('.meja-card:not(.meja-booked)');
+    
+    mejaCards.forEach(card => {
+        const mejaLink = card.querySelector('.meja-title');
+        if (mejaLink && mejaLink.tagName === 'A') {
+            mejaLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: 'Login Diperlukan',
+                    html: `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="bi bi-person-lock" style="font-size: 3rem; color: #856404; margin-bottom: 15px;"></i>
+                            <p style="margin-bottom: 20px; color: #666;">
+                                Untuk melakukan pemesanan meja, Anda harus masuk ke akun terlebih dahulu.
+                            </p>
+                            <p style="margin-bottom: 0; color: #666; font-size: 0.9rem;">
+                                Anda dapat melihat detail dan ketersediaan meja tanpa login.
+                            </p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="bi bi-box-arrow-in-right me-2"></i>Masuk',
+                    cancelButtonText: 'Lihat Detail Saja',
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to login
+                        window.location.href = '{{ route('login') }}';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // Allow viewing detail
+                        window.location.href = mejaLink.href;
+                    }
+                });
+            });
+        }
+    });
+});
+@endguest
+</script>
+@endpush
+
 @endsection

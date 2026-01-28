@@ -57,16 +57,16 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <small class="text-muted d-block mb-1">Nama Lengkap</small>
-                                    <span class="fw-semibold">{{ $transaksi->nama_pelanggan }}</span>
+                                    <span class="fw-semibold">{{ $transaksi->user->name ?? 'Customer' }}</span>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <small class="text-muted d-block mb-1">Email</small>
-                                    <span class="fw-semibold">{{ $transaksi->email_pelanggan }}</span>
+                                    <span class="fw-semibold">{{ $transaksi->user->email ?? '-' }}</span>
                                 </div>
-                                @if($transaksi->no_telepon)
+                                @if($transaksi->user->no_telepon ?? null)
                                 <div class="col-md-6">
                                     <small class="text-muted d-block mb-1">No. Telepon</small>
-                                    <span class="fw-semibold">{{ $transaksi->no_telepon }}</span>
+                                    <span class="fw-semibold">{{ $transaksi->user->no_telepon }}</span>
                                 </div>
                                 @endif
                             </div>

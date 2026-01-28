@@ -343,11 +343,11 @@ body {
                         <table class="table table-borderless text-dark">
                             <tr>
                                 <td>Nama</td>
-                                <td>: {{ isset($transaksi) ? $transaksi->nama_pelanggan : 'Haikal' }}</td>
+                                <td>: {{ isset($transaksi) ? ($transaksi->user->name ?? 'Customer') : 'Customer' }}</td>
                             </tr>
                             <tr>
                                 <td>Telepon</td>
-                                <td>: {{ isset($transaksi) ? $transaksi->no_telepon : '081234567890' }}</td>
+                                <td>: {{ isset($transaksi) ? ($transaksi->user->no_telepon ?? '081234567890') : '081234567890' }}</td>
                             </tr>
                             <tr>
                                 <td>Meja</td>

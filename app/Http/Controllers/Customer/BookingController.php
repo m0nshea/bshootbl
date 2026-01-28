@@ -15,9 +15,100 @@ class BookingController extends Controller
 {
     protected $paymentService;
 
-    public function __construct(PaymentService $paymentService)
+    public function __construct()
     {
-        $this->paymentService = $paymentService;
+        // Middleware is handled by routes, not in constructor
+    }
+
+    /**
+     * Get payment service instance
+     */
+    private function getPaymentService()
+    {
+        if (!$this->paymentService) {
+            $this->paymentService = app(PaymentService::class);
+        }
+        return $this->paymentService;
+    }
+
+    /**
+     * Get available time slots for a specific meja and date
+     */
+    public function getAvailableTimes(Request $request, $mejaId)
+    {
+        try {
+            $request->validate([
+                'date' => 'required|date|after_or_equal:today'
+            ]);
+
+            $date = $request->get('date');
+            
+            // Get all booked time slots for this meja on the selected date
+            $bookedTimes = Transaksi::where('meja_id', $mejaId)
+                ->where('tanggal_booking', $date)
+                ->whereIn('status_pembayaran', ['paid', 'pending'])
+                ->whereIn('status_booking', ['confirmed', 'pending', 'ongoing'])
+                ->get()
+                ->flatMap(function ($transaksi) {
+                    // Generate all occupied hours for this booking
+                    $jamMulai = $transaksi->jam_mulai;
+                    
+                    // Handle different time formats
+                    if (strlen($jamMulai) === 5) {
+                        // Format: HH:MM
+                        $startHour = (int) substr($jamMulai, 0, 2);
+                    } else {
+                        // Try to parse as time
+                        try {
+                            $startHour = (int) Carbon::parse($jamMulai)->format('H');
+                        } catch (\Exception $e) {
+                            // Fallback: assume it's already an hour
+                            $startHour = (int) $jamMulai;
+                        }
+                    }
+                    
+                    $duration = (int) $transaksi->durasi;
+                    $occupiedTimes = [];
+                    
+                    for ($i = 0; $i < $duration; $i++) {
+                        $hour = $startHour + $i;
+                        if ($hour >= 8 && $hour <= 21) { // Only include valid operating hours
+                            $occupiedTimes[] = sprintf('%02d:00', $hour);
+                        }
+                    }
+                    
+                    return $occupiedTimes;
+                })
+                ->unique()
+                ->values()
+                ->toArray();
+
+            return response()->json([
+                'success' => true,
+                'booked_times' => $bookedTimes,
+                'date' => $date,
+                'meja_id' => $mejaId,
+                'debug' => [
+                    'total_bookings' => Transaksi::where('meja_id', $mejaId)
+                        ->where('tanggal_booking', $date)
+                        ->whereIn('status_pembayaran', ['paid', 'pending'])
+                        ->count()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting available times', [
+                'meja_id' => $mejaId,
+                'date' => $request->get('date'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat jam tersedia: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -25,6 +116,11 @@ class BookingController extends Controller
      */
     public function checkout(Request $request)
     {
+        // Ensure user is authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu untuk melakukan booking.');
+        }
+
         $mejaId = $request->get('meja');
         $meja = Meja::with('category')->findOrFail($mejaId);
         
@@ -52,13 +148,20 @@ class BookingController extends Controller
     public function processBooking(Request $request)
     {
         try {
+            // Ensure user is authenticated
+            if (!Auth::check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda harus login terlebih dahulu untuk melakukan booking.',
+                    'redirect' => route('login')
+                ], 401);
+            }
+
             // Validate request
             $validated = $request->validate([
                 'meja_id' => 'required|exists:mejas,id',
-                'nama_pelanggan' => 'required|string|max:255',
-                'email_pelanggan' => 'required|email',
-                'no_telepon' => 'nullable|string|max:20',
-                'tanggal_booking' => 'required|date',
+                'jenis_ball' => 'required|in:8_ball,9_ball',
+                'tanggal_booking' => 'required|date|after_or_equal:today',
                 'jam_mulai' => 'required',
                 'durasi' => 'required|integer|min:1|max:8',
                 'metode_pembayaran' => 'required|in:qris,transfer,ewallet',
@@ -79,9 +182,7 @@ class BookingController extends Controller
                 'kode_transaksi' => $kodeTransaksi,
                 'user_id' => Auth::id(),
                 'meja_id' => $validated['meja_id'],
-                'nama_pelanggan' => $validated['nama_pelanggan'],
-                'email_pelanggan' => $validated['email_pelanggan'],
-                'no_telepon' => $validated['no_telepon'] ?? null,
+                'jenis_ball' => $validated['jenis_ball'],
                 'tanggal_booking' => $validated['tanggal_booking'],
                 'jam_mulai' => $validated['jam_mulai'],
                 'durasi' => $validated['durasi'],
@@ -95,7 +196,7 @@ class BookingController extends Controller
 
             // Create payment token using Midtrans
             try {
-                $paymentResult = $this->paymentService->createPaymentToken(
+                $paymentResult = $this->getPaymentService()->createPaymentToken(
                     $transaksi->id,
                     Auth::id()
                 );
@@ -188,7 +289,7 @@ class BookingController extends Controller
         // Get or create payment token
         try {
             if (!$transaksi->snap_token || $transaksi->payment_expires_at < now()) {
-                $paymentResult = $this->paymentService->createPaymentToken(
+                $paymentResult = $this->getPaymentService()->createPaymentToken(
                     $transaksi->id,
                     Auth::id()
                 );
@@ -222,7 +323,7 @@ class BookingController extends Controller
         // Check payment status from Midtrans
         if ($transaksi->midtrans_order_id) {
             try {
-                $statusResult = $this->paymentService->checkPaymentStatus($transaksi->midtrans_order_id);
+                $statusResult = $this->getPaymentService()->checkPaymentStatus($transaksi->midtrans_order_id);
                 
                 if ($statusResult['success']) {
                     $transactionStatus = $statusResult['transaction_status'];
@@ -301,7 +402,7 @@ class BookingController extends Controller
     public function cancelPayment($transaksiId)
     {
         try {
-            $result = $this->paymentService->cancelPayment($transaksiId, Auth::id());
+            $result = $this->getPaymentService()->cancelPayment($transaksiId, Auth::id());
             
             return redirect()->route('customer.riwayat')
                            ->with('success', $result['message']);
@@ -317,12 +418,21 @@ class BookingController extends Controller
      */
     public function riwayat()
     {
-        $transaksis = Transaksi::with(['meja.category'])
-                              ->where('user_id', Auth::id())
-                              ->latest()
-                              ->paginate(10);
+        try {
+            // Simple version without complex relationships first
+            $transaksis = Transaksi::where('user_id', Auth::id())
+                                  ->orderBy('created_at', 'desc')
+                                  ->paginate(10);
 
-        return view('pelangganRiwayat.riwayat', compact('transaksis'));
+            return view('pelangganRiwayat.riwayat', compact('transaksis'));
+        } catch (\Exception $e) {
+            \Log::error('Riwayat Error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return response()->view('errors.500', [
+                'message' => 'Terjadi kesalahan saat memuat riwayat: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -330,10 +440,16 @@ class BookingController extends Controller
      */
     public function detailRiwayat($transaksiId)
     {
-        $transaksi = Transaksi::with(['meja.category'])
-                             ->where('user_id', Auth::id())
-                             ->findOrFail($transaksiId);
+        try {
+            $transaksi = Transaksi::with(['meja.category'])
+                                 ->where('user_id', Auth::id())
+                                 ->findOrFail($transaksiId);
 
-        return view('pelangganRiwayat.detail', compact('transaksi'));
+            return view('pelangganRiwayat.detail', compact('transaksi'));
+        } catch (\Exception $e) {
+            Log::error('Error loading detail riwayat: ' . $e->getMessage());
+            return redirect()->route('customer.riwayat')
+                           ->with('error', 'Transaksi tidak ditemukan atau terjadi kesalahan.');
+        }
     }
 }

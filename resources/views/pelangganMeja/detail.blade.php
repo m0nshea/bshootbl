@@ -119,62 +119,100 @@
                 <h5 class="booking-title">Informasi Booking</h5>
                 
                 @if($meja->status === 'available')
-                <form method="POST" action="{{ route('customer.booking.process') }}" id="bookingForm">
-                    @csrf
-                    <input type="hidden" name="meja_id" value="{{ $meja->id }}">
-                    <input type="hidden" name="nama_pelanggan" value="{{ Auth::user()->name ?? '' }}">
-                    <input type="hidden" name="email_pelanggan" value="{{ Auth::user()->email ?? '' }}">
-                    <input type="hidden" name="metode_pembayaran" value="qris">
-                    
-                    <div class="form-group">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" class="form-input" id="bookingDate" name="tanggal_booking" placeholder="mm/dd/yyyy" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Jam Mulai</label>
-                        <select class="form-select" id="startTime" name="jam_mulai" required>
-                            <option value="">Pilih Jam</option>
-                            <option value="08:00">08:00</option>
-                            <option value="09:00">09:00</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                            <option value="13:00">13:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                            <option value="16:00">16:00</option>
-                            <option value="17:00">17:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="19:00">19:00</option>
-                            <option value="20:00">20:00</option>
-                            <option value="21:00">21:00</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Durasi (Jam)</label>
-                        <select class="form-select" id="duration" name="durasi" required>
-                            <option value="">Pilih Durasi</option>
-                            <option value="1">1 Jam</option>
-                            <option value="2">2 Jam</option>
-                            <option value="3">3 Jam</option>
-                            <option value="4">4 Jam</option>
-                            <option value="5">5 Jam</option>
-                        </select>
-                    </div>
-                    
-                    <div class="total-section">
-                        <div class="total-row">
-                            <span class="total-label">Total Harga:</span>
-                            <span class="total-amount" id="totalPrice">Rp 0</span>
+                    @auth
+                    <!-- User sudah login - tampilkan form booking -->
+                    <form method="POST" action="{{ route('customer.booking.process') }}" id="bookingForm">
+                        @csrf
+                        <input type="hidden" name="meja_id" value="{{ $meja->id }}">
+                        <input type="hidden" name="metode_pembayaran" value="qris">
+                        
+                        <div class="form-group">
+                            <label class="form-label">Jenis Permainan</label>
+                            <select class="form-select" id="ballType" name="jenis_ball" required>
+                                <option value="">Pilih Jenis Ball</option>
+                                <option value="8_ball">8 Ball</option>
+                                <option value="9_ball">9 Ball</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Tanggal</label>
+                            <input type="date" class="form-input" id="bookingDate" name="tanggal_booking" placeholder="mm/dd/yyyy" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Jam Mulai</label>
+                            <select class="form-select" id="startTime" name="jam_mulai" required disabled>
+                                <option value="">Pilih tanggal terlebih dahulu</option>
+                            </select>
+                            <small class="text-muted">Jam yang sudah dibooking tidak akan muncul</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Durasi (Jam)</label>
+                            <select class="form-select" id="duration" name="durasi" required>
+                                <option value="">Pilih Durasi</option>
+                                <option value="1">1 Jam</option>
+                                <option value="2">2 Jam</option>
+                                <option value="3">3 Jam</option>
+                                <option value="4">4 Jam</option>
+                                <option value="5">5 Jam</option>
+                            </select>
+                        </div>
+                        
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span class="total-label">Total Harga:</span>
+                                <span class="total-amount" id="totalPrice">Rp 0</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-book {{ str_contains(strtolower($meja->category->nama), 'vip') ? 'btn-book-vip' : '' }}" id="bookingBtn">
+                            <i class="bi bi-calendar-check"></i>Pesan Sekarang
+                        </button>
+                    </form>
+                    @else
+                    <!-- User belum login - tampilkan pesan untuk login -->
+                    <div class="login-required-notice">
+                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 20px;">
+                            <i class="bi bi-person-lock" style="font-size: 2.5rem; color: #856404; margin-bottom: 15px;"></i>
+                            <h6 style="color: #856404; margin-bottom: 10px;">Login Diperlukan</h6>
+                            <p style="color: #856404; margin-bottom: 20px; font-size: 0.9rem;">
+                                Untuk melakukan pemesanan meja, Anda harus masuk ke akun terlebih dahulu. 
+                                Anda dapat melihat ketersediaan meja tanpa login.
+                            </p>
+                            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                <a href="{{ route('login') }}" class="btn btn-primary" style="text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: 500;">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
+                                </a>
+                                <a href="{{ route('register') }}" class="btn btn-outline-primary" style="text-decoration: none; padding: 10px 20px; border-radius: 5px; font-weight: 500;">
+                                    <i class="bi bi-person-plus me-2"></i>Daftar
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Tampilkan informasi ketersediaan untuk user yang belum login -->
+                        <div style="background: #e3f2fd; border: 1px solid #bbdefb; border-radius: 10px; padding: 20px;">
+                            <h6 style="color: #1976d2; margin-bottom: 15px;">
+                                <i class="bi bi-info-circle me-2"></i>Informasi Ketersediaan
+                            </h6>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="color: #1976d2;">Status Meja:</span>
+                                <span style="color: #28a745; font-weight: 600;">
+                                    <i class="bi bi-check-circle me-1"></i>Tersedia
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="color: #1976d2;">Harga per Jam:</span>
+                                <span style="color: #1976d2; font-weight: 600;">{{ $meja->formatted_harga }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #1976d2;">Jam Operasional:</span>
+                                <span style="color: #1976d2; font-weight: 600;">08:00 - 22:00</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <button type="submit" class="btn-book {{ str_contains(strtolower($meja->category->nama), 'vip') ? 'btn-book-vip' : '' }}" id="bookingBtn">
-                        <i class="bi bi-calendar-check"></i>Pesan Sekarang
-                    </button>
-                </form>
+                    @endauth
                 @else
                 <div class="unavailable-notice">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -198,12 +236,94 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+@auth
 @if($meja->status === 'available')
 // Set minimum date to today
 document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
 
 // Price per hour
 const pricePerHour = {{ $meja->harga }};
+
+// Available time slots (8:00 - 21:00)
+const allTimeSlots = [
+    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
+    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+];
+
+// Function to load available time slots based on selected date
+async function loadAvailableTimeSlots() {
+    const selectedDate = document.getElementById('bookingDate').value;
+    const startTimeSelect = document.getElementById('startTime');
+    
+    if (!selectedDate) {
+        startTimeSelect.innerHTML = '<option value="">Pilih tanggal terlebih dahulu</option>';
+        startTimeSelect.disabled = true;
+        return;
+    }
+    
+    try {
+        // Show loading
+        startTimeSelect.innerHTML = '<option value="">Memuat jam tersedia...</option>';
+        startTimeSelect.disabled = true;
+        
+        // Fetch booked time slots for the selected date and table
+        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-times?date=${selectedDate}`, {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Available times response:', data); // Debug log
+        
+        if (data.success) {
+            const bookedTimes = data.booked_times || [];
+            console.log('Booked times:', bookedTimes); // Debug log
+            
+            // Filter available times
+            const availableTimes = allTimeSlots.filter(time => !bookedTimes.includes(time));
+            console.log('Available times:', availableTimes); // Debug log
+            
+            // Populate select options
+            startTimeSelect.innerHTML = '<option value="">Pilih Jam</option>';
+            
+            if (availableTimes.length > 0) {
+                availableTimes.forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    startTimeSelect.appendChild(option);
+                });
+                startTimeSelect.disabled = false;
+            } else {
+                startTimeSelect.innerHTML = '<option value="">Tidak ada jam tersedia</option>';
+                startTimeSelect.disabled = true;
+            }
+        } else {
+            throw new Error(data.message || 'Gagal memuat jam tersedia');
+        }
+    } catch (error) {
+        console.error('Error loading available times:', error);
+        startTimeSelect.innerHTML = '<option value="">Error memuat jam tersedia</option>';
+        startTimeSelect.disabled = true;
+        
+        // Show error message with more details
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `Gagal memuat jam tersedia: ${error.message}`,
+            confirmButtonColor: '#dc3545'
+        });
+    }
+}
+
+// Add event listener for date change
+document.getElementById('bookingDate').addEventListener('change', loadAvailableTimeSlots);
 
 // Calculate total price
 function calculateTotal() {
@@ -220,15 +340,16 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     // Validate form
+    const ballType = document.getElementById('ballType').value;
     const tanggal = document.getElementById('bookingDate').value;
     const jamMulai = document.getElementById('startTime').value;
     const durasi = document.getElementById('duration').value;
     
-    if (!tanggal || !jamMulai || !durasi) {
+    if (!ballType || !tanggal || !jamMulai || !durasi) {
         Swal.fire({
             icon: 'warning',
             title: 'Form Tidak Lengkap',
-            text: 'Mohon lengkapi semua field booking',
+            text: 'Mohon lengkapi semua field booking termasuk jenis permainan',
             confirmButtonColor: '#28a745'
         });
         return;
@@ -262,6 +383,9 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
             // Close loading
             Swal.close();
             
+            // Get ball type text
+            const ballTypeText = ballType === '8_ball' ? '8 Ball' : '9 Ball';
+            
             // Show booking summary before payment
             Swal.fire({
                 title: 'Konfirmasi Booking',
@@ -272,6 +396,10 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
                             <tr>
                                 <td style="padding: 8px 0;"><strong>Meja:</strong></td>
                                 <td style="padding: 8px 0;">{{ $meja->nama_meja }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0;"><strong>Jenis Permainan:</strong></td>
+                                <td style="padding: 8px 0;">${ballTypeText}</td>
                             </tr>
                             <tr>
                                 <td style="padding: 8px 0;"><strong>Tanggal:</strong></td>
@@ -370,5 +498,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     });
 });
 @endif
+@endauth
 </script>
 @endpush

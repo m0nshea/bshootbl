@@ -139,11 +139,11 @@ class PaymentService
             ],
             'item_details' => $this->buildItemDetails($transaksi),
             'customer_details' => [
-                'first_name' => $transaksi->nama_pelanggan,
-                'email' => filter_var($transaksi->email_pelanggan, FILTER_VALIDATE_EMAIL)
-                    ? $transaksi->email_pelanggan
+                'first_name' => $transaksi->user->name ?? 'Customer',
+                'email' => filter_var($transaksi->user->email, FILTER_VALIDATE_EMAIL)
+                    ? $transaksi->user->email
                     : 'customer@bshootbilliard.com',
-                'phone' => $transaksi->no_telepon ?? '08123456789',
+                'phone' => $transaksi->user->no_telepon ?? '08123456789',
             ],
             'enabled_payments' => $this->getEnabledPayments($transaksi->metode_pembayaran),
             'callbacks' => [

@@ -64,36 +64,6 @@
       </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="summary-card">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="summary-item">
-            <div class="summary-value" id="summaryValue1">Rp 8.500.000</div>
-            <div class="summary-label">Total Pendapatan</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="summary-item">
-            <div class="summary-value" id="summaryValue2">125</div>
-            <div class="summary-label">Total Transaksi</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="summary-item">
-            <div class="summary-value" id="summaryValue3">85%</div>
-            <div class="summary-label">Tingkat Okupansi</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="summary-item">
-            <div class="summary-value" id="summaryValue4">45</div>
-            <div class="summary-label">Pelanggan Aktif</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Chart Section -->
     <div class="row">
       <div class="col-md-8">

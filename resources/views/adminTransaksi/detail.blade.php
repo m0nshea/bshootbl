@@ -88,16 +88,16 @@
                           <div class="row">
                               <div class="col-md-6 mb-3" style="margin-bottom: 1rem;">
                                   <small class="text-muted d-block mb-1" style="color: #6c757d; display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Nama Lengkap</small>
-                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->nama_pelanggan }}</span>
+                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->user->name ?? 'Customer' }}</span>
                               </div>
                               <div class="col-md-6 mb-3" style="margin-bottom: 1rem;">
                                   <small class="text-muted d-block mb-1" style="color: #6c757d; display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Email</small>
-                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->email_pelanggan }}</span>
+                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->user->email ?? '-' }}</span>
                               </div>
-                              @if($transaksi->no_telepon)
+                              @if($transaksi->user->no_telepon ?? null)
                               <div class="col-md-6">
                                   <small class="text-muted d-block mb-1" style="color: #6c757d; display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">No. Telepon</small>
-                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->no_telepon }}</span>
+                                  <span class="fw-semibold" style="font-weight: 600;">{{ $transaksi->user->no_telepon }}</span>
                               </div>
                               @endif
                           </div>

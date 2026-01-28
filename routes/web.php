@@ -234,6 +234,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/pengguna-stats', [\App\Http\Controllers\Admin\PenggunaController::class, 'getStats'])->name('pengguna.stats');
     Route::get('/pengguna-export', [\App\Http\Controllers\Admin\PenggunaController::class, 'export'])->name('pengguna.export');
     
+    // Tarif routes
+    Route::get('/tarif', [\App\Http\Controllers\Admin\TarifController::class, 'index'])->name('tarif.index');
+    Route::post('/tarif/update-bulk', [\App\Http\Controllers\Admin\TarifController::class, 'updateBulk'])->name('tarif.update-bulk');
+    Route::post('/tarif/update-category', [\App\Http\Controllers\Admin\TarifController::class, 'updateByCategory'])->name('tarif.update-category');
+    Route::get('/tarif/stats', [\App\Http\Controllers\Admin\TarifController::class, 'getStats'])->name('tarif.stats');
+    
     // Alias route for backward compatibility
     Route::get('/kategori-alias', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('kategori');
     
@@ -266,6 +272,7 @@ Route::prefix('pelanggan')->name('customer.')->group(function () {
     // Use controller for meja
     Route::get('/meja', [\App\Http\Controllers\Customer\MejaController::class, 'index'])->name('meja');
     Route::get('/meja/{id}/detail', [\App\Http\Controllers\Customer\MejaController::class, 'show'])->name('meja.detail');
+    Route::get('/meja/{id}/available-times', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableTimes'])->name('meja.available-times');
     
     // Backward compatibility route for meja by type
     Route::get('/meja/{type}/detail-type', [\App\Http\Controllers\Customer\MejaController::class, 'showByType'])->name('meja.detail.type');
@@ -305,13 +312,113 @@ Route::prefix('pelanggan')->name('customer.')->group(function () {
             ]);
         })->name('booking.test');
         
-        Route::get('/riwayat', [\App\Http\Controllers\Customer\BookingController::class, 'riwayat'])->name('riwayat');
-        Route::get('/riwayat/{transaksi}', [\App\Http\Controllers\Customer\BookingController::class, 'detailRiwayat'])->name('riwayat.detail');
+        // Temporary direct route for riwayat
+        Route::get('/riwayat', function() {
+            try {
+                if (!Auth::check()) {
+                    return redirect()->route('login');
+                }
+                
+                $transaksis = \App\Models\Transaksi::where('user_id', Auth::id())
+                                                  ->orderBy('created_at', 'desc')
+                                                  ->paginate(10);
+                
+                return view('pelangganRiwayat.riwayat', compact('transaksis'));
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ], 500);
+            }
+        })->name('riwayat');
+        
+        Route::get('/riwayat/{id}', function($id) {
+            try {
+                if (!Auth::check()) {
+                    return redirect()->route('login');
+                }
+                
+                $transaksi = \App\Models\Transaksi::where('user_id', Auth::id())
+                                                 ->findOrFail($id);
+                
+                return view('pelangganRiwayat.detail', compact('transaksi'));
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ], 500);
+            }
+        })->name('riwayat.detail');
         
         Route::get('/profil', [\App\Http\Controllers\Customer\ProfilController::class, 'index'])->name('profil');
         Route::put('/profil', [\App\Http\Controllers\Customer\ProfilController::class, 'update'])->name('profil.update');
     });
 });
+
+// Test route for available times
+Route::get('/test-available-times/{mejaId}', function($mejaId) {
+    try {
+        $date = request('date', now()->format('Y-m-d'));
+        
+        $transaksis = \App\Models\Transaksi::where('meja_id', $mejaId)
+            ->where('tanggal_booking', $date)
+            ->whereIn('status_pembayaran', ['paid', 'pending'])
+            ->get();
+            
+        return response()->json([
+            'success' => true,
+            'meja_id' => $mejaId,
+            'date' => $date,
+            'transaksis_count' => $transaksis->count(),
+            'transaksis' => $transaksis->map(function($t) {
+                return [
+                    'id' => $t->id,
+                    'jam_mulai' => $t->jam_mulai,
+                    'durasi' => $t->durasi,
+                    'status_pembayaran' => $t->status_pembayaran,
+                    'status_booking' => $t->status_booking
+                ];
+            })
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
+// Simple test route
+Route::get('/test-simple', function() {
+    return 'Test route works!';
+});
+
+// Test route for debugging
+Route::get('/test-riwayat', function() {
+    try {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Not authenticated']);
+        }
+        
+        $user = Auth::user();
+        $transaksis = \App\Models\Transaksi::where('user_id', $user->id)->count();
+        
+        return response()->json([
+            'success' => true,
+            'user_id' => $user->id,
+            'transaksi_count' => $transaksis,
+            'message' => 'Test successful'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+})->middleware('auth');
 
 // Webhook routes (no auth required - Midtrans will call this)
 Route::post('/webhook/midtrans', [\App\Http\Controllers\WebhookController::class, 'midtransNotification'])->name('webhook.midtrans');

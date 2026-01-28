@@ -135,7 +135,6 @@ class MejaController extends Controller
                 'nama_meja' => 'required|string|max:255|unique:mejas,nama_meja,' . $meja->id,
                 'lantai' => 'required|string|max:10',
                 'kategori' => 'required|string|max:255',
-                'harga' => 'required|numeric|min:0',
                 'status' => 'required|in:available,occupied,reserved,maintenance',
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
                 'deskripsi' => 'nullable|string'
@@ -144,9 +143,6 @@ class MejaController extends Controller
                 'nama_meja.unique' => 'Nama meja sudah ada',
                 'lantai.required' => 'Lantai harus dipilih',
                 'kategori.required' => 'Kategori harus diisi',
-                'harga.required' => 'Harga harus diisi',
-                'harga.numeric' => 'Harga harus berupa angka',
-                'harga.min' => 'Harga tidak boleh negatif',
                 'status.required' => 'Status harus dipilih',
                 'status.in' => 'Status tidak valid',
                 'foto.image' => 'File harus berupa gambar',
@@ -164,7 +160,6 @@ class MejaController extends Controller
                 'nama_meja' => $request->nama_meja,
                 'lantai' => $request->lantai,
                 'category_id' => $category->id,
-                'harga' => $request->harga,
                 'status' => $request->status,
                 'deskripsi' => $request->deskripsi
             ];

@@ -14,9 +14,7 @@ class Transaksi extends Model
         'kode_transaksi',
         'user_id',
         'meja_id',
-        'nama_pelanggan',
-        'email_pelanggan',
-        'no_telepon',
+        'jenis_ball',
         'tanggal_booking',
         'jam_mulai',
         'durasi',
@@ -38,7 +36,7 @@ class Transaksi extends Model
 
     protected $casts = [
         'tanggal_booking' => 'date',
-        'jam_mulai' => 'datetime:H:i',
+        'jam_mulai' => 'string',
         'harga_per_jam' => 'decimal:2',
         'total_harga' => 'decimal:2',
         'waktu_checkin' => 'datetime',
@@ -100,16 +98,58 @@ class Transaksi extends Model
     }
 
     /**
+     * Scope untuk transaksi yang sudah dibayar
+     */
+    public function scopePaid($query)
+    {
+        return $query->where('status_pembayaran', 'paid');
+    }
+
+    /**
+     * Scope untuk transaksi pending
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status_pembayaran', 'pending');
+    }
+
+    /**
+     * Scope untuk transaksi hari ini
+     */
+    public function scopeToday($query)
+    {
+        return $query->whereDate('created_at', today());
+    }
+
+    /**
+     * Scope untuk transaksi bulan ini
+     */
+    public function scopeThisMonth($query)
+    {
+        return $query->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year);
+    }
+
+    /**
+     * Scope untuk transaksi yang gagal/dibatalkan
+     */
+    public function scopeFailed($query)
+    {
+        return $query->whereIn('status_pembayaran', ['failed', 'cancelled']);
+    }
+
+    /**
      * Get status pembayaran badge class
      */
     public function getStatusPembayaranBadgeAttribute()
     {
         return match($this->status_pembayaran) {
-            'pending' => 'bg-warning',
-            'paid' => 'bg-success',
-            'failed' => 'bg-danger',
-            'cancelled' => 'bg-secondary',
-            default => 'bg-warning'
+            'paid' => 'badge-success',
+            'pending' => 'badge-warning',
+            'failed' => 'badge-danger',
+            'cancelled' => 'badge-secondary',
+            'expired' => 'badge-dark',
+            default => 'badge-secondary'
         };
     }
 
@@ -119,12 +159,12 @@ class Transaksi extends Model
     public function getStatusPembayaranTextAttribute()
     {
         return match($this->status_pembayaran) {
+            'paid' => 'Dibayar',
             'pending' => 'Menunggu Pembayaran',
-            'paid' => 'Sudah Dibayar',
-            'failed' => 'Pembayaran Gagal',
+            'failed' => 'Gagal',
             'cancelled' => 'Dibatalkan',
-            'expired' => 'Kadaluarsa',
-            default => 'Menunggu Pembayaran'
+            'expired' => 'Kedaluwarsa',
+            default => 'Tidak Diketahui'
         };
     }
 
@@ -169,7 +209,18 @@ class Transaksi extends Model
      */
     public function getFormattedJamMulaiAttribute()
     {
-        return Carbon::parse($this->jam_mulai)->format('H:i');
+        // Handle different time formats
+        if (strlen($this->jam_mulai) === 5 && strpos($this->jam_mulai, ':') !== false) {
+            // Already in HH:MM format
+            return $this->jam_mulai;
+        }
+        
+        try {
+            return Carbon::parse($this->jam_mulai)->format('H:i');
+        } catch (\Exception $e) {
+            // Fallback: assume it's already formatted
+            return $this->jam_mulai;
+        }
     }
 
     /**
@@ -177,8 +228,30 @@ class Transaksi extends Model
      */
     public function getFormattedJamSelesaiAttribute()
     {
-        $jamMulai = Carbon::parse($this->jam_mulai);
-        return $jamMulai->addHours((int)$this->durasi)->format('H:i');
+        try {
+            $jamMulai = Carbon::parse($this->jam_mulai);
+            return $jamMulai->addHours((int)$this->durasi)->format('H:i');
+        } catch (\Exception $e) {
+            // Fallback calculation
+            if (strlen($this->jam_mulai) === 5) {
+                $hour = (int) substr($this->jam_mulai, 0, 2);
+                $endHour = $hour + (int)$this->durasi;
+                return sprintf('%02d:00', $endHour);
+            }
+            return $this->jam_mulai;
+        }
+    }
+
+    /**
+     * Get jenis ball text
+     */
+    public function getJenisBallTextAttribute()
+    {
+        return match($this->jenis_ball) {
+            '8_ball' => '8 Ball',
+            '9_ball' => '9 Ball',
+            default => 'Tidak Diketahui'
+        };
     }
 
     /**
@@ -188,30 +261,5 @@ class Transaksi extends Model
     {
         $jamMulai = Carbon::parse($this->jam_mulai);
         return $jamMulai->addHours((int)$this->durasi)->format('H:i:s');
-    }
-
-    /**
-     * Scope for today's transactions
-     */
-    public function scopeToday($query)
-    {
-        return $query->whereDate('tanggal_booking', today());
-    }
-
-    /**
-     * Scope for this month's transactions
-     */
-    public function scopeThisMonth($query)
-    {
-        return $query->whereMonth('tanggal_booking', now()->month)
-                    ->whereYear('tanggal_booking', now()->year);
-    }
-
-    /**
-     * Scope for paid transactions
-     */
-    public function scopePaid($query)
-    {
-        return $query->where('status_pembayaran', 'paid');
     }
 }

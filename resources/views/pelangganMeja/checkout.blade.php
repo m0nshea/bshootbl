@@ -35,32 +35,26 @@
                 </div>
             </div>
             
-            <!-- Nama Lengkap -->
+            <!-- Jenis Ball -->
             <div class="form-group">
-                <label class="form-label">Nama Lengkap <span class="required">*</span></label>
-                <input type="text" class="form-input @error('nama_pelanggan') is-invalid @enderror" 
-                       name="nama_pelanggan" value="{{ old('nama_pelanggan', Auth::user()->name ?? '') }}" required />
-                @error('nama_pelanggan')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-            
-            <!-- Email -->
-            <div class="form-group">
-                <label class="form-label">Email <span class="required">*</span></label>
-                <input type="email" class="form-input @error('email_pelanggan') is-invalid @enderror" 
-                       name="email_pelanggan" value="{{ old('email_pelanggan', Auth::user()->email ?? '') }}" required />
-                @error('email_pelanggan')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-            
-            <!-- Nomor Telepon -->
-            <div class="form-group">
-                <label class="form-label">Nomor Telepon</label>
-                <input type="text" class="form-input @error('no_telepon') is-invalid @enderror" 
-                       name="no_telepon" value="{{ old('no_telepon') }}" placeholder="Contoh: 08123456789" />
-                @error('no_telepon')
+                <label class="form-label">Jenis Permainan <span class="required">*</span></label>
+                <div class="ball-types">
+                    <label class="ball-option">
+                        <input type="radio" name="jenis_ball" value="8_ball" {{ old('jenis_ball', '8_ball') == '8_ball' ? 'checked' : '' }} required>
+                        <span class="ball-label">
+                            <i class="bi bi-8-circle"></i>
+                            8 Ball
+                        </span>
+                    </label>
+                    <label class="ball-option">
+                        <input type="radio" name="jenis_ball" value="9_ball" {{ old('jenis_ball') == '9_ball' ? 'checked' : '' }} required>
+                        <span class="ball-label">
+                            <i class="bi bi-9-circle"></i>
+                            9 Ball
+                        </span>
+                    </label>
+                </div>
+                @error('jenis_ball')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -220,4 +214,57 @@ document.addEventListener('DOMContentLoaded', function() {
     hitungTotal();
 });
 </script>
+
+<style>
+/* Ball Types Styling */
+.ball-types {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.ball-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.ball-option input[type="radio"] {
+    display: none;
+}
+
+.ball-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    gap: 0.5rem;
+}
+
+.ball-option input[type="radio"]:checked + .ball-label {
+    border-color: #28a745;
+    background: #f8fff9;
+    color: #28a745;
+}
+
+.ball-label:hover {
+    border-color: #28a745;
+    background: #f8fff9;
+}
+
+.ball-label i {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 576px) {
+    .ball-types {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+</style>
 @endpush

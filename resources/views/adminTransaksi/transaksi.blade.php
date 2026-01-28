@@ -79,69 +79,110 @@
           </div>
         @endif
         
-        <div class="table-responsive">
-          <table class="table table-hover align-middle" style="table-layout: fixed; width: 100%;">
-            <thead class="text-center">
+        <!-- Simple Scrollable Table -->
+        <div style="overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <table class="table table-striped table-hover mb-0" style="min-width: 1600px; width: 1600px;">
+            <thead style="background: #343a40; color: white;">
               <tr>
-                <th width="5%" style="width: 5% !important;">NO</th>
-                <th width="12%" style="width: 12% !important;">KODE TRANSAKSI</th>
-                <th width="15%" style="width: 15% !important;">PELANGGAN</th>
-                <th width="10%" style="width: 10% !important;">MEJA</th>
-                <th width="14%" style="width: 14% !important;">TANGGAL & JAM</th>
-                <th width="7%" style="width: 7% !important;">DURASI</th>
-                <th width="12%" style="width: 12% !important;">TOTAL</th>
-                <th width="15%" style="width: 15% !important;">STATUS</th>
-                <th width="9%" style="width: 9% !important;">AKSI</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 60px; width: 60px;">NO</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; min-width: 160px; width: 160px;">KODE TRANSAKSI</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; min-width: 220px; width: 220px;">PELANGGAN</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 100px; width: 100px;">MEJA</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 120px; width: 120px;">TANGGAL BOOKING</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 140px; width: 140px;">JAM</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 80px; width: 80px;">DURASI</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 120px; width: 120px;">TOTAL</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 160px; width: 160px;">STATUS</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 160px; width: 160px;">TANGGAL PEMBAYARAN</th>
+                <th style="padding: 15px 10px; font-size: 0.8rem; text-align: center; min-width: 140px; width: 140px;">AKSI</th>
               </tr>
             </thead>
             <tbody>
               @forelse($transaksis as $index => $transaksi)
                 <tr>
-                  <td class="text-center fw-bold" style="width: 5% !important;">{{ $transaksis->firstItem() + $index }}</td>
-                  <td style="width: 12% !important; word-wrap: break-word;"><span class="invoice-code">{{ $transaksi->kode_transaksi }}</span></td>
-                  <td style="width: 15% !important; word-wrap: break-word;">
+                  <td style="padding: 12px 10px; text-align: center; font-weight: bold; min-width: 60px; width: 60px;">
+                    {{ $transaksis->firstItem() + $index }}
+                  </td>
+                  <td style="padding: 12px 10px; min-width: 160px; width: 160px;">
+                    <code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; display: block; text-align: center;">
+                      {{ $transaksi->kode_transaksi }}
+                    </code>
+                  </td>
+                  <td style="padding: 12px 10px; min-width: 220px; width: 220px;">
                     <div>
-                      <span class="fw-semibold d-block">{{ $transaksi->nama_pelanggan }}</span>
-                      <small class="text-muted d-block" style="font-size: 0.75rem;">{{ $transaksi->email_pelanggan }}</small>
+                      <strong style="display: block; margin-bottom: 2px; font-size: 0.9rem;">{{ $transaksi->user->name ?? 'Customer' }}</strong>
+                      <small style="color: #6c757d; font-size: 0.75rem;">{{ $transaksi->user->email ?? '-' }}</small>
                     </div>
                   </td>
-                  <td class="text-center" style="width: 10% !important;">
-                    <span class="fw-semibold">{{ $transaksi->meja->nama_meja }}</span>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 100px; width: 100px;">
+                    <span class="badge bg-info" style="font-size: 0.75rem; padding: 6px 10px;">{{ $transaksi->meja->nama_meja }}</span>
                   </td>
-                  <td class="text-center" style="width: 14% !important;">
-                    <span class="fw-semibold d-block">{{ $transaksi->formatted_tanggal_booking }}</span>
-                    <small class="text-muted d-block" style="font-size: 0.75rem;">{{ $transaksi->formatted_jam_mulai }} - {{ $transaksi->formatted_jam_selesai }}</small>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 120px; width: 120px;">
+                    <strong style="font-size: 0.85rem;">{{ $transaksi->formatted_tanggal_booking }}</strong>
                   </td>
-                  <td class="text-center" style="width: 7% !important;"><span class="fw-semibold">{{ $transaksi->durasi }} Jam</span></td>
-                  <td class="text-center" style="width: 12% !important;"><span class="amount-text">{{ $transaksi->formatted_total_harga }}</span></td>
-                  <td class="text-center" style="width: 15% !important;">
+                  <td style="padding: 12px 10px; text-align: center; min-width: 140px; width: 140px;">
+                    <small style="font-size: 0.8rem;">{{ $transaksi->formatted_jam_mulai }} - {{ $transaksi->formatted_jam_selesai }}</small>
+                  </td>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 80px; width: 80px;">
+                    <span class="badge bg-secondary" style="font-size: 0.75rem;">{{ $transaksi->durasi }} Jam</span>
+                  </td>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 120px; width: 120px;">
+                    <strong style="color: #28a745; font-size: 0.9rem;">{{ $transaksi->formatted_total_harga }}</strong>
+                  </td>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;">
                     @if($transaksi->status_pembayaran === 'paid')
-                      <span class="fw-semibold" style="color: #28a745;">Lunas</span>
+                      <span class="badge bg-success" style="font-size: 0.75rem; padding: 6px 12px;">Lunas</span>
                     @elseif($transaksi->status_pembayaran === 'pending')
-                      <span class="fw-semibold" style="color: #ff8c00;">Menunggu Pembayaran</span>
+                      <span class="badge bg-warning text-dark" style="font-size: 0.75rem; padding: 6px 12px;">Menunggu Pembayaran</span>
                     @elseif($transaksi->status_pembayaran === 'failed')
-                      <span class="fw-semibold text-danger">Pembayaran Gagal</span>
+                      <span class="badge bg-danger" style="font-size: 0.75rem; padding: 6px 12px;">Pembayaran Gagal</span>
                     @else
-                      <span class="fw-semibold text-secondary">{{ $transaksi->status_pembayaran_text }}</span>
+                      <span class="badge bg-secondary" style="font-size: 0.75rem; padding: 6px 12px;">{{ $transaksi->status_pembayaran_text }}</span>
                     @endif
                   </td>
-                  <td class="text-center" style="width: 9% !important;">
-                    <div class="d-flex justify-content-center gap-1 flex-wrap">
-                      <a href="{{ route('admin.transaksi.show', $transaksi->id) }}" class="btn btn-info btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Detail Transaksi">Detail</a>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;">
+                    @if($transaksi->status_pembayaran === 'paid' && $transaksi->paid_at)
+                      <div>
+                        <strong style="display: block; font-size: 0.85rem;">
+                          {{ \Carbon\Carbon::parse($transaksi->paid_at)->format('d/m/Y') }}
+                        </strong>
+                        <small style="color: #6c757d; font-size: 0.75rem;">
+                          {{ \Carbon\Carbon::parse($transaksi->paid_at)->format('H:i') }}
+                        </small>
+                      </div>
+                    @else
+                      <span style="color: #6c757d; font-style: italic;">-</span>
+                    @endif
+                  </td>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 140px; width: 140px;">
+                    <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                      <a href="{{ route('admin.transaksi.show', $transaksi->id) }}" 
+                         class="btn btn-info btn-sm" 
+                         style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">
+                        Detail
+                      </a>
                       @if($transaksi->status_booking === 'confirmed')
-                        <button onclick="checkinCustomer({{ $transaksi->id }})" class="btn btn-success btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Check In">Check In</button>
+                        <button onclick="checkinCustomer({{ $transaksi->id }})" 
+                                class="btn btn-success btn-sm" 
+                                style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">
+                          Check In
+                        </button>
                       @elseif($transaksi->status_booking === 'ongoing')
-                        <button onclick="checkoutCustomer({{ $transaksi->id }})" class="btn btn-warning btn-sm" style="font-size: 0.75rem; padding: 4px 8px;" title="Check Out">Check Out</button>
+                        <button onclick="checkoutCustomer({{ $transaksi->id }})" 
+                                class="btn btn-warning btn-sm" 
+                                style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">
+                          Check Out
+                        </button>
                       @endif
                     </div>
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="9" class="text-center py-4">
-                    <div class="text-muted">
-                      <i class="fas fa-inbox fa-3x mb-3"></i>
-                      <p>Belum ada transaksi</p>
+                  <td colspan="11" style="padding: 40px; text-align: center;">
+                    <div style="color: #6c757d;">
+                      <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                      <p style="margin: 0; font-size: 1rem;">Belum ada transaksi</p>
                     </div>
                   </td>
                 </tr>

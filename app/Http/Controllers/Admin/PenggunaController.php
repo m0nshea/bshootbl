@@ -51,21 +51,7 @@ class PenggunaController extends Controller
 
         $users = $query->latest()->paginate(15);
 
-        // Statistics
-        $stats = [
-            'total_users' => User::count(),
-            'total_customers' => User::where('role', 'customer')->count(),
-            'total_admins' => User::where('role', 'admin')->count(),
-            'users_with_transactions' => User::has('transaksis')->count(),
-            'new_users_this_month' => User::whereMonth('created_at', now()->month)
-                                         ->whereYear('created_at', now()->year)
-                                         ->count(),
-            'active_users_today' => User::whereHas('transaksis', function($q) {
-                $q->whereDate('created_at', today());
-            })->count()
-        ];
-
-        return view('adminPengguna.pengguna', compact('users', 'stats'));
+        return view('adminPengguna.pengguna', compact('users'));
     }
 
     /**

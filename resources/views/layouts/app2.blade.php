@@ -19,22 +19,6 @@
     
     <!-- Fallback icons dengan CSS -->
     <style>
-        /* Fallback untuk hamburger menu jika Font Awesome gagal load */
-        .sidebar-toggle::before {
-            content: "☰";
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .sidebar-toggle i {
-            display: none;
-        }
-        /* Jika Font Awesome berhasil load, gunakan icon FA */
-        .fas.fa-bars {
-            display: inline-block !important;
-        }
-        .fas.fa-bars ~ ::before {
-            display: none;
-        }
         /* Fallback untuk chevron */
         .fa-chevron-down::before {
             content: "▼" !important;
@@ -78,6 +62,7 @@
     <link href="{{ asset('css/DashboardAdm.css') }}" rel="stylesheet">                       
     <link href="{{ asset('css/adminKategori.css') }}" rel="stylesheet">
     <link href="{{ asset('css/adminLaporan.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/adminTarif.css') }}" rel="stylesheet">
     <link href="{{ asset('css/form.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/adminTransaksi.css.css')}}">
 </head>

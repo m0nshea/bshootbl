@@ -1,24 +1,24 @@
-// Data statistik
+// Data statistik dengan rentang nominal yang realistis - RESET DATA
 const statsData = {
   daily: {
-    labels: ['1 Des', '2 Des', '3 Des', '4 Des', '5 Des', '6 Des', '7 Des', '8 Des', '9 Des', '10 Des'],
-    data: [450000, 600000, 350000, 800000, 750000, 900000, 650000, 550000, 700000, 850000],
-    transactions: [3, 4, 2, 5, 4, 6, 4, 3, 4, 5]
+    labels: ['22 Jan', '23 Jan', '24 Jan', '25 Jan', '26 Jan', '27 Jan', '28 Jan'],
+    data: [0, 0, 0, 0, 0, 0, 0], // Reset ke 0 - akan menggunakan data dari controller
+    transactions: [0, 0, 0, 0, 0, 0, 0]
   },
   weekly: {
     labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
-    data: [2800000, 3200000, 2900000, 3100000],
-    transactions: [18, 22, 19, 21]
+    data: [0, 0, 0, 0], // Reset ke 0 - akan menggunakan data dari controller
+    transactions: [0, 0, 0, 0]
   },
   monthly: {
-    labels: ['Sep', 'Okt', 'Nov', 'Des'],
-    data: [8500000, 9200000, 8800000, 9500000],
-    transactions: [65, 72, 68, 75]
+    labels: ['Nov 2025', 'Des 2025', 'Jan 2026', 'Feb 2026'],
+    data: [0, 0, 0, 0], // Reset ke 0 - akan menggunakan data dari controller
+    transactions: [0, 0, 0, 0]
   },
   yearly: {
-    labels: ['2022', '2023', '2024', '2025'],
-    data: [85000000, 92000000, 98000000, 105000000],
-    transactions: [650, 720, 780, 850]
+    labels: ['2026', '2027', '2028'],
+    data: [0, 0, 0], // Reset ke 0 - akan menggunakan data dari controller
+    transactions: [0, 0, 0]
   }
 };
 

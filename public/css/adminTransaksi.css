@@ -170,69 +170,54 @@
   margin: 0;
 }
 
-/* Table Styling */
+/* Simple Table Styling */
 .table {
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 0;
   font-size: 0.9rem;
-  table-layout: fixed !important;
-  width: 100% !important;
 }
 
 .table thead th {
-  background: linear-gradient(45deg, #007bff, #0056b3) !important;
-  color: white !important;
-  border: none !important;
-  font-weight: 600 !important;
-  padding: 15px 8px !important;
+  font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.75rem;
   letter-spacing: 0.5px;
-  vertical-align: middle !important;
-  text-align: center !important;
+  border: none;
+  white-space: nowrap;
 }
 
 .table tbody td {
-  padding: 12px 8px;
   vertical-align: middle;
-  border-bottom: 1px solid #f0f0f0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .table tbody tr:hover {
-  background: #f8f9ff;
-  transition: all 0.3s ease;
+  background-color: #f8f9fa;
 }
 
-/* Force column widths */
-.table th:nth-child(1),
-.table td:nth-child(1) { width: 5% !important; }
+/* Badge Styling */
+.badge {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-weight: 500;
+}
 
-.table th:nth-child(2),
-.table td:nth-child(2) { width: 12% !important; }
+/* Button Styling */
+.btn-sm {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
 
-.table th:nth-child(3),
-.table td:nth-child(3) { width: 15% !important; }
+.btn-sm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-.table th:nth-child(4),
-.table td:nth-child(4) { width: 10% !important; }
-
-.table th:nth-child(5),
-.table td:nth-child(5) { width: 14% !important; }
-
-.table th:nth-child(6),
-.table td:nth-child(6) { width: 7% !important; }
-
-.table th:nth-child(7),
-.table td:nth-child(7) { width: 12% !important; }
-
-.table th:nth-child(8),
-.table td:nth-child(8) { width: 15% !important; }
-
-.table th:nth-child(9),
-.table td:nth-child(9) { width: 9% !important; }
+/* Code styling for transaction code */
+code {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
 
 /* Invoice Code Styling */
 .invoice-code {
@@ -354,14 +339,9 @@
     font-size: 0.8rem;
   }
   
-  .table thead th,
-  .table tbody td {
-    padding: 10px 6px;
-  }
-  
-  .status-badge {
-    font-size: 0.7rem;
-    padding: 6px 12px;
+  .table th,
+  .table td {
+    padding: 8px 6px !important;
   }
   
   .badge {
@@ -369,18 +349,20 @@
     padding: 4px 8px;
   }
   
-  .invoice-code {
-    font-size: 0.75rem;
-    padding: 3px 6px;
-  }
-  
-  .amount-text {
-    font-size: 1rem;
-  }
-  
   .btn-sm {
     font-size: 0.7rem;
-    padding: 6px 10px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 576px) {
+  .table {
+    font-size: 0.75rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 6px 4px !important;
   }
 }
 

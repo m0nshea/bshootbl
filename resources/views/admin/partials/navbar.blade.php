@@ -1,10 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
     <div class="container-fluid">
-        <!-- Sidebar Toggle -->
-        <button class="navbar-toggler me-3" type="button" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        
         <!-- Brand -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('img/logo.png') }}" alt="Logo" class="navbar-logo me-2">

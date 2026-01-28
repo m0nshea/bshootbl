@@ -187,7 +187,7 @@ body {
                 
                 <div class="order-detail">
                     <span>Nama Pelanggan</span>
-                    <strong>{{ $transaksi->nama_pelanggan }}</strong>
+                    <strong>{{ $transaksi->user->name ?? 'Customer' }}</strong>
                 </div>
                 
                 <div class="order-detail">
