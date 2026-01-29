@@ -1,5 +1,12 @@
 @extends('layouts.customer')
 
+@if(!isset($meja) || !$meja)
+    <div class="alert alert-danger">
+        <h4>Error: Data meja tidak ditemukan</h4>
+        <p>Silakan kembali ke <a href="{{ route('meja') }}">halaman daftar meja</a> dan pilih meja yang ingin Anda lihat.</p>
+    </div>
+@else
+
 @section('title', 'Detail {{ $meja->nama_meja }} - Bshoot Billiard')
 @section('description', 'Detail {{ $meja->nama_meja }} - Bshoot Billiard')
 
@@ -247,7 +254,7 @@
 @auth
 @if($meja->status === 'available')
 // Price per hour
-const pricePerHour = {{ $meja->harga }};
+const pricePerHour = {{ $meja->harga ?? 0 }};
 
 // Available dates cache
 let availableDatesCache = [];
@@ -277,7 +284,12 @@ async function loadAvailableDates() {
         bookingDateInput.disabled = true;
         
         // Fetch available dates for the selected duration
-        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-dates?duration=${selectedDuration}`, {
+        const mejaId = {{ $meja->id ?? 'null' }};
+        if (!mejaId) {
+            throw new Error('Meja ID tidak tersedia');
+        }
+        
+        const response = await fetch(`/pelanggan/meja/${mejaId}/available-dates?duration=${selectedDuration}`, {
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json'
@@ -420,7 +432,12 @@ async function loadAvailableTimeSlots() {
         startTimeSelect.disabled = true;
         
         // Fetch available time slots for the selected date, table, and duration
-        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-times?date=${selectedDate}&duration=${selectedDuration}`, {
+        const mejaId = {{ $meja->id ?? 'null' }};
+        if (!mejaId) {
+            throw new Error('Meja ID tidak tersedia');
+        }
+        
+        const response = await fetch(`/pelanggan/meja/${mejaId}/available-times?date=${selectedDate}&duration=${selectedDuration}`, {
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json'
@@ -678,4 +695,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
 @endif
 @endauth
 </script>
+
+@endif
 @endpush

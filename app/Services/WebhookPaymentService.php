@@ -94,7 +94,7 @@ class WebhookPaymentService
                     $updateData['paid_at'] = now();
                     
                     // Update meja status to reserved (not occupied yet, just reserved)
-                    $transaksi->meja->update(['status' => 'reserved']);
+                    // $transaksi->meja->update(['status' => 'reserved']);
                 } else {
                     $updateData['status_pembayaran'] = 'pending';
                 }
@@ -106,7 +106,7 @@ class WebhookPaymentService
                 $updateData['paid_at'] = now();
                 
                 // Update meja status to reserved (not occupied yet, just reserved)
-                $transaksi->meja->update(['status' => 'reserved']);
+                // $transaksi->meja->update(['status' => 'reserved']);
                 break;
 
             case 'pending':
