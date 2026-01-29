@@ -23,26 +23,26 @@
     </div>
 
     <!-- Filter Section -->
-    <div class="filter-section">
-      <div class="row">
+    <div class="filter-section" >
+      <div class="row" style="padding: 10px;">
         <div class="col-md-3">
-          <label class="form-label">Jenis Laporan</label>
-          <select class="form-control" id="reportType">
-            <option value="revenue">Laporan Pendapatan</option>
+          <label class="form-label" style="margin:5px;">Jenis Laporan</label>
+          <select class="form-control" id="reportType" style="margin:5px;">
+            <option value="revenue" >Laporan Pendapatan</option>
             <option value="transaction">Laporan Transaksi</option>
             <option value="table">Laporan Meja</option>
             <option value="customer">Laporan Pelanggan</option>
           </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" style="margin:5px;">
           <label class="form-label">Dari Tanggal</label>
           <input type="date" class="form-control" id="startDate" value="2025-12-01">
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" style="margin:5px;">
           <label class="form-label">Sampai Tanggal</label>
           <input type="date" class="form-control" id="endDate" value="2025-12-10">
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" style="margin:5px;">
           <label class="form-label">Periode</label>
           <select class="form-control" id="period">
             <option value="daily">Harian</option>
@@ -51,15 +51,8 @@
             <option value="yearly">Tahunan</option>
           </select>
         </div>
-        <div class="col-md-3 d-flex flex-column align-items-end justify-content-end">
+        <div class="col-md-2" style="margin:5px;">
           <button class="btn btn-primary mb-2 w-100" onclick="generateReport()">Generate</button>
-          <div class="export-buttons w-100">
-            <button class="btn btn-success btn-sm" onclick="exportExcel()">Excel</button>
-            <button class="btn btn-danger btn-sm" onclick="exportPDF()">PDF</button>
-            <button class="btn btn-info btn-sm" onclick="printReport()">
-              <i class="fas fa-print me-1"></i>Print
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -117,7 +110,6 @@
                     <th>Tanggal</th>
                     <th>Periode</th>
                     <th>Total</th>
-                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -125,49 +117,41 @@
                     <td>10 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 850.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>09 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 700.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>08 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 550.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>07 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 650.000</td>
-                    <td><span class="badge bg-warning">Pending</span></td>
                   </tr>
                   <tr>
                     <td>06 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 900.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>05 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 750.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>04 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 800.000</td>
-                    <td><span class="badge bg-success">Selesai</span></td>
                   </tr>
                   <tr>
                     <td>03 Des 2025</td>
                     <td>Total Harian</td>
                     <td>Rp 350.000</td>
-                    <td><span class="badge bg-danger">Dibatalkan</span></td>
                   </tr>
                 </tbody>
               </table>

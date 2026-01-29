@@ -108,38 +108,34 @@
                             </div>
                         @endif
                         
-                        @if($meja->isBooked())
+                        <!-- @if($meja->isBooked())
                             <div class="booking-status-badge">
                                 <i class="bi bi-calendar-check"></i> Sudah Dibooking
                             </div>
-                        @endif
+                        @endif -->
                         
                         <img src="{{ $meja->foto_url }}" 
                              class="meja-image" 
                              alt="{{ $meja->nama_meja }}" 
                              onerror="this.src='{{ asset('img/table.jpeg') }}'" />
                         <div class="meja-content">
-                            @if($meja->isBooked())
-                                <span class="meja-title meja-title-disabled">
-                                    {{ $meja->nama_meja }}
-                                </span>
-                            @else
+                           
                                 <a href="{{ route('customer.meja.detail', $meja->id) }}" class="meja-title">
                                     {{ $meja->nama_meja }}
                                 </a>
-                            @endif
+                           
                             <div class="meja-details">
                                 <p>Kategori: {{ $meja->category->nama }}</p>
                                 <p>Harga: {{ $meja->formatted_harga }}/jam</p>
                                 @if($meja->deskripsi)
                                     <p class="text-muted">{{ Str::limit($meja->deskripsi, 50) }}</p>
                                 @endif
-                                @if($meja->isBooked())
+                                <!-- @if($meja->isBooked())
                                     <p class="booking-info">
                                         <i class="bi bi-info-circle"></i> 
                                         Meja ini sudah dibooking dan dibayar
                                     </p>
-                                @else
+                                @else -->
                                     @guest
                                     <div class="login-notice" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 0.8rem;">
                                         <i class="bi bi-info-circle" style="color: #856404;"></i>
@@ -148,7 +144,7 @@
                                         </span>
                                     </div>
                                     @endguest
-                                @endif
+                                <!-- @endif -->
                             </div>
                         </div>
                     </div>

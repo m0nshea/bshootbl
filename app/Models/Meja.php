@@ -13,14 +13,9 @@ class Meja extends Model
         'nama_meja',
         'lantai',
         'category_id',
-        'harga',
         'status',
         'foto',
         'deskripsi'
-    ];
-
-    protected $casts = [
-        'harga' => 'decimal:2'
     ];
 
     /**
@@ -58,15 +53,209 @@ class Meja extends Model
     }
 
     /**
+     * Check if specific date and time slot is available for booking
+     * 
+     * @param string $date Date in Y-m-d format
+     * @param string $startTime Time in H:i format
+     * @param int $duration Duration in hours
+     * @return bool
+     */
+    public function isTimeSlotAvailable($date, $startTime, $duration)
+    {
+        try {
+            // Check if meja status is maintenance
+            if ($this->status === 'maintenance') {
+                return false;
+            }
+
+            // Convert start time to Carbon instance with error handling
+            try {
+                $requestedStart = \Carbon\Carbon::parse($date . ' ' . $startTime);
+                $requestedEnd = $requestedStart->copy()->addHours((int)$duration);
+            } catch (\Exception $e) {
+                return false;
+            }
+
+            // Check for conflicting bookings - include pending status too
+            $conflictingBookings = $this->transaksis()
+                ->whereIn('status_pembayaran', ['paid', 'pending']) // Include pending payments
+                ->where('tanggal_booking', $date)
+                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed']) // Exclude only completed/cancelled/failed
+                ->get();
+
+
+
+            foreach ($conflictingBookings as $booking) {
+                try {
+                    // Handle different time formats in jam_mulai
+                    $jamMulai = $booking->jam_mulai;
+                    
+                    // If jam_mulai is already in H:i format
+                    if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
+                        $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $jamMulai);
+                    } else {
+                        // Try to parse as datetime or other format
+                        $bookingStart = \Carbon\Carbon::parse($jamMulai);
+                        // If it's just time, combine with date
+                        if ($bookingStart->format('Y-m-d') === '1970-01-01') {
+                            $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $bookingStart->format('H:i:s'));
+                        }
+                    }
+                    
+                    $bookingEnd = $bookingStart->copy()->addHours((int)$booking->durasi);
+
+
+
+                    // Check if time slots overlap
+                    $overlaps = $this->timeSlotsOverlap($requestedStart, $requestedEnd, $bookingStart, $bookingEnd);
+                    
+                    if ($overlaps) {
+                        return false;
+                    }
+                } catch (\Exception $e) {
+                    // If we can't parse the booking time, assume it conflicts to be safe
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if two time slots overlap
+     * 
+     * @param \Carbon\Carbon $start1
+     * @param \Carbon\Carbon $end1
+     * @param \Carbon\Carbon $start2
+     * @param \Carbon\Carbon $end2
+     * @return bool
+     */
+    public function timeSlotsOverlap($start1, $end1, $start2, $end2)
+    {
+        // Test case untuk debugging: 21:00-22:00 vs 21:00-22:00 harus overlap
+        $overlaps = ($start1->lt($end2) && $end1->gt($start2));
+        
+        // Untuk slot yang sama persis, pasti overlap
+        if ($start1->eq($start2) && $end1->eq($end2)) {
+            $overlaps = true;
+        }
+        
+        return $overlaps;
+    }
+
+    /**
+     * Get all booked time slots for a specific date
+     * 
+     * @param string $date Date in Y-m-d format
+     * @return array Array of booked time slots
+     */
+    public function getBookedTimeSlotsForDate($date)
+    {
+        $bookedSlots = [];
+        
+        try {
+            $bookings = $this->transaksis()
+                ->whereIn('status_pembayaran', ['paid', 'pending']) // Include pending payments
+                ->where('tanggal_booking', $date)
+                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed']) // Exclude only completed/cancelled/failed
+                ->get();
+
+            foreach ($bookings as $booking) {
+                try {
+                    // Handle different time formats in jam_mulai
+                    $jamMulai = $booking->jam_mulai;
+                    
+                    // If jam_mulai is already in H:i format
+                    if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
+                        $startTime = \Carbon\Carbon::parse($date . ' ' . $jamMulai);
+                    } else {
+                        // Try to parse as datetime or other format
+                        $startTime = \Carbon\Carbon::parse($jamMulai);
+                        // If it's just time, combine with date
+                        if ($startTime->format('Y-m-d') === '1970-01-01') {
+                            $startTime = \Carbon\Carbon::parse($date . ' ' . $startTime->format('H:i:s'));
+                        }
+                    }
+                    
+                    $endTime = $startTime->copy()->addHours((int)$booking->durasi);
+                    
+                    $bookedSlots[] = [
+                        'start' => $startTime->format('H:i'),
+                        'end' => $endTime->format('H:i'),
+                        'duration' => $booking->durasi,
+                        'booking_id' => $booking->id
+                    ];
+                } catch (\Exception $e) {
+                    // Skip this booking if we can't parse it
+                    continue;
+                }
+            }
+        } catch (\Exception $e) {
+            // Return empty array on error
+        }
+
+        return $bookedSlots;
+    }
+
+    /**
+     * Get available time slots for a specific date
+     * 
+     * @param string $date Date in Y-m-d format
+     * @param int $duration Requested duration in hours
+     * @return array Array of available time slots
+     */
+    public function getAvailableTimeSlotsForDate($date, $duration = 1)
+    {
+        // Operating hours (can be made configurable)
+        $openingHour = 8;  // 08:00
+        $closingHour = 22; // 22:00
+        
+        $availableSlots = [];
+        $bookedSlots = $this->getBookedTimeSlotsForDate($date);
+        
+        // Generate all possible time slots
+        for ($hour = $openingHour; $hour <= ($closingHour - $duration); $hour++) {
+            $timeSlot = sprintf('%02d:00', $hour);
+            
+            if ($this->isTimeSlotAvailable($date, $timeSlot, $duration)) {
+                $availableSlots[] = [
+                    'time' => $timeSlot,
+                    'display' => $timeSlot . ' - ' . sprintf('%02d:00', $hour + $duration),
+                    'available' => true
+                ];
+            } else {
+                $availableSlots[] = [
+                    'time' => $timeSlot,
+                    'display' => $timeSlot . ' - ' . sprintf('%02d:00', $hour + $duration),
+                    'available' => false
+                ];
+            }
+        }
+        
+        return $availableSlots;
+    }
+
+    /**
      * Get current booking status for display
+     * This now shows general availability, not specific time-based booking
      */
     public function getBookingStatusAttribute()
     {
-        if ($this->isBooked() || $this->status === 'reserved') {
-            return 'booked';
+        if ($this->status === 'reserved' || $this->status === 'maintenance') {
+            return $this->status;
         }
         
-        return $this->status;
+        // Check if table has any bookings today
+        $hasBookingsToday = $this->transaksis()
+                               ->where('status_pembayaran', 'paid')
+                               ->where('tanggal_booking', now()->toDateString())
+                               ->where('status_booking', '!=', 'completed')
+                               ->exists();
+        
+        return $hasBookingsToday ? 'partially_booked' : 'available';
     }
 
     /**
@@ -74,11 +263,15 @@ class Meja extends Model
      */
     public function getBookingStatusTextAttribute()
     {
-        if ($this->isBooked() || $this->status === 'reserved') {
-            return 'Sudah Dibooking';
-        }
+        $status = $this->getBookingStatusAttribute();
         
-        return $this->status_text;
+        return match($status) {
+            'available' => 'Tersedia',
+            'partially_booked' => 'Sebagian Terisi',
+            'reserved' => 'Direservasi',
+            'maintenance' => 'Maintenance',
+            default => 'Tersedia'
+        };
     }
 
     /**
@@ -86,19 +279,32 @@ class Meja extends Model
      */
     public function getBookingStatusClassAttribute()
     {
-        if ($this->isBooked() || $this->status === 'reserved') {
-            return 'meja-booked';
-        }
+        $status = $this->getBookingStatusAttribute();
         
-        return $this->status_badge;
+        return match($status) {
+            'available' => 'meja-available',
+            'partially_booked' => 'meja-partial',
+            'reserved' => 'meja-reserved',
+            'maintenance' => 'meja-maintenance',
+            default => 'meja-available'
+        };
     }
 
     /**
-     * Get the formatted price
+     * Get the formatted price from category
      */
     public function getFormattedHargaAttribute()
     {
-        return 'Rp ' . number_format($this->harga, 0, ',', '.');
+        $harga = $this->category ? $this->category->harga_per_jam : 0;
+        return 'Rp ' . number_format($harga, 0, ',', '.');
+    }
+
+    /**
+     * Get the price per hour from category
+     */
+    public function getHargaAttribute()
+    {
+        return $this->category ? $this->category->harga_per_jam : 0;
     }
 
     /**

@@ -363,7 +363,7 @@ body {
                             </tr>
                             <tr>
                                 <td>Waktu</td>
-                                <td>: {{ isset($transaksi) ? $transaksi->jam_mulai . ' - ' . \Carbon\Carbon::parse($transaksi->jam_mulai)->addHours($transaksi->durasi)->format('H:i') : '14:00 - 16:00' }}</td>
+                                <td>: {{ isset($transaksi) ? $transaksi->jam_mulai . ' - ' . \Carbon\Carbon::parse($transaksi->jam_mulai)->addHours((int)$transaksi->durasi)->format('H:i') : '14:00 - 16:00' }}</td>
                             </tr>
                         </table>
                     </div>

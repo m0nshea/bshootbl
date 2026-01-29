@@ -46,8 +46,12 @@ class PaymentService
             $transaksi->update([
                 'snap_token' => $snapToken,
                 'midtrans_order_id' => $midtransOrderId,
-                'payment_expires_at' => now()->addHours(24)
+                'payment_expires_at' => now()->addMinutes(15)
             ]);
+
+            // Dispatch auto cancellation job
+            \App\Jobs\AutoCancellationBook::dispatch($transaksi->id)
+                ->delay(now()->addMinutes(15));
 
             DB::commit();
 
@@ -115,6 +119,16 @@ class PaymentService
      */
     private function handleExistingPaymentToken($transaksi, $snapToken)
     {
+        // Dispatch auto cancellation job if not already scheduled
+        // (in case the previous job failed or was not scheduled)
+        if ($transaksi->payment_expires_at > now()) {
+            $delayMinutes = now()->diffInMinutes($transaksi->payment_expires_at);
+            if ($delayMinutes > 0) {
+                \App\Jobs\AutoCancellationBook::dispatch($transaksi->id)
+                    ->delay(now()->addMinutes($delayMinutes));
+            }
+        }
+
         return [
             'success' => true,
             'transaction_id' => $transaksi->id,
@@ -151,8 +165,8 @@ class PaymentService
             ],
             'expiry' => [
                 'start_time' => now()->format('Y-m-d H:i:s O'),
-                'unit' => 'hours',
-                'duration' => 24
+                'unit' => 'minutes',
+                'duration' => 15
             ]
         ];
 

@@ -17,11 +17,6 @@
                     <span>Meja</span>
                 </a>
             </li>
-            <li class="nav-item {{ request()->routeIs('admin.tarif*') ? 'active' : '' }}">
-                <a href="{{ route('admin.tarif.index') }}" class="nav-link">
-                    <span>Tarif Meja</span>
-                </a>
-            </li>
             <li class="nav-item {{ request()->routeIs('admin.transaksi*') ? 'active' : '' }}">
                 <a href="{{ route('admin.transaksi') }}" class="nav-link">
                     <span>Transaksi</span>

@@ -62,7 +62,6 @@
     <link href="{{ asset('css/DashboardAdm.css') }}" rel="stylesheet">                       
     <link href="{{ asset('css/adminKategori.css') }}" rel="stylesheet">
     <link href="{{ asset('css/adminLaporan.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/adminTarif.css') }}" rel="stylesheet">
     <link href="{{ asset('css/form.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/adminTransaksi.css.css')}}">
 </head>

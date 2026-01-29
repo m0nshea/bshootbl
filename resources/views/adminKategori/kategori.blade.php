@@ -50,13 +50,15 @@
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover mb-0 table-fixed">
+          <table class="table table-hover mb-0 table-fixed shadow-sm">
             <thead class="table-primary">
               <tr>
-                <th class="text-center" width="15%">NO</th>
-                <th class="text-center" width="25%">THUMBNAIL</th>
-                <th width="35%">NAMA KATEGORI</th>
-                <th class="text-center" width="25%">AKSI</th>
+                <th class="text-center" width="3%">NO</th>
+                <th class="text-center" width="10%">THUMBNAIL</th>
+                <th width="32%">NAMA KATEGORI</th>
+                <th class="text-center" width="20%">HARGA/JAM</th>
+                <th class="text-center" width="15%">JUMLAH</th>
+                <th class="text-center" width="20%">AKSI</th>
               </tr>
             </thead>
             <tbody>
@@ -72,19 +74,35 @@
                            alt="Default" class="kategori-thumb" />
                     @endif
                   </td>
-                  <td class="align-middle">{{ $category->nama }}</td>
+                  <td class="align-middle">
+                    {{ $category->nama }}
+                  </td>
                   <td class="text-center align-middle">
-                    <a href="{{ route('admin.kategori.edit', $category->id) }}" class="btn btn-info btn-sm me-1">
-                      <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <button class="btn btn-danger btn-sm" onclick="deleteCategory({{ $category->id }})">
-                      <i class="fas fa-trash"></i> Hapus
-                    </button>
+                    <span class="fw-bold text-success">{{ $category->formatted_harga_per_jam }}</span>
+                  </td>
+                  <td class="text-center align-middle">
+                    <span class="fw-semibold">{{ $category->mejas_count }}</span>
+                  </td>
+                  <td class="text-center align-middle">
+                    <div style="display:flex; justify-content:center; gap:8px;">
+                      <button type="button" 
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#0d6efd; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              title="Edit kategori"
+                              onclick="window.location='{{ route('admin.kategori.edit', $category->id) }}'">
+                        ✏️
+                      </button>
+                      <button type="button"
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#dc3545; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              onclick="deleteCategory({{ $category->id }})"
+                              title="Hapus kategori">
+                        🗑️
+                      </button>
+                    </div>
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="4" class="text-center py-4">
+                  <td colspan="6" class="text-center py-4">
                     <div class="text-muted">
                       <i class="fas fa-inbox fa-3x mb-3"></i>
                       <p>Belum ada kategori yang ditambahkan</p>
@@ -206,8 +224,8 @@ $(document).ready(function() {
 @push('styles')
 <style>
 .kategori-thumb {
-  width: 60px;
-  height: 40px;
+  width: 45px;
+  height: 32px;
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid #dee2e6;
@@ -215,6 +233,60 @@ $(document).ready(function() {
 
 .table-hover-effect {
   background-color: #f8f9fa !important;
+}
+
+/* Card and table container styling */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e9ecef;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.table-responsive {
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.table-fixed th,
+.table-fixed td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.table thead th {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  background-color: #0d6efd !important;
+  color: white !important;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  font-size: 0.9rem;
+  border-color: #e9ecef;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.15s ease-in-out;
 }
 
 .alert {
@@ -244,6 +316,59 @@ $(document).ready(function() {
 
 .btn-close:hover {
   opacity: 1;
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+/* Tooltip styling */
+[title] {
+  position: relative;
+}
+
+/* Action button styling */
+
+
+/* Price display styling */
+.text-success {
+  color: #28a745 !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+  
+  .kategori-thumb {
+    width: 35px;
+    height: 25px;
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .table thead th {
+    font-size: 0.75rem;
+  }
+  
+  .table tbody td {
+    font-size: 0.8rem;
+  }
+}
+
+/* Force icon color inside buttons to be visible (white) */
+.btn i, .btn .fa, .btn svg {
+  color: #fff !important;
 }
 </style>
 @endpush

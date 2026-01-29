@@ -96,18 +96,24 @@
                     <div class="form-row">
                         <div class="form-col-6">
                             <div class="form-group">
-                                <label for="kategori" class="form-label">
+                                <label for="category_id" class="form-label">
                                     Kategori <span class="form-required">*</span>
                                 </label>
-                                <input type="text" 
-                                       class="form-input @error('kategori') form-input-error @enderror" 
-                                       id="kategori" 
-                                       name="kategori" 
-                                       value="{{ old('kategori', $meja->category->nama ?? '') }}" 
-                                       placeholder="Contoh: VIP, Regular, Premium" 
-                                       required>
-                                <div class="form-help">Masukkan nama kategori meja</div>
-                                @error('kategori')
+                                <select class="form-select @error('category_id') form-input-error @enderror" 
+                                        id="category_id" 
+                                        name="category_id" 
+                                        required>
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" 
+                                                {{ old('category_id', $meja->category_id) == $category->id ? 'selected' : '' }}
+                                                data-price="{{ $category->harga_per_jam }}">
+                                            {{ $category->nama }} - {{ $category->formatted_harga_per_jam }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="form-help">Pilih kategori meja (harga akan mengikuti kategori)</div>
+                                @error('category_id')
                                     <div class="form-error">{{ $message }}</div>
                                 @enderror
                             </div>

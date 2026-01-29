@@ -46,6 +46,20 @@
               <div class="form-error">{{ $message }}</div>
             @enderror
           </div>
+
+          <div class="form-group">
+            <label for="harga_per_jam" class="form-label">Harga per Jam <span class="form-required">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">Rp</span>
+              <input type="number" class="form-input @error('harga_per_jam') form-input-error @enderror" 
+                     id="harga_per_jam" name="harga_per_jam" value="{{ old('harga_per_jam', $category->harga_per_jam) }}" 
+                     placeholder="0" min="0" step="1000" required>
+            </div>
+            <div class="form-help">Contoh: 50000 untuk Rp 50.000 per jam</div>
+            @error('harga_per_jam')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
           
           <div class="form-group">
             <label for="thumbnail" class="form-label">Thumbnail</label>

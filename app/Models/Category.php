@@ -11,7 +11,12 @@ class Category extends Model
 
     protected $fillable = [
         'nama',
-        'thumbnail'
+        'thumbnail',
+        'harga_per_jam'
+    ];
+
+    protected $casts = [
+        'harga_per_jam' => 'decimal:2'
     ];
 
     /**
@@ -23,5 +28,38 @@ class Category extends Model
             return asset('storage/categories/' . $this->thumbnail);
         }
         return asset('img/default-category.jpg');
+    }
+
+    /**
+     * Get formatted harga per jam
+     */
+    public function getFormattedHargaPerJamAttribute()
+    {
+        return 'Rp ' . number_format($this->harga_per_jam, 0, ',', '.');
+    }
+
+    /**
+     * Get all mejas that belong to this category
+     */
+    public function mejas()
+    {
+        return $this->hasMany(Meja::class);
+    }
+
+    /**
+     * Check if category can be deleted (not used by any meja)
+     */
+    public function canBeDeleted()
+    {
+        return $this->mejas()->count() === 0;
+    }
+
+    /**
+     * Get category price via AJAX
+     */
+    public static function getCategoryPrice($categoryId)
+    {
+        $category = self::find($categoryId);
+        return $category ? $category->harga_per_jam : 0;
     }
 }

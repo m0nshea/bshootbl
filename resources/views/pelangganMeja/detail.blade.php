@@ -118,7 +118,7 @@
             <div class="right-section">
                 <h5 class="booking-title">Informasi Booking</h5>
                 
-                @if($meja->status === 'available')
+                @if(in_array($meja->status, ['available', 'reserved']))
                     @auth
                     <!-- User sudah login - tampilkan form booking -->
                     <form method="POST" action="{{ route('customer.booking.process') }}" id="bookingForm">
@@ -137,7 +137,14 @@
                         
                         <div class="form-group">
                             <label class="form-label">Tanggal</label>
-                            <input type="date" class="form-input" id="bookingDate" name="tanggal_booking" placeholder="mm/dd/yyyy" required>
+                            <input type="date" class="form-input" id="bookingDate" name="tanggal_booking" placeholder="mm/dd/yyyy" required disabled>
+                            <small class="text-muted">Pilih durasi terlebih dahulu untuk melihat tanggal yang tersedia</small>
+                            <div id="availableDatesInfo" class="mt-2" style="display: none;">
+                                <small class="text-info">
+                                    <i class="bi bi-calendar-check"></i> 
+                                    <span id="availableDatesText"></span>
+                                </small>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -145,7 +152,13 @@
                             <select class="form-select" id="startTime" name="jam_mulai" required disabled>
                                 <option value="">Pilih tanggal terlebih dahulu</option>
                             </select>
-                            <small class="text-muted">Jam yang sudah dibooking tidak akan muncul</small>
+                            <small class="text-muted">Jam yang sudah dibooking tidak akan muncul dalam pilihan</small>
+                            <div id="bookedSlotsInfo" class="mt-2" style="display: none;">
+                                <small class="text-warning">
+                                    <i class="bi bi-info-circle"></i> 
+                                    <span id="bookedSlotsText"></span>
+                                </small>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -158,6 +171,7 @@
                                 <option value="4">4 Jam</option>
                                 <option value="5">5 Jam</option>
                             </select>
+                            <small class="text-muted">Pilih durasi untuk melihat slot waktu yang tersedia</small>
                         </div>
                         
                         <div class="total-section">
@@ -213,13 +227,7 @@
                         </div>
                     </div>
                     @endauth
-                @else
-                <div class="unavailable-notice">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <h6>Meja Tidak Tersedia</h6>
-                    <p>Meja ini sedang {{ $meja->status_text }}. Silakan pilih meja lain atau coba lagi nanti.</p>
-                    <a href="{{ route('customer.meja') }}" class="btn btn-secondary">Pilih Meja Lain</a>
-                </div>
+               
                 @endif
             </div>
         </div>
@@ -238,21 +246,166 @@
 <script>
 @auth
 @if($meja->status === 'available')
-// Set minimum date to today
-document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
-
 // Price per hour
 const pricePerHour = {{ $meja->harga }};
 
-// Available time slots (8:00 - 21:00)
-const allTimeSlots = [
-    '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
-];
+// Available dates cache
+let availableDatesCache = [];
+
+// Function to load available dates based on selected duration
+async function loadAvailableDates() {
+    const selectedDuration = document.getElementById('duration').value;
+    const bookingDateInput = document.getElementById('bookingDate');
+    const startTimeSelect = document.getElementById('startTime');
+    
+    if (!selectedDuration) {
+        bookingDateInput.disabled = true;
+        bookingDateInput.value = '';
+        startTimeSelect.innerHTML = '<option value="">Pilih durasi dan tanggal terlebih dahulu</option>';
+        startTimeSelect.disabled = true;
+        
+        // Hide info
+        const availableDatesInfo = document.getElementById('availableDatesInfo');
+        if (availableDatesInfo) {
+            availableDatesInfo.style.display = 'none';
+        }
+        return;
+    }
+    
+    try {
+        // Show loading for date input
+        bookingDateInput.disabled = true;
+        
+        // Fetch available dates for the selected duration
+        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-dates?duration=${selectedDuration}`, {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Available dates response:', data); // Debug log
+        
+        if (data.success) {
+            availableDatesCache = data.available_dates || [];
+            
+            if (availableDatesCache.length > 0) {
+                // Enable date input and set constraints
+                bookingDateInput.disabled = false;
+                
+                // Set min date to today or first available date
+                const today = new Date().toISOString().split('T')[0];
+                const firstAvailableDate = availableDatesCache[0].date;
+                bookingDateInput.min = today > firstAvailableDate ? today : firstAvailableDate;
+                
+                // Set max date to last available date
+                const lastAvailableDate = availableDatesCache[availableDatesCache.length - 1].date;
+                bookingDateInput.max = lastAvailableDate;
+                
+                // Show available dates info
+                const availableDatesInfo = document.getElementById('availableDatesInfo');
+                const availableDatesText = document.getElementById('availableDatesText');
+                
+                if (availableDatesInfo && availableDatesText) {
+                    const totalDates = availableDatesCache.length;
+                    availableDatesText.textContent = `${totalDates} tanggal tersedia untuk durasi ${selectedDuration} jam`;
+                    availableDatesInfo.style.display = 'block';
+                    availableDatesInfo.className = 'mt-2';
+                    availableDatesText.className = 'text-info';
+                }
+                
+                // Add custom validation for date input
+                bookingDateInput.addEventListener('input', validateSelectedDate);
+                
+            } else {
+                bookingDateInput.disabled = true;
+                bookingDateInput.value = '';
+                
+                // Show no dates available message
+                const availableDatesInfo = document.getElementById('availableDatesInfo');
+                const availableDatesText = document.getElementById('availableDatesText');
+                
+                if (availableDatesInfo && availableDatesText) {
+                    availableDatesText.textContent = `Tidak ada tanggal tersedia untuk durasi ${selectedDuration} jam`;
+                    availableDatesInfo.style.display = 'block';
+                    availableDatesInfo.className = 'mt-2';
+                    availableDatesText.className = 'text-warning';
+                }
+            }
+            
+            // Reset time selection
+            startTimeSelect.innerHTML = '<option value="">Pilih tanggal terlebih dahulu</option>';
+            startTimeSelect.disabled = true;
+            
+        } else {
+            throw new Error(data.message || 'Gagal memuat tanggal tersedia');
+        }
+    } catch (error) {
+        console.error('Error loading available dates:', error);
+        bookingDateInput.disabled = true;
+        
+        // Show fallback - enable basic date picker
+        const today = new Date().toISOString().split('T')[0];
+        bookingDateInput.min = today;
+        bookingDateInput.disabled = false;
+        
+        // Show fallback message
+        const availableDatesInfo = document.getElementById('availableDatesInfo');
+        const availableDatesText = document.getElementById('availableDatesText');
+        
+        if (availableDatesInfo && availableDatesText) {
+            availableDatesText.textContent = 'Menggunakan mode fallback - pilih tanggal untuk melihat ketersediaan';
+            availableDatesInfo.style.display = 'block';
+            availableDatesInfo.className = 'mt-2';
+            availableDatesText.className = 'text-warning';
+        }
+        
+        // Don't show error popup for better UX, just log it
+        console.warn('Fallback to basic date picker due to error:', error.message);
+    }
+}
+
+// Function to validate if selected date is available
+function validateSelectedDate() {
+    const selectedDate = document.getElementById('bookingDate').value;
+    const bookingDateInput = document.getElementById('bookingDate');
+    
+    if (!selectedDate || availableDatesCache.length === 0) {
+        return;
+    }
+    
+    const isDateAvailable = availableDatesCache.some(dateInfo => dateInfo.date === selectedDate);
+    
+    if (!isDateAvailable) {
+        // Date is not available, show warning and clear
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tanggal Tidak Tersedia',
+            text: 'Tanggal yang Anda pilih tidak memiliki slot waktu tersedia untuk durasi ini. Silakan pilih tanggal lain.',
+            confirmButtonColor: '#ffc107'
+        });
+        
+        bookingDateInput.value = '';
+        
+        // Reset time selection
+        const startTimeSelect = document.getElementById('startTime');
+        startTimeSelect.innerHTML = '<option value="">Pilih tanggal terlebih dahulu</option>';
+        startTimeSelect.disabled = true;
+    } else {
+        // Date is available, load time slots
+        loadAvailableTimeSlots();
+    }
+}
 
 // Function to load available time slots based on selected date
 async function loadAvailableTimeSlots() {
     const selectedDate = document.getElementById('bookingDate').value;
+    const selectedDuration = document.getElementById('duration').value || 1;
     const startTimeSelect = document.getElementById('startTime');
     
     if (!selectedDate) {
@@ -266,8 +419,8 @@ async function loadAvailableTimeSlots() {
         startTimeSelect.innerHTML = '<option value="">Memuat jam tersedia...</option>';
         startTimeSelect.disabled = true;
         
-        // Fetch booked time slots for the selected date and table
-        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-times?date=${selectedDate}`, {
+        // Fetch available time slots for the selected date, table, and duration
+        const response = await fetch(`/pelanggan/meja/{{ $meja->id }}/available-times?date=${selectedDate}&duration=${selectedDuration}`, {
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Accept': 'application/json'
@@ -282,27 +435,49 @@ async function loadAvailableTimeSlots() {
         console.log('Available times response:', data); // Debug log
         
         if (data.success) {
-            const bookedTimes = data.booked_times || [];
-            console.log('Booked times:', bookedTimes); // Debug log
+            const availableSlots = data.available_slots || [];
+            const bookedSlots = data.booked_slots || [];
             
-            // Filter available times
-            const availableTimes = allTimeSlots.filter(time => !bookedTimes.includes(time));
-            console.log('Available times:', availableTimes); // Debug log
+            console.log('Available slots:', availableSlots); // Debug log
+            console.log('Booked slots:', bookedSlots); // Debug log
             
             // Populate select options
             startTimeSelect.innerHTML = '<option value="">Pilih Jam</option>';
             
-            if (availableTimes.length > 0) {
-                availableTimes.forEach(time => {
+            const availableOptions = availableSlots.filter(slot => slot.available);
+            
+            if (availableOptions.length > 0) {
+                availableOptions.forEach(slot => {
                     const option = document.createElement('option');
-                    option.value = time;
-                    option.textContent = time;
+                    option.value = slot.time;
+                    option.textContent = slot.display;
                     startTimeSelect.appendChild(option);
                 });
                 startTimeSelect.disabled = false;
             } else {
-                startTimeSelect.innerHTML = '<option value="">Tidak ada jam tersedia</option>';
+                startTimeSelect.innerHTML = '<option value="">Tidak ada jam tersedia untuk durasi ini</option>';
                 startTimeSelect.disabled = true;
+            }
+            
+            // Show booked slots info if any
+            if (bookedSlots.length > 0) {
+                const bookedInfo = bookedSlots.map(slot => `${slot.start} - ${slot.end}`).join(', ');
+                console.log('Jam yang sudah dibooking:', bookedInfo);
+                
+                // Show booked slots information to user
+                const bookedSlotsInfo = document.getElementById('bookedSlotsInfo');
+                const bookedSlotsText = document.getElementById('bookedSlotsText');
+                
+                if (bookedSlotsInfo && bookedSlotsText) {
+                    bookedSlotsText.textContent = `Jam yang sudah dibooking: ${bookedInfo}`;
+                    bookedSlotsInfo.style.display = 'block';
+                }
+            } else {
+                // Hide booked slots info if no bookings
+                const bookedSlotsInfo = document.getElementById('bookedSlotsInfo');
+                if (bookedSlotsInfo) {
+                    bookedSlotsInfo.style.display = 'none';
+                }
             }
         } else {
             throw new Error(data.message || 'Gagal memuat jam tersedia');
@@ -322,6 +497,12 @@ async function loadAvailableTimeSlots() {
     }
 }
 
+// Add event listener for duration change to reload available dates
+document.getElementById('duration').addEventListener('change', function() {
+    calculateTotal();
+    loadAvailableDates(); // Reload available dates when duration changes
+});
+
 // Add event listener for date change
 document.getElementById('bookingDate').addEventListener('change', loadAvailableTimeSlots);
 
@@ -331,9 +512,6 @@ function calculateTotal() {
     const total = duration ? duration * pricePerHour : 0;
     document.getElementById('totalPrice').textContent = total > 0 ? `Rp ${total.toLocaleString('id-ID')}` : 'Rp 0';
 }
-
-// Add event listener for duration change
-document.getElementById('duration').addEventListener('change', calculateTotal);
 
 // Handle form submission with Midtrans Snap
 document.getElementById('bookingForm').addEventListener('submit', function(e) {

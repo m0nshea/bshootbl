@@ -38,60 +38,33 @@ class BookingController extends Controller
     {
         try {
             $request->validate([
-                'date' => 'required|date|after_or_equal:today'
+                'date' => 'required|date|after_or_equal:today',
+                'duration' => 'integer|min:1|max:8'
             ]);
 
             $date = $request->get('date');
+            $duration = $request->get('duration', 1);
             
-            // Get all booked time slots for this meja on the selected date
-            $bookedTimes = Transaksi::where('meja_id', $mejaId)
-                ->where('tanggal_booking', $date)
-                ->whereIn('status_pembayaran', ['paid', 'pending'])
-                ->whereIn('status_booking', ['confirmed', 'pending', 'ongoing'])
-                ->get()
-                ->flatMap(function ($transaksi) {
-                    // Generate all occupied hours for this booking
-                    $jamMulai = $transaksi->jam_mulai;
-                    
-                    // Handle different time formats
-                    if (strlen($jamMulai) === 5) {
-                        // Format: HH:MM
-                        $startHour = (int) substr($jamMulai, 0, 2);
-                    } else {
-                        // Try to parse as time
-                        try {
-                            $startHour = (int) Carbon::parse($jamMulai)->format('H');
-                        } catch (\Exception $e) {
-                            // Fallback: assume it's already an hour
-                            $startHour = (int) $jamMulai;
-                        }
-                    }
-                    
-                    $duration = (int) $transaksi->durasi;
-                    $occupiedTimes = [];
-                    
-                    for ($i = 0; $i < $duration; $i++) {
-                        $hour = $startHour + $i;
-                        if ($hour >= 8 && $hour <= 21) { // Only include valid operating hours
-                            $occupiedTimes[] = sprintf('%02d:00', $hour);
-                        }
-                    }
-                    
-                    return $occupiedTimes;
-                })
-                ->unique()
-                ->values()
-                ->toArray();
+            $meja = Meja::findOrFail($mejaId);
+            
+            // Get available time slots using the new method
+            $availableSlots = $meja->getAvailableTimeSlotsForDate($date, $duration);
+            $bookedSlots = $meja->getBookedTimeSlotsForDate($date);
 
             return response()->json([
                 'success' => true,
-                'booked_times' => $bookedTimes,
+                'available_slots' => $availableSlots,
+                'booked_slots' => $bookedSlots,
                 'date' => $date,
                 'meja_id' => $mejaId,
+                'duration' => $duration,
+                'meja_status' => $meja->status,
                 'debug' => [
-                    'total_bookings' => Transaksi::where('meja_id', $mejaId)
+                    'total_bookings' => $meja->transaksis()
                         ->where('tanggal_booking', $date)
                         ->whereIn('status_pembayaran', ['paid', 'pending'])
+                        ->where('status_booking', '!=', 'completed')
+                        ->where('status_booking', '!=', 'cancelled')
                         ->count()
                 ]
             ]);
@@ -107,6 +80,311 @@ class BookingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memuat jam tersedia: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get available dates for a specific meja (dates that have at least one available time slot)
+     */
+    public function getAvailableDates(Request $request, $mejaId)
+    {
+        try {
+            $request->validate([
+                'duration' => 'integer|min:1|max:8'
+            ]);
+
+            $duration = $request->get('duration', 1);
+            $meja = Meja::findOrFail($mejaId);
+            
+            // Check next 30 days for available slots
+            $availableDates = [];
+            $startDate = now();
+            $endDate = now()->addDays(30);
+            
+            for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                try {
+                    $dateString = $date->toDateString();
+                    
+                    // Skip if meja is in maintenance
+                    if ($meja->status === 'maintenance') {
+                        continue;
+                    }
+                    
+                    // Get available slots for this date
+                    $availableSlots = $meja->getAvailableTimeSlotsForDate($dateString, $duration);
+                    
+                    // Check if there are any available slots for this date
+                    $availableSlotsCount = 0;
+                    foreach ($availableSlots as $slot) {
+                        if (isset($slot['available']) && $slot['available'] === true) {
+                            $availableSlotsCount++;
+                        }
+                    }
+                    
+                    if ($availableSlotsCount > 0) {
+                        $availableDates[] = [
+                            'date' => $dateString,
+                            'formatted_date' => $date->format('d/m/Y'),
+                            'day_name' => $date->format('l'),
+                            'available_slots_count' => $availableSlotsCount
+                        ];
+                    }
+                } catch (\Exception $dateError) {
+                    // Log individual date error but continue with other dates
+                    Log::warning('Error processing date in getAvailableDates', [
+                        'meja_id' => $mejaId,
+                        'date' => $date->toDateString(),
+                        'error' => $dateError->getMessage()
+                    ]);
+                    continue;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'available_dates' => $availableDates,
+                'duration' => $duration,
+                'meja_id' => $mejaId,
+                'debug' => [
+                    'total_dates_checked' => 30,
+                    'available_dates_found' => count($availableDates),
+                    'meja_status' => $meja->status
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting available dates', [
+                'meja_id' => $mejaId,
+                'duration' => $request->get('duration'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat tanggal tersedia: ' . $e->getMessage(),
+                'debug' => [
+                    'error_type' => get_class($e),
+                    'error_line' => $e->getLine(),
+                    'error_file' => basename($e->getFile())
+                ]
+            ], 500);
+        }
+    }
+
+    /**
+     * Debug method to check data integrity
+     */
+    public function debugAvailableDates(Request $request, $mejaId)
+    {
+        try {
+            $meja = Meja::findOrFail($mejaId);
+            $duration = $request->get('duration', 1);
+            $testDate = $request->get('test_date', now()->toDateString());
+            
+            // Get all bookings for this meja on test date
+            $allBookings = $meja->transaksis()
+                ->where('tanggal_booking', $testDate)
+                ->get(['id', 'tanggal_booking', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
+            
+            // Get only paid bookings (what the system should consider)
+            $paidBookings = $meja->transaksis()
+                ->where('status_pembayaran', 'paid')
+                ->where('tanggal_booking', $testDate)
+                ->where('status_booking', '!=', 'completed')
+                ->where('status_booking', '!=', 'cancelled')
+                ->get(['id', 'tanggal_booking', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
+            
+            // Test specific time slots with detailed overlap checking
+            $testSlots = ['20:00', '21:00', '22:00'];
+            $slotTests = [];
+            
+            foreach ($testSlots as $slot) {
+                $requestedStart = \Carbon\Carbon::parse($testDate . ' ' . $slot);
+                $requestedEnd = $requestedStart->copy()->addHours($duration);
+                
+                $conflicts = [];
+                foreach ($paidBookings as $booking) {
+                    $jamMulai = $booking->jam_mulai;
+                    if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
+                        $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $jamMulai);
+                        $bookingEnd = $bookingStart->copy()->addHours((int)$booking->durasi);
+                        
+                        $overlaps = $requestedStart->lt($bookingEnd) && $requestedEnd->gt($bookingStart);
+                        
+                        $conflicts[] = [
+                            'booking_id' => $booking->id,
+                            'booking_time' => $bookingStart->format('H:i') . '-' . $bookingEnd->format('H:i'),
+                            'overlaps' => $overlaps,
+                            'overlap_details' => [
+                                'requested_start_lt_booking_end' => $requestedStart->lt($bookingEnd),
+                                'requested_end_gt_booking_start' => $requestedEnd->gt($bookingStart)
+                            ]
+                        ];
+                    }
+                }
+                
+                $isAvailable = $meja->isTimeSlotAvailable($testDate, $slot, $duration);
+                $slotTests[] = [
+                    'time' => $slot,
+                    'requested_range' => $requestedStart->format('H:i') . '-' . $requestedEnd->format('H:i'),
+                    'duration' => $duration,
+                    'available' => $isAvailable,
+                    'conflicts' => $conflicts
+                ];
+            }
+            
+            // Get booked slots using the method
+            $bookedSlots = $meja->getBookedTimeSlotsForDate($testDate);
+            
+            return response()->json([
+                'success' => true,
+                'meja_id' => $mejaId,
+                'meja_status' => $meja->status,
+                'test_date' => $testDate,
+                'duration' => $duration,
+                'all_bookings' => $allBookings,
+                'paid_bookings' => $paidBookings,
+                'booked_slots' => $bookedSlots,
+                'slot_availability_tests' => $slotTests,
+                'debug_info' => [
+                    'total_bookings' => $allBookings->count(),
+                    'paid_bookings_count' => $paidBookings->count(),
+                    'booked_slots_count' => count($bookedSlots)
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
+
+    /**
+     * Debug specific time slot availability
+     */
+    public function debugTimeSlot(Request $request, $mejaId)
+    {
+        try {
+            $meja = Meja::findOrFail($mejaId);
+            $date = $request->get('date', now()->toDateString());
+            $time = $request->get('time', '21:00');
+            $duration = $request->get('duration', 1);
+            
+            // Get ALL bookings for this date (regardless of status)
+            $allBookings = $meja->transaksis()
+                ->where('tanggal_booking', $date)
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
+            
+            // Get filtered bookings (what the system uses)
+            $filteredBookings = $meja->transaksis()
+                ->where('status_pembayaran', 'paid')
+                ->where('tanggal_booking', $date)
+                ->where('status_booking', '!=', 'completed')
+                ->where('status_booking', '!=', 'cancelled')
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
+            
+            // Test the specific time slot
+            $requestedStart = \Carbon\Carbon::parse($date . ' ' . $time);
+            $requestedEnd = $requestedStart->copy()->addHours((int)$duration);
+            
+            $conflictDetails = [];
+            foreach ($filteredBookings as $booking) {
+                $jamMulai = $booking->jam_mulai;
+                $durasi = (int)$booking->durasi;
+                
+                if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
+                    $bookingStart = \Carbon\Carbon::parse($date . ' ' . $jamMulai);
+                } else {
+                    $bookingStart = \Carbon\Carbon::parse($jamMulai);
+                    if ($bookingStart->format('Y-m-d') === '1970-01-01') {
+                        $bookingStart = \Carbon\Carbon::parse($date . ' ' . $bookingStart->format('H:i:s'));
+                    }
+                }
+                
+                $bookingEnd = $bookingStart->copy()->addHours($durasi);
+                
+                $overlaps = $requestedStart->lt($bookingEnd) && $requestedEnd->gt($bookingStart);
+                
+                $conflictDetails[] = [
+                    'booking_id' => $booking->id,
+                    'booking_time' => $bookingStart->format('H:i') . '-' . $bookingEnd->format('H:i'),
+                    'requested_time' => $requestedStart->format('H:i') . '-' . $requestedEnd->format('H:i'),
+                    'overlaps' => $overlaps,
+                    'status_pembayaran' => $booking->status_pembayaran,
+                    'status_booking' => $booking->status_booking
+                ];
+            }
+            
+            $isAvailable = $meja->isTimeSlotAvailable($date, $time, $duration);
+            
+            return response()->json([
+                'success' => true,
+                'meja_id' => $mejaId,
+                'test_params' => [
+                    'date' => $date,
+                    'time' => $time,
+                    'duration' => $duration
+                ],
+                'result' => [
+                    'is_available' => $isAvailable,
+                    'requested_slot' => $requestedStart->format('H:i') . '-' . $requestedEnd->format('H:i')
+                ],
+                'all_bookings' => $allBookings,
+                'filtered_bookings' => $filteredBookings,
+                'conflict_analysis' => $conflictDetails,
+                'debug_info' => [
+                    'total_bookings' => $allBookings->count(),
+                    'filtered_bookings_count' => $filteredBookings->count(),
+                    'conflicts_found' => collect($conflictDetails)->where('overlaps', true)->count()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    
+    
+        try {
+            $request->validate([
+                'date' => 'required|date|after_or_equal:today',
+                'time' => 'required|date_format:H:i',
+                'duration' => 'required|integer|min:1|max:8'
+            ]);
+
+            $meja = Meja::findOrFail($mejaId);
+            $date = $request->get('date');
+            $time = $request->get('time');
+            $duration = $request->get('duration');
+
+            $isAvailable = $meja->isTimeSlotAvailable($date, $time, $duration);
+
+            return response()->json([
+                'success' => true,
+                'available' => $isAvailable,
+                'date' => $date,
+                'time' => $time,
+                'duration' => $duration,
+                'meja_id' => $mejaId
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error checking time slot availability', [
+                'meja_id' => $mejaId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memeriksa ketersediaan waktu: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -162,7 +440,7 @@ class BookingController extends Controller
                 'meja_id' => 'required|exists:mejas,id',
                 'jenis_ball' => 'required|in:8_ball,9_ball',
                 'tanggal_booking' => 'required|date|after_or_equal:today',
-                'jam_mulai' => 'required',
+                'jam_mulai' => 'required|date_format:H:i',
                 'durasi' => 'required|integer|min:1|max:8',
                 'metode_pembayaran' => 'required|in:qris,transfer,ewallet',
                 'catatan' => 'nullable|string'
@@ -170,6 +448,27 @@ class BookingController extends Controller
 
             // Get meja
             $meja = Meja::findOrFail($validated['meja_id']);
+
+            // Check if the requested time slot is available
+            $isAvailable = $meja->isTimeSlotAvailable(
+                $validated['tanggal_booking'],
+                $validated['jam_mulai'],
+                $validated['durasi']
+            );
+
+            if (!$isAvailable) {
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Maaf, waktu yang Anda pilih sudah tidak tersedia. Silakan pilih waktu lain.',
+                        'error_type' => 'time_slot_unavailable'
+                    ], 422);
+                }
+
+                return redirect()->back()
+                               ->withInput()
+                               ->with('error', 'Maaf, waktu yang Anda pilih sudah tidak tersedia. Silakan pilih waktu lain.');
+            }
 
             // Calculate total
             $totalHarga = $meja->harga * $validated['durasi'];
@@ -450,6 +749,43 @@ class BookingController extends Controller
             Log::error('Error loading detail riwayat: ' . $e->getMessage());
             return redirect()->route('customer.riwayat')
                            ->with('error', 'Transaksi tidak ditemukan atau terjadi kesalahan.');
+        }
+    }
+
+    /**
+     * Test overlap logic for debugging
+     */
+    public function testOverlap(Request $request, $mejaId)
+    {
+        try {
+            $meja = Meja::findOrFail($mejaId);
+            $testDate = $request->get('date', now()->toDateString());
+            
+            // Get actual bookings for this date
+            $bookings = $meja->transaksis()
+                ->whereIn('status_pembayaran', ['paid', 'pending'])
+                ->where('tanggal_booking', $testDate)
+                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed'])
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
+            
+            // Test if 21:00 slot is available
+            $isAvailable = $meja->isTimeSlotAvailable($testDate, '21:00', 1);
+            
+            return response()->json([
+                'success' => true,
+                'meja_id' => $mejaId,
+                'test_date' => $testDate,
+                'existing_bookings' => $bookings,
+                'testing_slot' => '21:00-22:00',
+                'is_available' => $isAvailable,
+                'should_be_unavailable_if_booking_exists' => $bookings->count() > 0
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }

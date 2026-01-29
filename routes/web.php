@@ -215,6 +215,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     });
     
     // Category routes
+    Route::get('/kategori/{id}/price', [\App\Http\Controllers\Admin\CategoryController::class, 'getPrice'])->name('kategori.price');
     Route::resource('kategori', \App\Http\Controllers\Admin\CategoryController::class);
     
     // Meja routes
@@ -233,12 +234,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/pengguna/{pengguna}/toggle-status', [\App\Http\Controllers\Admin\PenggunaController::class, 'toggleStatus'])->name('pengguna.toggle-status');
     Route::get('/pengguna-stats', [\App\Http\Controllers\Admin\PenggunaController::class, 'getStats'])->name('pengguna.stats');
     Route::get('/pengguna-export', [\App\Http\Controllers\Admin\PenggunaController::class, 'export'])->name('pengguna.export');
-    
-    // Tarif routes
-    Route::get('/tarif', [\App\Http\Controllers\Admin\TarifController::class, 'index'])->name('tarif.index');
-    Route::post('/tarif/update-bulk', [\App\Http\Controllers\Admin\TarifController::class, 'updateBulk'])->name('tarif.update-bulk');
-    Route::post('/tarif/update-category', [\App\Http\Controllers\Admin\TarifController::class, 'updateByCategory'])->name('tarif.update-category');
-    Route::get('/tarif/stats', [\App\Http\Controllers\Admin\TarifController::class, 'getStats'])->name('tarif.stats');
     
     // Alias route for backward compatibility
     Route::get('/kategori-alias', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('kategori');
@@ -273,6 +268,11 @@ Route::prefix('pelanggan')->name('customer.')->group(function () {
     Route::get('/meja', [\App\Http\Controllers\Customer\MejaController::class, 'index'])->name('meja');
     Route::get('/meja/{id}/detail', [\App\Http\Controllers\Customer\MejaController::class, 'show'])->name('meja.detail');
     Route::get('/meja/{id}/available-times', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableTimes'])->name('meja.available-times');
+    Route::get('/meja/{id}/available-dates', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableDates'])->name('meja.available-dates');
+    Route::get('/meja/{id}/debug-dates', [\App\Http\Controllers\Customer\BookingController::class, 'debugAvailableDates'])->name('meja.debug-dates');
+    Route::get('/meja/{id}/test-overlap', [\App\Http\Controllers\Customer\BookingController::class, 'testOverlap'])->name('meja.test-overlap');
+    Route::get('/meja/{id}/debug-timeslot', [\App\Http\Controllers\Customer\BookingController::class, 'debugTimeSlot'])->name('meja.debug-timeslot');
+    Route::post('/meja/{id}/check-time-slot', [\App\Http\Controllers\Customer\BookingController::class, 'checkTimeSlotAvailability'])->name('meja.check-time-slot');
     
     // Backward compatibility route for meja by type
     Route::get('/meja/{type}/detail-type', [\App\Http\Controllers\Customer\MejaController::class, 'showByType'])->name('meja.detail.type');

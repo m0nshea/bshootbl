@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = Category::latest()->paginate(10);
+            $categories = Category::withCount('mejas')->latest()->paginate(10);
             return view('adminKategori.kategori', compact('categories'));
         } catch (\Exception $e) {
             return response()->json([
@@ -42,10 +42,14 @@ class CategoryController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255|unique:categories,nama',
+            'harga_per_jam' => 'required|numeric|min:0',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
         ], [
             'nama.required' => 'Nama kategori harus diisi',
             'nama.unique' => 'Nama kategori sudah ada',
+            'harga_per_jam.required' => 'Harga per jam harus diisi',
+            'harga_per_jam.numeric' => 'Harga per jam harus berupa angka',
+            'harga_per_jam.min' => 'Harga per jam tidak boleh kurang dari 0',
             'thumbnail.required' => 'Thumbnail harus dipilih',
             'thumbnail.image' => 'File harus berupa gambar',
             'thumbnail.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp',
@@ -70,6 +74,7 @@ class CategoryController extends Controller
 
             Category::create([
                 'nama' => $request->nama,
+                'harga_per_jam' => $request->harga_per_jam,
                 'thumbnail' => $thumbnailName
             ]);
 
@@ -112,17 +117,22 @@ class CategoryController extends Controller
         try {
             $request->validate([
                 'nama' => 'required|string|max:255|unique:categories,nama,' . $kategori->id,
+                'harga_per_jam' => 'required|numeric|min:0',
                 'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
             ], [
                 'nama.required' => 'Nama kategori harus diisi',
                 'nama.unique' => 'Nama kategori sudah ada',
+                'harga_per_jam.required' => 'Harga per jam harus diisi',
+                'harga_per_jam.numeric' => 'Harga per jam harus berupa angka',
+                'harga_per_jam.min' => 'Harga per jam tidak boleh kurang dari 0',
                 'thumbnail.image' => 'File harus berupa gambar',
                 'thumbnail.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp',
                 'thumbnail.max' => 'Ukuran gambar maksimal 2MB'
             ]);
 
             $data = [
-                'nama' => $request->nama
+                'nama' => $request->nama,
+                'harga_per_jam' => $request->harga_per_jam
             ];
 
             if ($request->hasFile('thumbnail')) {
@@ -157,11 +167,12 @@ class CategoryController extends Controller
     public function destroy(Category $kategori)
     {
         try {
-            // Delete thumbnail file
+            // Delete thumbnail file first
             if ($kategori->thumbnail && Storage::disk('public')->exists('categories/' . $kategori->thumbnail)) {
                 Storage::disk('public')->delete('categories/' . $kategori->thumbnail);
             }
 
+            // Try to delete the category - database constraint will prevent deletion if referenced
             $kategori->delete();
 
             return response()->json([
@@ -169,11 +180,46 @@ class CategoryController extends Controller
                 'message' => 'Kategori berhasil dihapus!'
             ]);
 
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle foreign key constraint violation
+            if ($e->getCode() === '23000') {
+                $mejaCount = $kategori->mejas()->count();
+                return response()->json([
+                    'success' => false,
+                    'message' => "Kategori tidak dapat dihapus karena masih digunakan oleh {$mejaCount} meja. Hapus atau ubah kategori meja tersebut terlebih dahulu."
+                ], 422);
+            }
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan database: ' . $e->getMessage()
+            ], 500);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Get category price for AJAX requests
+     */
+    public function getPrice($id)
+    {
+        try {
+            $category = Category::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'harga_per_jam' => $category->harga_per_jam,
+                'formatted_harga' => $category->formatted_harga_per_jam
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori tidak ditemukan'
+            ], 404);
         }
     }
 }

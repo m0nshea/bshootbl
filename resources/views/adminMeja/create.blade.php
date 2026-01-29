@@ -66,39 +66,23 @@
           <div class="form-row">
             <div class="form-col-6">
               <div class="form-group">
-                <label for="kategori" class="form-label">Kategori <span class="form-required">*</span></label>
-                <select class="form-select @error('kategori') form-input-error @enderror" 
-                        id="kategori" name="kategori" required>
+                <label for="category_id" class="form-label">Kategori <span class="form-required">*</span></label>
+                <select class="form-select @error('category_id') form-input-error @enderror" 
+                        id="category_id" name="category_id" required>
                   <option value="">Pilih Kategori</option>
                   @foreach($categories as $category)
-                    <option value="{{ $category->nama }}" {{ old('kategori') == $category->nama ? 'selected' : '' }}>
-                      {{ $category->nama }}
+                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}
+                            data-price="{{ $category->harga_per_jam }}">
+                      {{ $category->nama }} - {{ $category->formatted_harga_per_jam }}
                     </option>
                   @endforeach
                 </select>
-                <div class="form-help">Pilih kategori meja yang tersedia</div>
-                @error('kategori')
+                <div class="form-help">Pilih kategori meja (harga akan mengikuti kategori)</div>
+                @error('category_id')
                   <div class="form-error">{{ $message }}</div>
                 @enderror
               </div>
             </div>
-            <div class="form-col-6">
-              <div class="form-group">
-                <label for="harga" class="form-label">Harga per Jam <span class="form-required">*</span></label>
-                <div class="form-input-group">
-                  <span class="form-input-prefix">Rp</span>
-                  <input type="number" class="form-input form-input-with-prefix @error('harga') form-input-error @enderror" 
-                         id="harga" name="harga" value="{{ old('harga') }}" required>
-                </div>
-                <div class="form-help">Masukkan harga dalam rupiah</div>
-                @error('harga')
-                  <div class="form-error">{{ $message }}</div>
-                @enderror
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row">
             <div class="form-col-6">
               <div class="form-group">
                 <label for="status" class="form-label">Status <span class="form-required">*</span></label>
@@ -159,6 +143,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    // Update price display when category is selected
+    $('#category_id').change(function() {
+        const selectedOption = $(this).find('option:selected');
+        const price = selectedOption.data('price');
+        
+        if (price) {
+            const formattedPrice = new Intl.NumberFormat('id-ID').format(price);
+            $('#harga_display').val(formattedPrice);
+        } else {
+            $('#harga_display').val('');
+        }
+    });
+
     // Preview image when selected
     $('#foto').change(function() {
         const file = this.files[0];
