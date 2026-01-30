@@ -53,14 +53,6 @@ class AutoCancellationBook implements ShouldQueue
                     'status_pembayaran' => 'cancelled',
                     'status_booking' => 'cancelled'
                 ]);
-
-                Log::info('AutoCancellationBook: Transaction auto-cancelled due to payment timeout', [
-                    'transaksi_id' => $this->transaksiId,
-                    'kode_transaksi' => $transaksi->kode_transaksi,
-                    'expired_at' => $transaksi->payment_expires_at,
-                    'cancelled_at' => now()
-                ]);
-
                
             } else {
                 Log::info('AutoCancellationBook: Transaction not expired yet', [

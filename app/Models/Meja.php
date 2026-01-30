@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 
 class Meja extends Model
 {
@@ -43,13 +44,13 @@ class Meja extends Model
         if ($this->status === 'reserved') {
             return true;
         }
-        
+
         // Check if there's a paid booking for today or future
         return $this->transaksis()
-                   ->where('status_pembayaran', 'paid')
-                   ->where('tanggal_booking', '>=', now()->toDateString())
-                   ->where('status_booking', '!=', 'completed')
-                   ->exists();
+            ->where('status_pembayaran', 'paid')
+            ->where('tanggal_booking', '>=', now()->toDateString())
+            ->where('status_booking', '!=', 'completed')
+            ->exists();
     }
 
     /**
@@ -63,63 +64,46 @@ class Meja extends Model
     public function isTimeSlotAvailable($date, $startTime, $duration)
     {
         try {
-            // Check if meja status is maintenance
             if ($this->status === 'maintenance') {
                 return false;
             }
 
-            // Convert start time to Carbon instance with error handling
-            try {
-                $requestedStart = \Carbon\Carbon::parse($date . ' ' . $startTime);
-                $requestedEnd = $requestedStart->copy()->addHours((int)$duration);
-            } catch (\Exception $e) {
-                return false;
-            }
+            $requestedStart = \Carbon\Carbon::parse($date . ' ' . $startTime);
+            $requestedEnd = $requestedStart->copy()->addHours((int)$duration);
 
-            // Check for conflicting bookings - include pending status too
+            // FIX: Convert date to Carbon untuk handling timezone
+            $dateCarbon = \Carbon\Carbon::parse($date)->startOfDay();
+
             $conflictingBookings = $this->transaksis()
-                ->whereIn('status_pembayaran', ['paid', 'pending']) // Include pending payments
-                ->where('tanggal_booking', $date)
-                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed']) // Exclude only completed/cancelled/failed
+                ->select('id', 'jam_mulai', 'durasi', 'tanggal_booking')
+                ->whereIn('status_pembayaran', ['paid', 'pending'])
+                ->whereDate('tanggal_booking', $dateCarbon) // Gunakan whereDate
+                ->where('status_booking', 'confirmed')
                 ->get();
-
 
 
             foreach ($conflictingBookings as $booking) {
                 try {
-                    // Handle different time formats in jam_mulai
-                    $jamMulai = $booking->jam_mulai;
-                    
-                    // If jam_mulai is already in H:i format
-                    if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
-                        $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $jamMulai);
-                    } else {
-                        // Try to parse as datetime or other format
-                        $bookingStart = \Carbon\Carbon::parse($jamMulai);
-                        // If it's just time, combine with date
-                        if ($bookingStart->format('Y-m-d') === '1970-01-01') {
-                            $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $bookingStart->format('H:i:s'));
-                        }
-                    }
-                    
+                    // FIX: Ambil hanya tanggal dari tanggal_booking
+                    $bookingDate = \Carbon\Carbon::parse($booking->tanggal_booking)->format('Y-m-d');
+
+                    // Parse jam_mulai (format TIME saja: 08:00:00)
+                    $bookingStart = \Carbon\Carbon::parse($bookingDate . ' ' . $booking->jam_mulai);
                     $bookingEnd = $bookingStart->copy()->addHours((int)$booking->durasi);
 
 
 
-                    // Check if time slots overlap
-                    $overlaps = $this->timeSlotsOverlap($requestedStart, $requestedEnd, $bookingStart, $bookingEnd);
-                    
-                    if ($overlaps) {
+                    if ($this->timeSlotsOverlap($requestedStart, $requestedEnd, $bookingStart, $bookingEnd)) {
                         return false;
                     }
                 } catch (\Exception $e) {
-                    // If we can't parse the booking time, assume it conflicts to be safe
-                    return false;
+                    continue;
                 }
             }
 
             return true;
         } catch (\Exception $e) {
+            Log::error("Error checking time slot availability", ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -137,12 +121,11 @@ class Meja extends Model
     {
         // Test case untuk debugging: 21:00-22:00 vs 21:00-22:00 harus overlap
         $overlaps = ($start1->lt($end2) && $end1->gt($start2));
-        
         // Untuk slot yang sama persis, pasti overlap
         if ($start1->eq($start2) && $end1->eq($end2)) {
             $overlaps = true;
         }
-        
+
         return $overlaps;
     }
 
@@ -155,19 +138,20 @@ class Meja extends Model
     public function getBookedTimeSlotsForDate($date)
     {
         $bookedSlots = [];
-        
+
         try {
             $bookings = $this->transaksis()
+                ->select('id', 'jam_mulai', 'durasi', 'tanggal_booking')
                 ->whereIn('status_pembayaran', ['paid', 'pending']) // Include pending payments
                 ->where('tanggal_booking', $date)
-                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed']) // Exclude only completed/cancelled/failed
+                ->where('status_booking', 'confirmed') // Exclude only completed/cancelled/failed
                 ->get();
 
             foreach ($bookings as $booking) {
                 try {
                     // Handle different time formats in jam_mulai
                     $jamMulai = $booking->jam_mulai;
-                    
+
                     // If jam_mulai is already in H:i format
                     if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
                         $startTime = \Carbon\Carbon::parse($date . ' ' . $jamMulai);
@@ -179,9 +163,9 @@ class Meja extends Model
                             $startTime = \Carbon\Carbon::parse($date . ' ' . $startTime->format('H:i:s'));
                         }
                     }
-                    
+
                     $endTime = $startTime->copy()->addHours((int)$booking->durasi);
-                    
+
                     $bookedSlots[] = [
                         'start' => $startTime->format('H:i'),
                         'end' => $endTime->format('H:i'),
@@ -212,14 +196,13 @@ class Meja extends Model
         // Operating hours (can be made configurable)
         $openingHour = 8;  // 08:00
         $closingHour = 22; // 22:00
-        
+
         $availableSlots = [];
-        $bookedSlots = $this->getBookedTimeSlotsForDate($date);
-        
+
         // Generate all possible time slots
         for ($hour = $openingHour; $hour <= ($closingHour - $duration); $hour++) {
             $timeSlot = sprintf('%02d:00', $hour);
-            
+
             if ($this->isTimeSlotAvailable($date, $timeSlot, $duration)) {
                 $availableSlots[] = [
                     'time' => $timeSlot,
@@ -234,7 +217,7 @@ class Meja extends Model
                 ];
             }
         }
-        
+
         return $availableSlots;
     }
 
@@ -247,14 +230,14 @@ class Meja extends Model
         if ($this->status === 'reserved' || $this->status === 'maintenance') {
             return $this->status;
         }
-        
+
         // Check if table has any bookings today
         $hasBookingsToday = $this->transaksis()
-                               ->where('status_pembayaran', 'paid')
-                               ->where('tanggal_booking', now()->toDateString())
-                               ->where('status_booking', '!=', 'completed')
-                               ->exists();
-        
+            ->where('status_pembayaran', 'paid')
+            ->where('tanggal_booking', now()->toDateString())
+            ->where('status_booking', '!=', 'completed')
+            ->exists();
+
         return $hasBookingsToday ? 'partially_booked' : 'available';
     }
 
@@ -264,8 +247,8 @@ class Meja extends Model
     public function getBookingStatusTextAttribute()
     {
         $status = $this->getBookingStatusAttribute();
-        
-        return match($status) {
+
+        return match ($status) {
             'available' => 'Tersedia',
             'partially_booked' => 'Sebagian Terisi',
             'reserved' => 'Direservasi',
@@ -280,8 +263,8 @@ class Meja extends Model
     public function getBookingStatusClassAttribute()
     {
         $status = $this->getBookingStatusAttribute();
-        
-        return match($status) {
+
+        return match ($status) {
             'available' => 'meja-available',
             'partially_booked' => 'meja-partial',
             'reserved' => 'meja-reserved',
@@ -312,7 +295,7 @@ class Meja extends Model
      */
     public function getStatusBadgeAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'available' => 'status-available',
             'occupied' => 'status-occupied',
             'reserved' => 'status-reserved',
@@ -326,7 +309,7 @@ class Meja extends Model
      */
     public function getStatusTextAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'available' => 'Tersedia',
             'occupied' => 'Terisi',
             'reserved' => 'Direservasi',

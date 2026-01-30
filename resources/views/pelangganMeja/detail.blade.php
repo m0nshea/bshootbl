@@ -301,7 +301,6 @@ async function loadAvailableDates() {
         }
         
         const data = await response.json();
-        console.log('Available dates response:', data); // Debug log
         
         if (data.success) {
             availableDatesCache = data.available_dates || [];
@@ -449,14 +448,11 @@ async function loadAvailableTimeSlots() {
         }
         
         const data = await response.json();
-        console.log('Available times response:', data); // Debug log
         
         if (data.success) {
             const availableSlots = data.available_slots || [];
             const bookedSlots = data.booked_slots || [];
-            
-            console.log('Available slots:', availableSlots); // Debug log
-            console.log('Booked slots:', bookedSlots); // Debug log
+        
             
             // Populate select options
             startTimeSelect.innerHTML = '<option value="">Pilih Jam</option>';
@@ -479,7 +475,6 @@ async function loadAvailableTimeSlots() {
             // Show booked slots info if any
             if (bookedSlots.length > 0) {
                 const bookedInfo = bookedSlots.map(slot => `${slot.start} - ${slot.end}`).join(', ');
-                console.log('Jam yang sudah dibooking:', bookedInfo);
                 
                 // Show booked slots information to user
                 const bookedSlotsInfo = document.getElementById('bookedSlotsInfo');
@@ -629,7 +624,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
                     // Trigger Midtrans Snap
                     window.snap.pay(data.snap_token, {
                         onSuccess: function(result) {
-                            console.log('Payment success:', result);
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Pembayaran Berhasil!',
@@ -640,7 +634,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
                             });
                         },
                         onPending: function(result) {
-                            console.log('Payment pending:', result);
                             Swal.fire({
                                 icon: 'info',
                                 title: 'Pembayaran Pending',
@@ -651,7 +644,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
                             });
                         },
                         onError: function(result) {
-                            console.log('Payment error:', result);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Pembayaran Gagal',
@@ -660,7 +652,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
                             });
                         },
                         onClose: function() {
-                            console.log('Payment popup closed');
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Pembayaran Dibatalkan',

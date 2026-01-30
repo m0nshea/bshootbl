@@ -269,7 +269,6 @@ Route::prefix('pelanggan')->name('customer.')->group(function () {
     Route::get('/meja/{id}/detail', [\App\Http\Controllers\Customer\MejaController::class, 'show'])->name('meja.detail');
     Route::get('/meja/{id}/available-times', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableTimes'])->name('meja.available-times');
     Route::get('/meja/{id}/available-dates', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableDates'])->name('meja.available-dates');
-    Route::get('/meja/{id}/debug-dates', [\App\Http\Controllers\Customer\BookingController::class, 'debugAvailableDates'])->name('meja.debug-dates');
     Route::get('/meja/{id}/test-overlap', [\App\Http\Controllers\Customer\BookingController::class, 'testOverlap'])->name('meja.test-overlap');
     Route::get('/meja/{id}/debug-timeslot', [\App\Http\Controllers\Customer\BookingController::class, 'debugTimeSlot'])->name('meja.debug-timeslot');
     Route::post('/meja/{id}/check-time-slot', [\App\Http\Controllers\Customer\BookingController::class, 'checkTimeSlotAvailability'])->name('meja.check-time-slot');

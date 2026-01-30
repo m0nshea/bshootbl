@@ -44,9 +44,9 @@ class BookingController extends Controller
 
             $date = $request->get('date');
             $duration = $request->get('duration', 1);
-            
+
             $meja = Meja::findOrFail($mejaId);
-            
+
             // Get available time slots using the new method
             $availableSlots = $meja->getAvailableTimeSlotsForDate($date, $duration);
             $bookedSlots = $meja->getBookedTimeSlotsForDate($date);
@@ -68,7 +68,6 @@ class BookingController extends Controller
                         ->count()
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('Error getting available times', [
                 'meja_id' => $mejaId,
@@ -96,24 +95,24 @@ class BookingController extends Controller
 
             $duration = $request->get('duration', 1);
             $meja = Meja::findOrFail($mejaId);
-            
+
             // Check next 30 days for available slots
             $availableDates = [];
             $startDate = now();
             $endDate = now()->addDays(30);
-            
+
             for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
                 try {
                     $dateString = $date->toDateString();
-                    
+
                     // Skip if meja is in maintenance
                     if ($meja->status === 'maintenance') {
                         continue;
                     }
-                    
+
                     // Get available slots for this date
                     $availableSlots = $meja->getAvailableTimeSlotsForDate($dateString, $duration);
-                    
+
                     // Check if there are any available slots for this date
                     $availableSlotsCount = 0;
                     foreach ($availableSlots as $slot) {
@@ -121,7 +120,7 @@ class BookingController extends Controller
                             $availableSlotsCount++;
                         }
                     }
-                    
+
                     if ($availableSlotsCount > 0) {
                         $availableDates[] = [
                             'date' => $dateString,
@@ -152,7 +151,6 @@ class BookingController extends Controller
                     'meja_status' => $meja->status
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('Error getting available dates', [
                 'meja_id' => $mejaId,
@@ -173,96 +171,6 @@ class BookingController extends Controller
         }
     }
 
-    /**
-     * Debug method to check data integrity
-     */
-    public function debugAvailableDates(Request $request, $mejaId)
-    {
-        try {
-            $meja = Meja::findOrFail($mejaId);
-            $duration = $request->get('duration', 1);
-            $testDate = $request->get('test_date', now()->toDateString());
-            
-            // Get all bookings for this meja on test date
-            $allBookings = $meja->transaksis()
-                ->where('tanggal_booking', $testDate)
-                ->get(['id', 'tanggal_booking', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
-            
-            // Get only paid bookings (what the system should consider)
-            $paidBookings = $meja->transaksis()
-                ->where('status_pembayaran', 'paid')
-                ->where('tanggal_booking', $testDate)
-                ->where('status_booking', '!=', 'completed')
-                ->where('status_booking', '!=', 'cancelled')
-                ->get(['id', 'tanggal_booking', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
-            
-            // Test specific time slots with detailed overlap checking
-            $testSlots = ['20:00', '21:00', '22:00'];
-            $slotTests = [];
-            
-            foreach ($testSlots as $slot) {
-                $requestedStart = \Carbon\Carbon::parse($testDate . ' ' . $slot);
-                $requestedEnd = $requestedStart->copy()->addHours($duration);
-                
-                $conflicts = [];
-                foreach ($paidBookings as $booking) {
-                    $jamMulai = $booking->jam_mulai;
-                    if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
-                        $bookingStart = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $jamMulai);
-                        $bookingEnd = $bookingStart->copy()->addHours((int)$booking->durasi);
-                        
-                        $overlaps = $requestedStart->lt($bookingEnd) && $requestedEnd->gt($bookingStart);
-                        
-                        $conflicts[] = [
-                            'booking_id' => $booking->id,
-                            'booking_time' => $bookingStart->format('H:i') . '-' . $bookingEnd->format('H:i'),
-                            'overlaps' => $overlaps,
-                            'overlap_details' => [
-                                'requested_start_lt_booking_end' => $requestedStart->lt($bookingEnd),
-                                'requested_end_gt_booking_start' => $requestedEnd->gt($bookingStart)
-                            ]
-                        ];
-                    }
-                }
-                
-                $isAvailable = $meja->isTimeSlotAvailable($testDate, $slot, $duration);
-                $slotTests[] = [
-                    'time' => $slot,
-                    'requested_range' => $requestedStart->format('H:i') . '-' . $requestedEnd->format('H:i'),
-                    'duration' => $duration,
-                    'available' => $isAvailable,
-                    'conflicts' => $conflicts
-                ];
-            }
-            
-            // Get booked slots using the method
-            $bookedSlots = $meja->getBookedTimeSlotsForDate($testDate);
-            
-            return response()->json([
-                'success' => true,
-                'meja_id' => $mejaId,
-                'meja_status' => $meja->status,
-                'test_date' => $testDate,
-                'duration' => $duration,
-                'all_bookings' => $allBookings,
-                'paid_bookings' => $paidBookings,
-                'booked_slots' => $bookedSlots,
-                'slot_availability_tests' => $slotTests,
-                'debug_info' => [
-                    'total_bookings' => $allBookings->count(),
-                    'paid_bookings_count' => $paidBookings->count(),
-                    'booked_slots_count' => count($bookedSlots)
-                ]
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ], 500);
-        }
-    }
 
     /**
      * Debug specific time slot availability
@@ -274,12 +182,12 @@ class BookingController extends Controller
             $date = $request->get('date', now()->toDateString());
             $time = $request->get('time', '21:00');
             $duration = $request->get('duration', 1);
-            
+
             // Get ALL bookings for this date (regardless of status)
             $allBookings = $meja->transaksis()
                 ->where('tanggal_booking', $date)
                 ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
-            
+
             // Get filtered bookings (what the system uses)
             $filteredBookings = $meja->transaksis()
                 ->where('status_pembayaran', 'paid')
@@ -287,16 +195,16 @@ class BookingController extends Controller
                 ->where('status_booking', '!=', 'completed')
                 ->where('status_booking', '!=', 'cancelled')
                 ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
-            
+
             // Test the specific time slot
             $requestedStart = \Carbon\Carbon::parse($date . ' ' . $time);
             $requestedEnd = $requestedStart->copy()->addHours((int)$duration);
-            
+
             $conflictDetails = [];
             foreach ($filteredBookings as $booking) {
                 $jamMulai = $booking->jam_mulai;
                 $durasi = (int)$booking->durasi;
-                
+
                 if (preg_match('/^\d{2}:\d{2}$/', $jamMulai)) {
                     $bookingStart = \Carbon\Carbon::parse($date . ' ' . $jamMulai);
                 } else {
@@ -305,11 +213,11 @@ class BookingController extends Controller
                         $bookingStart = \Carbon\Carbon::parse($date . ' ' . $bookingStart->format('H:i:s'));
                     }
                 }
-                
+
                 $bookingEnd = $bookingStart->copy()->addHours($durasi);
-                
+
                 $overlaps = $requestedStart->lt($bookingEnd) && $requestedEnd->gt($bookingStart);
-                
+
                 $conflictDetails[] = [
                     'booking_id' => $booking->id,
                     'booking_time' => $bookingStart->format('H:i') . '-' . $bookingEnd->format('H:i'),
@@ -319,9 +227,9 @@ class BookingController extends Controller
                     'status_booking' => $booking->status_booking
                 ];
             }
-            
+
             $isAvailable = $meja->isTimeSlotAvailable($date, $time, $duration);
-            
+
             return response()->json([
                 'success' => true,
                 'meja_id' => $mejaId,
@@ -343,7 +251,6 @@ class BookingController extends Controller
                     'conflicts_found' => collect($conflictDetails)->where('overlaps', true)->count()
                 ]
             ]);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -351,8 +258,8 @@ class BookingController extends Controller
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
-    
-    
+
+
         try {
             $request->validate([
                 'date' => 'required|date|after_or_equal:today',
@@ -375,7 +282,6 @@ class BookingController extends Controller
                 'duration' => $duration,
                 'meja_id' => $mejaId
             ]);
-
         } catch (\Exception $e) {
             Log::error('Error checking time slot availability', [
                 'meja_id' => $mejaId,
@@ -401,7 +307,7 @@ class BookingController extends Controller
 
         $mejaId = $request->get('meja');
         $meja = Meja::with('category')->findOrFail($mejaId);
-        
+
         // Get booking details from request
         $bookingData = [
             'meja' => $meja,
@@ -411,7 +317,7 @@ class BookingController extends Controller
             'jam' => $request->get('jam'),
             'durasi' => $request->get('durasi')
         ];
-        
+
         // Calculate total if all data is present
         if ($bookingData['durasi']) {
             $bookingData['total'] = $bookingData['harga'] * $bookingData['durasi'];
@@ -466,8 +372,8 @@ class BookingController extends Controller
                 }
 
                 return redirect()->back()
-                               ->withInput()
-                               ->with('error', 'Maaf, waktu yang Anda pilih sudah tidak tersedia. Silakan pilih waktu lain.');
+                    ->withInput()
+                    ->with('error', 'Maaf, waktu yang Anda pilih sudah tidak tersedia. Silakan pilih waktu lain.');
             }
 
             // Calculate total
@@ -482,14 +388,14 @@ class BookingController extends Controller
                 'user_id' => Auth::id(),
                 'meja_id' => $validated['meja_id'],
                 'jenis_ball' => $validated['jenis_ball'],
-                'tanggal_booking' => $validated['tanggal_booking'],
+                'tanggal_booking' => \Carbon\Carbon::parse($validated['tanggal_booking'])->startOfDay(),
                 'jam_mulai' => $validated['jam_mulai'],
                 'durasi' => $validated['durasi'],
                 'harga_per_jam' => $meja->harga,
                 'total_harga' => $totalHarga,
                 'metode_pembayaran' => $validated['metode_pembayaran'],
                 'status_pembayaran' => 'pending',
-                'status_booking' => 'pending',
+                'status_booking' => 'confirmed',
                 'catatan' => $validated['catatan'] ?? null
             ]);
 
@@ -514,8 +420,7 @@ class BookingController extends Controller
 
                 // Redirect to payment page with snap token (for non-AJAX)
                 return redirect()->route('customer.payment.page', $transaksi->id)
-                               ->with('success', 'Booking berhasil! Silakan lakukan pembayaran.');
-
+                    ->with('success', 'Booking berhasil! Silakan lakukan pembayaran.');
             } catch (\Exception $e) {
                 Log::error('Payment token creation failed', [
                     'transaksi_id' => $transaksi->id,
@@ -533,9 +438,8 @@ class BookingController extends Controller
 
                 // If payment token creation fails, still allow user to see transaction
                 return redirect()->route('customer.pembayaran', $transaksi->id)
-                               ->with('warning', 'Booking berhasil, namun terjadi kesalahan saat membuat pembayaran. Silakan coba lagi.');
+                    ->with('warning', 'Booking berhasil, namun terjadi kesalahan saat membuat pembayaran. Silakan coba lagi.');
             }
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Validation error
             if ($request->expectsJson() || $request->ajax()) {
@@ -547,12 +451,11 @@ class BookingController extends Controller
             }
 
             return redirect()->back()
-                           ->withInput()
-                           ->withErrors($e->errors());
-
+                ->withInput()
+                ->withErrors($e->errors());
         } catch (\Exception $e) {
             Log::error('Booking Error: ' . $e->getMessage());
-            
+
             // If AJAX request
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -562,8 +465,8 @@ class BookingController extends Controller
             }
 
             return redirect()->back()
-                           ->withInput()
-                           ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -573,7 +476,7 @@ class BookingController extends Controller
     public function paymentPage($transaksiId)
     {
         $transaksi = Transaksi::with(['meja.category'])->findOrFail($transaksiId);
-        
+
         // Check if user owns this transaction
         if (Auth::id() !== $transaksi->user_id) {
             abort(403, 'Unauthorized access');
@@ -582,7 +485,7 @@ class BookingController extends Controller
         // Check if already paid
         if ($transaksi->status_pembayaran === 'paid') {
             return redirect()->route('customer.riwayat')
-                           ->with('info', 'Transaksi ini sudah dibayar.');
+                ->with('info', 'Transaksi ini sudah dibayar.');
         }
 
         // Get or create payment token
@@ -599,9 +502,9 @@ class BookingController extends Controller
                 'transaksi_id' => $transaksiId,
                 'error' => $e->getMessage()
             ]);
-            
+
             return redirect()->route('customer.riwayat')
-                           ->with('error', 'Gagal memuat halaman pembayaran. Silakan coba lagi.');
+                ->with('error', 'Gagal memuat halaman pembayaran. Silakan coba lagi.');
         }
 
         return view('pelangganPembayaran.pembayaran', compact('transaksi'));
@@ -613,7 +516,7 @@ class BookingController extends Controller
     public function paymentFinish($transaksiId)
     {
         $transaksi = Transaksi::findOrFail($transaksiId);
-        
+
         // Check if user owns this transaction
         if (Auth::id() !== $transaksi->user_id) {
             abort(403, 'Unauthorized access');
@@ -623,19 +526,19 @@ class BookingController extends Controller
         if ($transaksi->midtrans_order_id) {
             try {
                 $statusResult = $this->getPaymentService()->checkPaymentStatus($transaksi->midtrans_order_id);
-                
+
                 if ($statusResult['success']) {
                     $transactionStatus = $statusResult['transaction_status'];
-                    
+
                     if (in_array($transactionStatus, ['settlement', 'capture'])) {
                         return redirect()->route('customer.riwayat')
-                                       ->with('success', 'Pembayaran berhasil! Booking Anda telah dikonfirmasi.');
+                            ->with('success', 'Pembayaran berhasil! Booking Anda telah dikonfirmasi.');
                     } elseif ($transactionStatus === 'pending') {
                         return redirect()->route('customer.riwayat')
-                                       ->with('info', 'Pembayaran Anda sedang diproses. Silakan tunggu konfirmasi.');
+                            ->with('info', 'Pembayaran Anda sedang diproses. Silakan tunggu konfirmasi.');
                     } else {
                         return redirect()->route('customer.riwayat')
-                                       ->with('warning', 'Status pembayaran: ' . $transactionStatus);
+                            ->with('warning', 'Status pembayaran: ' . $transactionStatus);
                     }
                 }
             } catch (\Exception $e) {
@@ -647,7 +550,7 @@ class BookingController extends Controller
         }
 
         return redirect()->route('customer.riwayat')
-                       ->with('info', 'Silakan cek status pembayaran Anda di riwayat transaksi.');
+            ->with('info', 'Silakan cek status pembayaran Anda di riwayat transaksi.');
     }
 
     /**
@@ -665,9 +568,9 @@ class BookingController extends Controller
     {
         if (!$transaksiId) {
             return redirect()->route('customer.meja')
-                           ->with('error', 'Transaksi tidak ditemukan.');
+                ->with('error', 'Transaksi tidak ditemukan.');
         }
-        
+
         return $this->paymentPage($transaksiId);
     }
 
@@ -677,7 +580,7 @@ class BookingController extends Controller
     public function confirmPayment(Request $request, $transaksiId)
     {
         $transaksi = Transaksi::findOrFail($transaksiId);
-        
+
         // Check if user owns this transaction
         if (Auth::id() !== $transaksi->user_id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -702,13 +605,12 @@ class BookingController extends Controller
     {
         try {
             $result = $this->getPaymentService()->cancelPayment($transaksiId, Auth::id());
-            
-            return redirect()->route('customer.riwayat')
-                           ->with('success', $result['message']);
 
+            return redirect()->route('customer.riwayat')
+                ->with('success', $result['message']);
         } catch (\Exception $e) {
             return redirect()->back()
-                           ->with('error', $e->getMessage());
+                ->with('error', $e->getMessage());
         }
     }
 
@@ -720,14 +622,14 @@ class BookingController extends Controller
         try {
             // Simple version without complex relationships first
             $transaksis = Transaksi::where('user_id', Auth::id())
-                                  ->orderBy('created_at', 'desc')
-                                  ->paginate(10);
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
 
             return view('pelangganRiwayat.riwayat', compact('transaksis'));
         } catch (\Exception $e) {
             \Log::error('Riwayat Error: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
+
             return response()->view('errors.500', [
                 'message' => 'Terjadi kesalahan saat memuat riwayat: ' . $e->getMessage()
             ], 500);
@@ -741,14 +643,14 @@ class BookingController extends Controller
     {
         try {
             $transaksi = Transaksi::with(['meja.category'])
-                                 ->where('user_id', Auth::id())
-                                 ->findOrFail($transaksiId);
+                ->where('user_id', Auth::id())
+                ->findOrFail($transaksiId);
 
             return view('pelangganRiwayat.detail', compact('transaksi'));
         } catch (\Exception $e) {
             Log::error('Error loading detail riwayat: ' . $e->getMessage());
             return redirect()->route('customer.riwayat')
-                           ->with('error', 'Transaksi tidak ditemukan atau terjadi kesalahan.');
+                ->with('error', 'Transaksi tidak ditemukan atau terjadi kesalahan.');
         }
     }
 
@@ -760,17 +662,17 @@ class BookingController extends Controller
         try {
             $meja = Meja::findOrFail($mejaId);
             $testDate = $request->get('date', now()->toDateString());
-            
+
             // Get actual bookings for this date
             $bookings = $meja->transaksis()
                 ->whereIn('status_pembayaran', ['paid', 'pending'])
                 ->where('tanggal_booking', $testDate)
                 ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed'])
                 ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
-            
+
             // Test if 21:00 slot is available
             $isAvailable = $meja->isTimeSlotAvailable($testDate, '21:00', 1);
-            
+
             return response()->json([
                 'success' => true,
                 'meja_id' => $mejaId,
@@ -780,7 +682,6 @@ class BookingController extends Controller
                 'is_available' => $isAvailable,
                 'should_be_unavailable_if_booking_exists' => $bookings->count() > 0
             ]);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
