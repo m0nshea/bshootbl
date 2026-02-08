@@ -248,9 +248,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     Route::get('/pengguna/{id}/edit', [\App\Http\Controllers\Admin\PenggunaController::class, 'edit'])->name('pengguna.edit');
     
-    Route::get('/laporan', function () {
-        return view('adminLaporan.laporan');
-    })->name('laporan');
+    Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan');
+    Route::post('/laporan/reset', [\App\Http\Controllers\Admin\LaporanController::class, 'resetData'])->name('laporan.reset');
+    Route::get('/laporan/data', [\App\Http\Controllers\Admin\LaporanController::class, 'getData'])->name('laporan.data');
 });
 
 // Customer Routes (Pelanggan) - Some routes protected by auth middleware

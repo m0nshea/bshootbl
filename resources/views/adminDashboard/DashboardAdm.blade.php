@@ -291,11 +291,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
-                    },
+                    beginAtZero: false,
+                    min: 30000,
+                    max: 1000000,
                     ticks: {
+                        stepSize: 100000,
                         callback: function(value) {
                             return formatCurrency(value);
                         },
@@ -303,6 +303,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             family: 'Poppins',
                             size: 11
                         }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
                     }
                 }
             },
