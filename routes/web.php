@@ -271,6 +271,7 @@ Route::prefix('pelanggan')->name('customer.')->group(function () {
     Route::get('/meja/{id}/available-dates', [\App\Http\Controllers\Customer\BookingController::class, 'getAvailableDates'])->name('meja.available-dates');
     Route::get('/meja/{id}/test-overlap', [\App\Http\Controllers\Customer\BookingController::class, 'testOverlap'])->name('meja.test-overlap');
     Route::get('/meja/{id}/debug-timeslot', [\App\Http\Controllers\Customer\BookingController::class, 'debugTimeSlot'])->name('meja.debug-timeslot');
+    Route::get('/debug-table-structure', [\App\Http\Controllers\Customer\BookingController::class, 'debugTableStructure'])->name('debug.table-structure');
     Route::post('/meja/{id}/check-time-slot', [\App\Http\Controllers\Customer\BookingController::class, 'checkTimeSlotAvailability'])->name('meja.check-time-slot');
     
     // Backward compatibility route for meja by type
@@ -362,7 +363,7 @@ Route::get('/test-available-times/{mejaId}', function($mejaId) {
         $date = request('date', now()->format('Y-m-d'));
         
         $transaksis = \App\Models\Transaksi::where('meja_id', $mejaId)
-            ->where('tanggal_booking', $date)
+            ->where('tanggal_main', $date)
             ->whereIn('status_pembayaran', ['paid', 'pending'])
             ->get();
             
@@ -376,8 +377,7 @@ Route::get('/test-available-times/{mejaId}', function($mejaId) {
                     'id' => $t->id,
                     'jam_mulai' => $t->jam_mulai,
                     'durasi' => $t->durasi,
-                    'status_pembayaran' => $t->status_pembayaran,
-                    'status_booking' => $t->status_booking
+                    'status_pembayaran' => $t->status_pembayaran
                 ];
             })
         ]);

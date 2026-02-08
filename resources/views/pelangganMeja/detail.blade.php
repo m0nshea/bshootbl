@@ -143,8 +143,21 @@
                         </div>
                         
                         <div class="form-group">
+                            <label class="form-label">Durasi (Jam)</label>
+                            <select class="form-select" id="duration" name="durasi" required>
+                                <option value="">Pilih Durasi</option>
+                                <option value="1">1 Jam</option>
+                                <option value="2">2 Jam</option>
+                                <option value="3">3 Jam</option>
+                                <option value="4">4 Jam</option>
+                                <option value="5">5 Jam</option>
+                            </select>
+                            <small class="text-muted">Pilih durasi untuk melihat slot waktu yang tersedia</small>
+                        </div>
+                        
+                        <div class="form-group">
                             <label class="form-label">Tanggal</label>
-                            <input type="date" class="form-input" id="bookingDate" name="tanggal_booking" placeholder="mm/dd/yyyy" required disabled>
+                            <input type="date" class="form-input" id="bookingDate" name="tanggal_main" placeholder="mm/dd/yyyy" required disabled>
                             <small class="text-muted">Pilih durasi terlebih dahulu untuk melihat tanggal yang tersedia</small>
                             <div id="availableDatesInfo" class="mt-2" style="display: none;">
                                 <small class="text-info">
@@ -168,18 +181,7 @@
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label">Durasi (Jam)</label>
-                            <select class="form-select" id="duration" name="durasi" required>
-                                <option value="">Pilih Durasi</option>
-                                <option value="1">1 Jam</option>
-                                <option value="2">2 Jam</option>
-                                <option value="3">3 Jam</option>
-                                <option value="4">4 Jam</option>
-                                <option value="5">5 Jam</option>
-                            </select>
-                            <small class="text-muted">Pilih durasi untuk melihat slot waktu yang tersedia</small>
-                        </div>
+                        
                         
                         <div class="total-section">
                             <div class="total-row">

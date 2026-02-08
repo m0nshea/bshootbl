@@ -48,8 +48,7 @@ class Meja extends Model
         // Check if there's a paid booking for today or future
         return $this->transaksis()
             ->where('status_pembayaran', 'paid')
-            ->where('tanggal_booking', '>=', now()->toDateString())
-            ->where('status_booking', '!=', 'completed')
+            ->where('tanggal_main', '>=', now()->toDateString())
             ->exists();
     }
 
@@ -75,17 +74,16 @@ class Meja extends Model
             $dateCarbon = \Carbon\Carbon::parse($date)->startOfDay();
 
             $conflictingBookings = $this->transaksis()
-                ->select('id', 'jam_mulai', 'durasi', 'tanggal_booking')
-                ->whereIn('status_pembayaran', ['paid', 'pending'])
-                ->whereDate('tanggal_booking', $dateCarbon) // Gunakan whereDate
-                ->where('status_booking', 'confirmed')
+                ->select('id', 'jam_mulai', 'durasi', 'tanggal_main')
+                ->where('status_pembayaran', 'paid')
+                ->whereDate('tanggal_main', $dateCarbon) // Gunakan whereDate
                 ->get();
 
 
             foreach ($conflictingBookings as $booking) {
                 try {
-                    // FIX: Ambil hanya tanggal dari tanggal_booking
-                    $bookingDate = \Carbon\Carbon::parse($booking->tanggal_booking)->format('Y-m-d');
+                    // FIX: Ambil hanya tanggal dari tanggal_main
+                    $bookingDate = \Carbon\Carbon::parse($booking->tanggal_main)->format('Y-m-d');
 
                     // Parse jam_mulai (format TIME saja: 08:00:00)
                     $bookingStart = \Carbon\Carbon::parse($bookingDate . ' ' . $booking->jam_mulai);
@@ -141,10 +139,9 @@ class Meja extends Model
 
         try {
             $bookings = $this->transaksis()
-                ->select('id', 'jam_mulai', 'durasi', 'tanggal_booking')
-                ->whereIn('status_pembayaran', ['paid', 'pending']) // Include pending payments
-                ->where('tanggal_booking', $date)
-                ->where('status_booking', 'confirmed') // Exclude only completed/cancelled/failed
+                ->select('id', 'jam_mulai', 'durasi', 'tanggal_main')
+                ->where('status_pembayaran', 'paid')
+                ->where('tanggal_main', $date)
                 ->get();
 
             foreach ($bookings as $booking) {
@@ -234,8 +231,7 @@ class Meja extends Model
         // Check if table has any bookings today
         $hasBookingsToday = $this->transaksis()
             ->where('status_pembayaran', 'paid')
-            ->where('tanggal_booking', now()->toDateString())
-            ->where('status_booking', '!=', 'completed')
+            ->where('tanggal_main', now()->toDateString())
             ->exists();
 
         return $hasBookingsToday ? 'partially_booked' : 'available';

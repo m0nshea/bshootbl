@@ -61,10 +61,8 @@ class BookingController extends Controller
                 'meja_status' => $meja->status,
                 'debug' => [
                     'total_bookings' => $meja->transaksis()
-                        ->where('tanggal_booking', $date)
-                        ->whereIn('status_pembayaran', ['paid', 'pending'])
-                        ->where('status_booking', '!=', 'completed')
-                        ->where('status_booking', '!=', 'cancelled')
+                        ->where('tanggal_main', $date)
+                        ->where('status_pembayaran', 'paid')
                         ->count()
                 ]
             ]);
@@ -185,16 +183,14 @@ class BookingController extends Controller
 
             // Get ALL bookings for this date (regardless of status)
             $allBookings = $meja->transaksis()
-                ->where('tanggal_booking', $date)
-                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
+                ->where('tanggal_main', $date)
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'created_at']);
 
             // Get filtered bookings (what the system uses)
             $filteredBookings = $meja->transaksis()
                 ->where('status_pembayaran', 'paid')
-                ->where('tanggal_booking', $date)
-                ->where('status_booking', '!=', 'completed')
-                ->where('status_booking', '!=', 'cancelled')
-                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking', 'created_at']);
+                ->where('tanggal_main', $date)
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'created_at']);
 
             // Test the specific time slot
             $requestedStart = \Carbon\Carbon::parse($date . ' ' . $time);
@@ -223,8 +219,7 @@ class BookingController extends Controller
                     'booking_time' => $bookingStart->format('H:i') . '-' . $bookingEnd->format('H:i'),
                     'requested_time' => $requestedStart->format('H:i') . '-' . $requestedEnd->format('H:i'),
                     'overlaps' => $overlaps,
-                    'status_pembayaran' => $booking->status_pembayaran,
-                    'status_booking' => $booking->status_booking
+                    'status_pembayaran' => $booking->status_pembayaran
                 ];
             }
 
@@ -345,7 +340,7 @@ class BookingController extends Controller
             $validated = $request->validate([
                 'meja_id' => 'required|exists:mejas,id',
                 'jenis_ball' => 'required|in:8_ball,9_ball',
-                'tanggal_booking' => 'required|date|after_or_equal:today',
+                'tanggal_main' => 'required|date|after_or_equal:today',
                 'jam_mulai' => 'required|date_format:H:i',
                 'durasi' => 'required|integer|min:1|max:8',
                 'metode_pembayaran' => 'required|in:qris,transfer,ewallet',
@@ -357,7 +352,7 @@ class BookingController extends Controller
 
             // Check if the requested time slot is available
             $isAvailable = $meja->isTimeSlotAvailable(
-                $validated['tanggal_booking'],
+                $validated['tanggal_main'],
                 $validated['jam_mulai'],
                 $validated['durasi']
             );
@@ -388,14 +383,13 @@ class BookingController extends Controller
                 'user_id' => Auth::id(),
                 'meja_id' => $validated['meja_id'],
                 'jenis_ball' => $validated['jenis_ball'],
-                'tanggal_booking' => \Carbon\Carbon::parse($validated['tanggal_booking'])->startOfDay(),
+                'tanggal_main' => \Carbon\Carbon::parse($validated['tanggal_main'])->startOfDay(),
                 'jam_mulai' => $validated['jam_mulai'],
                 'durasi' => $validated['durasi'],
                 'harga_per_jam' => $meja->harga,
                 'total_harga' => $totalHarga,
                 'metode_pembayaran' => $validated['metode_pembayaran'],
                 'status_pembayaran' => 'pending',
-                'status_booking' => 'confirmed',
                 'catatan' => $validated['catatan'] ?? null
             ]);
 
@@ -588,7 +582,6 @@ class BookingController extends Controller
 
         $transaksi->update([
             'status_pembayaran' => 'paid',
-            'status_booking' => 'confirmed',
             'paid_at' => now()
         ]);
 
@@ -665,10 +658,9 @@ class BookingController extends Controller
 
             // Get actual bookings for this date
             $bookings = $meja->transaksis()
-                ->whereIn('status_pembayaran', ['paid', 'pending'])
-                ->where('tanggal_booking', $testDate)
-                ->whereNotIn('status_booking', ['completed', 'cancelled', 'failed'])
-                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran', 'status_booking']);
+                ->where('status_pembayaran', 'paid')
+                ->where('tanggal_main', $testDate)
+                ->get(['id', 'jam_mulai', 'durasi', 'status_pembayaran']);
 
             // Test if 21:00 slot is available
             $isAvailable = $meja->isTimeSlotAvailable($testDate, '21:00', 1);
@@ -686,6 +678,45 @@ class BookingController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Debug method to check table structure after migration
+     */
+    public function debugTableStructure()
+    {
+        try {
+            // Get table columns
+            $columns = \Schema::getColumnListing('transaksis');
+            
+            // Get sample transaksi
+            $sampleTransaksi = \App\Models\Transaksi::first();
+            
+            return response()->json([
+                'success' => true,
+                'table_columns' => $columns,
+                'sample_transaksi' => $sampleTransaksi ? [
+                    'id' => $sampleTransaksi->id,
+                    'kode_transaksi' => $sampleTransaksi->kode_transaksi,
+                    'tanggal_main' => $sampleTransaksi->tanggal_main ?? 'NULL',
+                    'jam_mulai' => $sampleTransaksi->jam_mulai,
+                    'status_pembayaran' => $sampleTransaksi->status_pembayaran,
+                    'has_tanggal_booking' => isset($sampleTransaksi->tanggal_booking),
+                    'has_payment_type' => isset($sampleTransaksi->payment_type),
+                ] : null,
+                'timezone_info' => [
+                    'app_timezone' => config('app.timezone'),
+                    'current_time' => now()->format('Y-m-d H:i:s T'),
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
     }

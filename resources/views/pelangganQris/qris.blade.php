@@ -359,7 +359,7 @@ body {
                             </tr>
                             <tr>
                                 <td>Tanggal</td>
-                                <td>: {{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_booking)->format('d F Y') : '10 Desember 2025' }}</td>
+                                <td>: {{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_main)->format('d F Y') : '10 Desember 2025' }}</td>
                             </tr>
                             <tr>
                                 <td>Waktu</td>

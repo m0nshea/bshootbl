@@ -131,13 +131,13 @@
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;">
                     @if($transaksi->status_pembayaran === 'paid')
-                      <span class="badge bg-success" style="font-size: 0.75rem; padding: 6px 12px;">Lunas</span>
+                      <span class="badge bg-success" style="font-size: 0.50rem; padding: 6px 12px;">Lunas</span>
                     @elseif($transaksi->status_pembayaran === 'pending')
-                      <span class="badge bg-warning text-dark" style="font-size: 0.75rem; padding: 6px 12px;">Menunggu Pembayaran</span>
+                      <span class="badge bg-warning text-dark" style="font-size: 0.50rem; padding: 6px 12px;">Menunggu Pembayaran</span>
                     @elseif($transaksi->status_pembayaran === 'failed')
-                      <span class="badge bg-danger" style="font-size: 0.75rem; padding: 6px 12px;">Pembayaran Gagal</span>
+                      <span class="badge bg-danger" style="font-size: 0.50rem; padding: 6px 12px;">Pembayaran Gagal</span>
                     @else
-                      <span class="badge bg-secondary" style="font-size: 0.75rem; padding: 6px 12px;">{{ $transaksi->status_pembayaran_text }}</span>
+                      <span class="badge bg-secondary" style="font-size: 0.50rem; padding: 6px 12px;">{{ $transaksi->status_pembayaran_text }}</span>
                     @endif
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;">
@@ -161,13 +161,13 @@
                          style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">
                         Detail
                       </a>
-                      @if($transaksi->status_booking === 'confirmed')
+                      @if($transaksi->status_pembayaran  === 'confirmed')
                         <button onclick="checkinCustomer({{ $transaksi->id }})" 
                                 class="btn btn-success btn-sm" 
                                 style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">
                           Check In
                         </button>
-                      @elseif($transaksi->status_booking === 'ongoing')
+                      @elseif($transaksi->status_pembayaran  === 'ongoing')
                         <button onclick="checkoutCustomer({{ $transaksi->id }})" 
                                 class="btn btn-warning btn-sm" 
                                 style="font-size: 0.75rem; padding: 4px 8px; width: 80px;">

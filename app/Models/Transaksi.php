@@ -15,13 +15,12 @@ class Transaksi extends Model
         'user_id',
         'meja_id',
         'jenis_ball',
-        'tanggal_booking',
+        'tanggal_main',
         'jam_mulai',
         'durasi',
         'harga_per_jam',
         'total_harga',
         'status_pembayaran',
-        'status_booking',
         'metode_pembayaran',
         'catatan',
         'waktu_checkin',
@@ -29,13 +28,12 @@ class Transaksi extends Model
         // Midtrans fields
         'snap_token',
         'midtrans_order_id',
-        'payment_type',
         'payment_expires_at',
         'paid_at'
     ];
 
     protected $casts = [
-        'tanggal_booking' => 'date',
+        'tanggal_main' => 'date',
         'jam_mulai' => 'string',
         'harga_per_jam' => 'decimal:2',
         'total_harga' => 'decimal:2',
@@ -169,39 +167,11 @@ class Transaksi extends Model
     }
 
     /**
-     * Get status booking badge class
+     * Get formatted tanggal main
      */
-    public function getStatusBookingBadgeAttribute()
+    public function getFormattedTanggalMainAttribute()
     {
-        return match($this->status_booking) {
-            'confirmed' => 'bg-info',
-            'ongoing' => 'bg-primary',
-            'completed' => 'bg-success',
-            'cancelled' => 'bg-secondary',
-            default => 'bg-info'
-        };
-    }
-
-    /**
-     * Get status booking text
-     */
-    public function getStatusBookingTextAttribute()
-    {
-        return match($this->status_booking) {
-            'confirmed' => 'Dikonfirmasi',
-            'ongoing' => 'Sedang Berlangsung',
-            'completed' => 'Selesai',
-            'cancelled' => 'Dibatalkan',
-            default => 'Dikonfirmasi'
-        };
-    }
-
-    /**
-     * Get formatted tanggal booking
-     */
-    public function getFormattedTanggalBookingAttribute()
-    {
-        return $this->tanggal_booking->format('d/m/Y');
+        return $this->tanggal_main->format('d/m/Y');
     }
 
     /**
@@ -261,5 +231,37 @@ class Transaksi extends Model
     {
         $jamMulai = Carbon::parse($this->jam_mulai);
         return $jamMulai->addHours((int)$this->durasi)->format('H:i:s');
+    }
+
+    /**
+     * Get formatted tanggal booking (backward compatibility)
+     */
+    public function getFormattedTanggalBookingAttribute()
+    {
+        return $this->tanggal_main->format('d/m/Y');
+    }
+
+    /**
+     * Backward compatibility for status_booking (always return 'confirmed' for paid transactions)
+     */
+    public function getStatusBookingAttribute()
+    {
+        return $this->status_pembayaran === 'paid' ? 'confirmed' : 'pending';
+    }
+
+    /**
+     * Backward compatibility for status_booking_text
+     */
+    public function getStatusBookingTextAttribute()
+    {
+        return $this->status_pembayaran === 'paid' ? 'Dikonfirmasi' : 'Menunggu Pembayaran';
+    }
+
+    /**
+     * Backward compatibility for status_booking_badge
+     */
+    public function getStatusBookingBadgeAttribute()
+    {
+        return $this->status_pembayaran === 'paid' ? 'bg-info' : 'bg-warning';
     }
 }

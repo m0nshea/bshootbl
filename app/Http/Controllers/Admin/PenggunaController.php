@@ -117,7 +117,6 @@ class PenggunaController extends Controller
         $userStats = [
             'total_transaksi' => $pengguna->transaksis->count(),
             'total_spent' => $pengguna->transaksis->where('status_pembayaran', 'paid')->sum('total_harga'),
-            'transaksi_completed' => $pengguna->transaksis->where('status_booking', 'completed')->count(),
             'transaksi_pending' => $pengguna->transaksis->where('status_pembayaran', 'pending')->count(),
             'last_transaction' => $pengguna->transaksis->sortByDesc('created_at')->first(),
             'favorite_meja' => $pengguna->transaksis->groupBy('meja_id')

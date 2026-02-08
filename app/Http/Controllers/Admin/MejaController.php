@@ -17,7 +17,7 @@ class MejaController extends Controller
     public function index()
     {
         try {
-            $mejas = Meja::with('category')->latest()->paginate(10);
+            $mejas = Meja::with('category')->oldest()->paginate(10);
             return view('adminMeja.meja', compact('mejas'));
         } catch (\Exception $e) {
             return response()->json([

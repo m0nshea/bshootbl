@@ -90,7 +90,6 @@ class WebhookPaymentService
             case 'capture':
                 if ($fraudStatus == 'accept') {
                     $updateData['status_pembayaran'] = 'paid';
-                    $updateData['status_booking'] = 'confirmed';
                     $updateData['paid_at'] = now();
                 } else {
                     $updateData['status_pembayaran'] = 'pending';
@@ -99,19 +98,16 @@ class WebhookPaymentService
 
             case 'settlement':
                 $updateData['status_pembayaran'] = 'paid';
-                $updateData['status_booking'] = 'confirmed';
                 $updateData['paid_at'] = now();
                 break;
 
             case 'pending':
                 $updateData['status_pembayaran'] = 'pending';
-                $updateData['status_booking'] = 'pending';
                 break;
 
             case 'deny':
             case 'cancel':
                 $updateData['status_pembayaran'] = 'failed';
-                $updateData['status_booking'] = 'cancelled';
                 
                 // Make meja available again
                 $transaksi->meja->update(['status' => 'available']);
@@ -119,7 +115,6 @@ class WebhookPaymentService
 
             case 'expire':
                 $updateData['status_pembayaran'] = 'expired';
-                $updateData['status_booking'] = 'cancelled';
                 
                 // Make meja available again
                 $transaksi->meja->update(['status' => 'available']);

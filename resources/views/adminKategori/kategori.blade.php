@@ -224,12 +224,21 @@ $(document).ready(function() {
 @push('styles')
 <style>
 .kategori-thumb {
-  width: 45px;
-  height: 32px;
+  /* Default sizes - can be overridden per-img using inline CSS variables
+     e.g. <img ... style="--kategori-thumb-width:80px; --kategori-thumb-height:56px;"> */
+  --kategori-thumb-width: 80px;
+  --kategori-thumb-height: 60px;
+  width: var(--kategori-thumb-width);
+  height: var(--kategori-thumb-height);
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid #dee2e6;
 }
+
+/* Utility modifiers for quick presets */
+.kategori-thumb--sm { --kategori-thumb-width: 40px; --kategori-thumb-height: 28px; }
+.kategori-thumb--md { --kategori-thumb-width: 56px; --kategori-thumb-height: 40px; }
+.kategori-thumb--lg { --kategori-thumb-width: 80px; --kategori-thumb-height: 56px; }
 
 .table-hover-effect {
   background-color: #f8f9fa !important;

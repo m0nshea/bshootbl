@@ -24,25 +24,25 @@
 
     <!-- Filter Section -->
     <div class="filter-section" >
-      <div class="row" style="padding: 10px;">
+      <div class="row" style="padding: 5px;">
         <div class="col-md-3">
-          <label class="form-label" style="margin:5px;">Jenis Laporan</label>
-          <select class="form-control" id="reportType" style="margin:5px;">
+          <label class="form-label" style="margin-right: 5px;">Jenis Laporan</label>
+          <select class="form-control" id="reportType" style="margin-right: 5px;">
             <option value="revenue" >Laporan Pendapatan</option>
             <option value="transaction">Laporan Transaksi</option>
             <option value="table">Laporan Meja</option>
             <option value="customer">Laporan Pelanggan</option>
           </select>
         </div>
-        <div class="col-md-2" style="margin:5px;">
+        <div class="col-md-2" style="margin-right: 5px;">
           <label class="form-label">Dari Tanggal</label>
           <input type="date" class="form-control" id="startDate" value="2025-12-01">
         </div>
-        <div class="col-md-2" style="margin:5px;">
+        <div class="col-md-2" style="margin-right: 5px;">
           <label class="form-label">Sampai Tanggal</label>
           <input type="date" class="form-control" id="endDate" value="2025-12-10">
         </div>
-        <div class="col-md-2" style="margin:5px;">
+        <div class="col-md-2" style="margin-right: 5px;">
           <label class="form-label">Periode</label>
           <select class="form-control" id="period">
             <option value="daily">Harian</option>
@@ -51,14 +51,22 @@
             <option value="yearly">Tahunan</option>
           </select>
         </div>
-        <div class="col-md-2" style="margin:5px;">
-          <button class="btn btn-primary mb-2 w-100" onclick="generateReport()">Generate</button>
+        <div class="col-md-2" style="margin-right: 5px; margin-top: 30px;">
+          <button class="btn btn-primary mb-2 w-100" onclick="generateReport()">Terapkan</button>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Unduh Laporan</label>
+          <div class="d-flex gap-2 mt-2">
+            <button class="btn btn-outline-success btn-sm px-2 py-1" onclick="exportExcel()">Excel</button>
+            <button class="btn btn-outline-danger btn-sm px-2 py-1" onclick="exportPDF()">PDF</button>
+            <button class="btn btn-outline-info btn-sm px-2 py-1" onclick="printReport()">Print</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Chart Section -->
-    <div class="row">
+    <div class="row"style="margin:5px;">
       <div class="col-md-8">
         <div class="card">
           <div class="card-header">

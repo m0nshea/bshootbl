@@ -107,35 +107,30 @@
                   <td style="padding: 12px 10px; text-align: center; font-weight: bold; min-width: 60px; width: 60px;">
                     {{ $users->firstItem() + $index }}
                   </td>
-                  <td style="padding: 12px 10px; min-width: 200px; width: 200px;">
-                    <div style="display: flex; align-items: center;">
-                      <div style="width: 35px; height: 35px; background: #e9ecef; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 0.9rem; margin-right: 10px;">
-                        <i class="fas fa-user"></i>
-                      </div>
+                  <td style="padding: 12px 10px; min-width: 200px; width: 200px; align-items: center;">                   
                       <div>
                         <strong style="display: block; margin-bottom: 2px; font-size: 0.9rem;">{{ $user->name }}</strong>
                         <small style="color: #6c757d; font-size: 0.75rem;">{{ $user->role_text }}</small>
-                      </div>
-                    </div>
+                      </div>                  
                   </td>
                   <td style="padding: 12px 10px; min-width: 220px; width: 220px;">
                     <span style="color: #007bff; font-size: 0.85rem;">{{ $user->email }}</span>
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 120px; width: 120px;">
-                    <span style="font-size: 0.85rem;">{{ $user->no_telepon ?: '-' }}</span>
+                    <span style="font-size: 0.8rem;">{{ $user->no_telepon ?: '-' }}</span>
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 100px; width: 100px;">
                     @if($user->role === 'admin')
-                      <span class="badge bg-danger" style="font-size: 0.75rem; padding: 6px 10px;">ADMIN</span>
+                      <span class="badge bg-danger" style="font-size: 0.6rem; padding: 6px 10px;">ADMIN</span>
                     @else
-                      <span class="badge bg-primary" style="font-size: 0.75rem; padding: 6px 10px;">CUSTOMER</span>
+                      <span class="badge bg-primary" style="font-size: 0.6rem; padding: 6px 10px;">CUSTOMER</span>
                     @endif
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 100px; width: 100px;">
                     @if($user->status === 'active')
-                      <span class="badge bg-success" style="font-size: 0.75rem; padding: 6px 10px;">AKTIF</span>
+                      <span class="badge bg-success" style="font-size: 0.6rem; padding: 6px 10px;">AKTIF</span>
                     @else
-                      <span class="badge bg-secondary" style="font-size: 0.75rem; padding: 6px 10px;">NONAKTIF</span>
+                      <span class="badge bg-secondary" style="font-size: 0.6rem; padding: 6px 10px;">NONAKTIF</span>
                     @endif
                   </td>
                   <td style="padding: 12px 10px; text-align: center; min-width: 100px; width: 100px;">
@@ -158,39 +153,20 @@
                       </small>
                     </div>
                   </td>
-                  <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;">
-                    <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                      <div style="display: flex; gap: 4px;">
-                        <a href="{{ route('admin.pengguna.show', $user->id) }}" 
-                           class="btn btn-info btn-sm" 
-                           style="font-size: 0.75rem; padding: 4px 8px; width: 35px;" 
-                           title="Detail">
-                          <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="{{ route('admin.pengguna.edit', $user->id) }}" 
-                           class="btn btn-primary btn-sm" 
-                           style="font-size: 0.75rem; padding: 4px 8px; width: 35px;" 
-                           title="Edit">
-                          <i class="fas fa-edit"></i>
-                        </a>
-                      </div>
-                      <div style="display: flex; gap: 4px;">
-                        @if($user->transaksis_count == 0)
-                          <button onclick="deleteUser({{ $user->id }})" 
-                                  class="btn btn-danger btn-sm" 
-                                  style="font-size: 0.75rem; padding: 4px 8px; width: 74px;" 
-                                  title="Hapus">
-                            <i class="fas fa-trash me-1"></i>Hapus
-                          </button>
-                        @else
-                          <button onclick="toggleUserStatus({{ $user->id }})" 
-                                  class="btn btn-warning btn-sm" 
-                                  style="font-size: 0.75rem; padding: 4px 8px; width: 74px;" 
-                                  title="Toggle Status">
-                            <i class="fas fa-toggle-{{ $user->status === 'active' ? 'on' : 'off' }} me-1"></i>Toggle
-                          </button>
-                        @endif
-                      </div>
+                  <td style="padding: 12px 10px; text-align: center; min-width: 160px; width: 160px;" class="align-middle">
+                    <div style="display:flex; justify-content:center; gap:8px;">
+                      <button type="button"
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#0d6efd; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              title="Edit pengguna"
+                              onclick="window.location='{{ route('admin.pengguna.edit', $user->id) }}'">
+                        ✏️
+                      </button>
+                      <button type="button"
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#dc3545; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              onclick="deleteUser({{ $user->id }})"
+                              title="Hapus pengguna">
+                        🗑️
+                      </button>
                     </div>
                   </td>
                 </tr>

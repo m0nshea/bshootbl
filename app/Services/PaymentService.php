@@ -266,8 +266,7 @@ class PaymentService
 
             // Update transaction status
             $transaksi->update([
-                'status_pembayaran' => 'cancelled',
-                'status_booking' => 'cancelled'
+                'status_pembayaran' => 'cancelled'
             ]);
 
             return [

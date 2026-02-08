@@ -86,7 +86,7 @@
 /* Filter Section */
 .filter-section {
   background: white;
-  padding: 25px;
+  padding: 15px 25px 15px 25px;
   border-radius: 12px;
   margin-bottom: 25px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -96,15 +96,15 @@
 .filter-section .form-label {
   font-weight: 600;
   color: #374151;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 0.9rem;
 }
 
 .filter-section .form-control {
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 0.9rem;
+  padding: 5px 8px;
+  font-size: 0.8rem;
   transition: all 0.3s ease;
   background: #f9fafb;
 }
@@ -130,7 +130,7 @@
 .btn {
   border-radius: 8px;
   font-weight: 600;
-  padding: 8px 12px;
+  padding: 7px 10px;
   font-size: 0.8rem;
   transition: all 0.3s ease;
   border: none;

@@ -70,22 +70,32 @@
                   <td class="text-center fw-bold">{{ $mejas->firstItem() + $index }}</td>
                   <td><span class="fw-semibold">{{ $meja->nama_meja }}</span></td>
                   <td class="text-center">
-                    <span class="badge bg-secondary">Lantai {{ $meja->lantai ?? '1' }}</span>
+                    <span class="fw-semibold">Lantai {{ $meja->lantai ?? '1' }}</span>
                   </td>
                   <td class="text-center">
-                    <span class="badge bg-{{ $meja->category->nama == 'VIP' ? 'warning' : ($meja->category->nama == '8 Ball' ? 'primary' : ($meja->category->nama == '9 Ball' ? 'success' : 'info')) }}">
+                    <span class="fw-semibold-{{ $meja->category->nama == 'VIP' ? 'warning' : ($meja->category->nama == '8 Ball' ? 'primary' : ($meja->category->nama == '9 Ball' ? 'success' : 'info')) }}">
                       {{ $meja->category->nama }}
                     </span>
                   </td>
                   <td class="text-center"><span class="fw-bold text-success">{{ $meja->formatted_harga }}</span></td>
-                  <td class="text-center"><span class="status-badge {{ $meja->status_badge }}">{{ $meja->status_text }}</span></td>
+                  <td class="text-center"><span class="fw-semibold {{ $meja->status_badge }}">{{ $meja->status_text }}</span></td>
                   <td class="text-center">
                     <img src="{{ $meja->foto_url }}" alt="{{ $meja->nama_meja }}" class="table-image shadow-sm" style="width: 60px; height: 45px; object-fit: cover;" />
                   </td>
-                  <td class="text-center">
-                    <div class="d-flex justify-content-center gap-1">
-                      <a href="{{ route('admin.meja.edit', $meja->id) }}" class="btn btn-info btn-sm" title="Edit Meja">Edit</a>
-                      <button onclick="deleteTable({{ $meja->id }})" class="btn btn-danger btn-sm" title="Hapus Meja">Hapus</button>
+                  <td class="text-center align-middle">
+                    <div style="display:flex; justify-content:center; gap:8px;">
+                      <button type="button"
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#0d6efd; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              title="Edit meja"
+                              onclick="window.location='{{ route('admin.meja.edit', $meja->id) }}'">
+                        ✏️
+                      </button>
+                      <button type="button"
+                              style="width:40px; height:40px; border:none; border-radius:4px; background-color:#dc3545; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
+                              onclick="deleteTable({{ $meja->id }})"
+                              title="Hapus meja">
+                        🗑️
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -108,13 +118,52 @@
         
         <!-- Pagination Info -->
         @if($mejas->hasPages())
-          <div class="d-flex justify-content-between align-items-center p-3 border-top">
-            <small class="text-muted">
-              Menampilkan {{ $mejas->firstItem() }} sampai {{ $mejas->lastItem() }} 
-              dari {{ $mejas->total() }} data
-            </small>
-            <div class="d-flex gap-1">
-              {{ $mejas->links('pagination::bootstrap-4') }}
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid #dee2e6; background-color: #f8f9fa;">
+            <div style="display: flex; align-items: center;">
+              <small style="color: #6c757d;">
+                Menampilkan {{ $mejas->firstItem() }} sampai {{ $mejas->lastItem() }} 
+                dari {{ $mejas->total() }} data
+              </small>
+            </div>
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+              <nav aria-label="Page navigation">
+                <ul style="display: flex; list-style: none; padding: 0; margin: 0; gap: 4px;">
+                  {{-- Previous Page Link --}}
+                  @if ($mejas->onFirstPage())
+                    <li style="display: inline-block;">
+                      <span style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: #6c757d; background-color: #fff; border: 1px solid #dee2e6; border-radius: 6px; opacity: 0.5; cursor: not-allowed;">‹</span>
+                    </li>
+                  @else
+                    <li style="display: inline-block;">
+                      <a href="{{ $mejas->previousPageUrl() }}" rel="prev" style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: #495057; background-color: #fff; border: 1px solid #dee2e6; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">‹</a>
+                    </li>
+                  @endif
+
+                  {{-- Pagination Elements --}}
+                  @foreach ($mejas->getUrlRange(1, $mejas->lastPage()) as $page => $url)
+                    @if ($page == $mejas->currentPage())
+                      <li style="display: inline-block;">
+                        <span style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: 1px solid #28a745; border-radius: 6px; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3); cursor: default;">{{ $page }}</span>
+                      </li>
+                    @else
+                      <li style="display: inline-block;">
+                        <a href="{{ $url }}" style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: #495057; background-color: #fff; border: 1px solid #dee2e6; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">{{ $page }}</a>
+                      </li>
+                    @endif
+                  @endforeach
+
+                  {{-- Next Page Link --}}
+                  @if ($mejas->hasMorePages())
+                    <li style="display: inline-block;">
+                      <a href="{{ $mejas->nextPageUrl() }}" rel="next" style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: #495057; background-color: #fff; border: 1px solid #dee2e6; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">›</a>
+                    </li>
+                  @else
+                    <li style="display: inline-block;">
+                      <span style="display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: #6c757d; background-color: #fff; border: 1px solid #dee2e6; border-radius: 6px; opacity: 0.5; cursor: not-allowed;">›</span>
+                    </li>
+                  @endif
+                </ul>
+              </nav>
             </div>
           </div>
         @endif
@@ -209,6 +258,121 @@
 #datatable td:nth-child(6) { width: 12% !important; }
 #datatable td:nth-child(7) { width: 10% !important; }
 #datatable td:nth-child(8) { width: 8% !important; }
+
+/* Pagination Container */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+}
+
+/* Pagination Styling */
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.pagination-wrapper nav {
+  display: flex;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 4px;
+}
+
+.pagination .page-item {
+  display: inline-block;
+}
+
+.pagination .page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.pagination .page-link:hover {
+  color: #28a745;
+  background-color: #f8f9fa;
+  border-color: #28a745;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination .page-item.active .page-link {
+  color: #fff;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border-color: #28a745;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  cursor: default;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  background-color: #fff;
+  border-color: #dee2e6;
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pagination .page-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+}
+
+/* Responsive pagination */
+@media (max-width: 576px) {
+  .pagination .page-link {
+    min-width: 32px;
+    height: 32px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .pagination {
+    gap: 2px;
+  }
+}
+
+/* Responsive pagination info */
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start !important;
+  }
+  
+  .pagination-wrapper {
+    width: 100%;
+    justify-content: center;
+  }
+}
 </style>
 @endpush
 
@@ -298,6 +462,32 @@ $(document).ready(function() {
     },
     function() {
       $(this).removeClass('table-hover-effect');
+    }
+  );
+  
+  // Pagination hover effects
+  $('nav[aria-label="Page navigation"] a').hover(
+    function() {
+      if (!$(this).parent().hasClass('disabled')) {
+        $(this).css({
+          'color': '#28a745',
+          'background-color': '#f8f9fa',
+          'border-color': '#28a745',
+          'transform': 'translateY(-1px)',
+          'box-shadow': '0 2px 4px rgba(0,0,0,0.1)'
+        });
+      }
+    },
+    function() {
+      if (!$(this).parent().hasClass('active')) {
+        $(this).css({
+          'color': '#495057',
+          'background-color': '#fff',
+          'border-color': '#dee2e6',
+          'transform': 'translateY(0)',
+          'box-shadow': 'none'
+        });
+      }
     }
   );
 });

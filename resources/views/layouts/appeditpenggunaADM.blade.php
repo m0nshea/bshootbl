@@ -16,14 +16,122 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
       
-    <!-- Fallback icons dengan CSS -->
-    <style>
-        /* Fallback untuk chevron */
-        .fa-chevron-down::before {
-            content: "▼" !important;
-            font-family: inherit !important;
+   <style>
+        /* Tambahkan ini di bagian head atau sebelum </body> */
+        @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        }
+
+        /* Hover effects */
+        .form-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-btn-primary:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-btn-secondary:hover {
+        background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+        border-color: #9ca3af;
+        }
+
+        .form-btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .status-option:hover {
+        border-color: #94a3b8;
+        background: #f8fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-content:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+        .form-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-col-6 {
+            flex: 1 1 100% !important;
+        }
+        
+        .user-profile-section {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+        
+        .detail-row {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 0.25rem;
+        }
+        
+        .detail-label {
+            min-width: auto !important;
+        }
+        
+        .detail-value {
+            text-align: left !important;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .form-actions-vertical button {
+            width: 100%;
+        }
+        
+        .timeline {
+            padding-left: 1rem !important;
+        }
+        
+        .timeline-marker {
+            left: -1rem !important;
+        }
+        }
+
+        @media (max-width: 480px) {
+        .form-card-header,
+        .form-card-body {
+            padding: 1rem !important;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem !important;
+        }
         }
     </style>
     
@@ -52,7 +160,9 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-    
+    <!-- Tambahkan FontAwesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     

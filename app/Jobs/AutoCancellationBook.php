@@ -50,8 +50,7 @@ class AutoCancellationBook implements ShouldQueue
             if ($transaksi->payment_expires_at && $transaksi->payment_expires_at <= now()) {
                 // Cancel the transaction
                 $transaksi->update([
-                    'status_pembayaran' => 'cancelled',
-                    'status_booking' => 'cancelled'
+                    'status_pembayaran' => 'cancelled'
                 ]);
                
             } else {

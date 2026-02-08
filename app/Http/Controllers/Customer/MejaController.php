@@ -16,11 +16,10 @@ class MejaController extends Controller
     {
         $mejas = Meja::with(['category', 'transaksis' => function($query) {
                         $query->where('status_pembayaran', 'paid')
-                              ->where('tanggal_booking', '>=', now()->toDateString())
-                              ->where('status_booking', '!=', 'completed');
+                              ->where('tanggal_main', '>=', now()->toDateString());
                     }])
                     ->whereIn('status', ['available', 'reserved']) // Show available and reserved meja
-                    ->latest()
+                    ->oldest()
                     ->get();
         
         // Debug: Log meja data

@@ -24,6 +24,7 @@ class DashboardController extends Controller
             
             // Transaksi hari ini hanya yang sudah dibayar
             'transaksi_hari_ini' => Transaksi::paid()->today()->count(),
+            'transaksi_paid_hari_ini' => Transaksi::paid()->today()->count(),
             'penghasilan_hari_ini' => Transaksi::paid()->today()->sum('total_harga'),
             
             // Card baru untuk transaksi pending
@@ -31,7 +32,6 @@ class DashboardController extends Controller
             'transaksi_pending_hari_ini' => Transaksi::pending()->today()->count(),
             
             // Statistik lainnya
-            'transaksi_berlangsung' => Transaksi::where('status_booking', 'ongoing')->count(),
             'total_meja' => Meja::count(),
             'meja_tersedia' => Meja::where('status', 'available')->count(),
             'meja_terpakai' => Meja::where('status', 'occupied')->count(),

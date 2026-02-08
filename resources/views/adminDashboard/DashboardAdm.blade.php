@@ -103,10 +103,10 @@
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                          Sedang Berlangsung
+                          Transaksi Paid Hari Ini
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          {{ $stats['transaksi_berlangsung'] }}
+                          {{ $stats['transaksi_paid_hari_ini'] }}
                         </div>
                       </div>
                       <div class="col-auto">
