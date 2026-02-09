@@ -46,12 +46,12 @@ class PaymentService
             $transaksi->update([
                 'snap_token' => $snapToken,
                 'midtrans_order_id' => $midtransOrderId,
-                'payment_expires_at' => now()->addMinutes(15)
+                'payment_expires_at' => now()->addMinutes(10)
             ]);
 
             // Dispatch auto cancellation job
             \App\Jobs\AutoCancellationBook::dispatch($transaksi->id)
-                ->delay(now()->addMinutes(15));
+                ->delay(now()->addMinutes(10));
 
             DB::commit();
 
@@ -166,7 +166,7 @@ class PaymentService
             'expiry' => [
                 'start_time' => now()->format('Y-m-d H:i:s O'),
                 'unit' => 'minutes',
-                'duration' => 15
+                'duration' => 10
             ]
         ];
 
