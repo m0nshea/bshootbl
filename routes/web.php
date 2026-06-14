@@ -117,6 +117,8 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
+// Reset password views are handled in routes/auth.php via controller
+
 // Customer Routes
 Route::prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', function () {

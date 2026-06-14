@@ -76,19 +76,6 @@
                 <input type="date" class="form-input" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}" />
             </div>
             
-            <!-- Kata Sandi Baru -->
-            <div class="form-group">
-                <label class="form-label">Kata Sandi Baru</label>
-                <input type="password" class="form-input" id="password_baru" name="password_baru" placeholder="Isi jika ingin mengubah kata sandi" />
-                <div class="form-help">* Kosongkan jika tidak ingin mengubah kata sandi</div>
-            </div>
-            
-            <!-- Konfirmasi Kata Sandi Baru -->
-            <div class="form-group">
-                <label class="form-label">Konfirmasi Kata Sandi Baru</label>
-                <input type="password" class="form-input" id="password_baru_confirmation" name="password_baru_confirmation" placeholder="Ulangi kata sandi baru" />
-            </div>
-            
             <!-- Buttons -->
             <div class="btn-group">
                 <a href="{{ route('customer.beranda') }}" class="btn-back">

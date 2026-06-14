@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="utf-8" />
-    <title>Masuk - Bshoot Billiard</title>
+    <title>Reset Password - Bshoot Billiard</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="Masuk ke akun Bshoot Billiard Anda" name="description" />
+    <meta content="Reset your password for Bshoot Billiard" name="description" />
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,8 +45,8 @@
             <!-- LEFT CONTENT - Login Form -->
             <div class="col-md-6 pe-md-5">
                 <div class="auth-form-wrapper">
-                    <h1 class="auth-title">Selamat Datang Kembali!</h1>
-                    <p class="auth-subtitle">Masuk ke akun Anda untuk mulai booking meja billiard favorit</p>
+                    <h1 class="auth-title">Reset Password!</h1>
+                    <p class="auth-subtitle">Masukkan email Anda untuk reset password</p>
                     
                     <!-- Session Status -->
                     @if (session('status'))
@@ -62,8 +62,8 @@
                         </div>
                     @endif
                     
-                    <!-- Login Form -->
-                    <form method="POST" action="{{ route('login') }}" id="loginForm" class="auth-form">
+                    <!-- Reset Password Request Form -->
+                    <form method="POST" action="{{ route('password.sendOtp') }}" id="resetRequestForm" class="auth-form">
                         @csrf
                         
                         <!-- Email -->
@@ -82,49 +82,15 @@
                             @enderror
                         </div>
                         
-                        <!-- Password -->
-                        <div class="form-group">
-                            <label class="form-label" for="password">Password</label>
-                            <div class="password-input-wrapper">
-                                <input type="password" 
-                                       class="form-input @error('password') is-invalid @enderror" 
-                                       id="password" 
-                                       name="password" 
-                                       placeholder="Masukkan password Anda"
-                                       required />
-                                <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </div>
-                            @error('password')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <!-- Remember Me -->
-                        <div class="form-group">
-                            <label class="form-check-label d-flex align-items-center">
-                                <input type="checkbox" 
-                                       class="form-check-input me-2" 
-                                       id="remember_me" 
-                                       name="remember">
-                                Ingat saya
-                            </label>
-                        </div>
-                        
                         <!-- Submit Button -->
                         <button type="submit" class="btn-primary">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk Sekarang
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Kirim Kode OTP
                         </button>
                         
                         <!-- Additional Links -->
                         <div class="auth-links">
-                                <a href="{{ route('resetPW') }}" class="auth-link">
-                                    Lupa password?
-                                </a>
-                            <span class="mx-2">•</span>
-                            <a href="{{ route('register') }}" class="auth-link">
-                                Belum punya akun? Daftar
+                            <a href="{{ route('login') }}" class="auth-link">
+                                Kembali ke Login
                             </a>
                         </div>
                     </form>
@@ -132,21 +98,9 @@
             </div>
             
             <!-- RIGHT IMAGE -->
-            <div class="col-md-6 ps-md-4">
-                <div class="auth-image-wrapper">
-                    <img src="{{ asset('img/ball.jpeg') }}" class="auth-image" alt="Billiard Ball" />
-                </div>
-                <div class="mt-3 auth-info-box">
-                    <h4><b>Kenapa Memilih Kami?</b></h4>
-                    <ul>
-                        <li>Booking mudah dan cepat</li>
-                        <li>Meja berkualitas premium</li>
-                        <li>Harga terjangkau</li>
-                        <li>Lokasi strategis</li>
-                    </ul>
-                    <p class="mt-3"><b>Hubungi Kami:</b><br>
-                    Jl. sri pelayang, Gn. Kembang<br>
-                    <b>0813-6780-4400</b></p>
+            <div class="col-md-6 ps-md-4" style="margin-top: 125px;">
+                <div class="auth-image-wrapper" >
+                    <img src="{{ asset('img/ball.jpeg') }}"  class="auth-image" alt="Billiard Ball" />
                 </div>
             </div>
         </div>
@@ -172,17 +126,16 @@
         }
         
         // Form validation
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('resetRequestForm').addEventListener('submit', function(e) {
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email || !emailRegex.test(email)) {
                 e.preventDefault();
-                alert('Mohon lengkapi email dan password!');
+                alert('Mohon masukkan email yang valid.');
                 return false;
             }
-            
-            // Show loading state
+
             const submitBtn = this.querySelector('.btn-primary');
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;

@@ -134,6 +134,32 @@
                         <input type="hidden" name="metode_pembayaran" value="qris">
                         
                         <div class="form-group">
+                            <label class="form-label">No Hp</label>
+                            @if($user && $user->no_telepon)
+                                <!-- Nomor HP sudah diisi di profil -->
+                                <input type="text" class="form-input" id="noHp" name="no_hp" 
+                                       value="{{ $user->no_telepon }}" disabled readonly>
+                                <small class="text-success">
+                                    <i class="bi bi-check-circle"></i> Nomor dari profil Anda
+                                </small>
+                            @else
+                                <!-- User belum login atau nomor HP belum diisi -->
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <strong>Lengkapi Profil Terlebih Dahulu!</strong>
+                                    <p style="margin-top: 8px; margin-bottom: 0;">
+                                        Silakan lengkapi nomor telepon di bagian Profil agar nomor otomatis terisi di sini.
+                                    </p>
+                                    <a href="{{ route('customer.profil', ['from' => 'booking']) }}" class="btn btn-sm btn-primary mt-2">
+                                        <i class="bi bi-pencil"></i> Ke Halaman Profil
+                                    </a>
+                                </div>
+                                <input type="text" class="form-input" id="noHp" name="no_hp" 
+                                       placeholder="Masukkan nomor telepon" disabled>
+                            @endif
+                        </div>    
+                        
+                        <div class="form-group">
                             <label class="form-label">Jenis Permainan</label>
                             <select class="form-select" id="ballType" name="jenis_ball" required>
                                 <option value="">Pilih Jenis Ball</option>

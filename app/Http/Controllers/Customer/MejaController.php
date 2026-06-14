@@ -46,7 +46,8 @@ class MejaController extends Controller
     public function show($id)
     {
         $meja = Meja::with('category')->findOrFail($id);
-        return view('pelangganMeja.detail', compact('meja'));
+        $user = auth()->user();
+        return view('pelangganMeja.detail', compact('meja', 'user'));
     }
 
     /**
