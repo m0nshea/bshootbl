@@ -216,9 +216,20 @@
                             </div>
                         </div>
                         
-                        <button type="submit" class="btn-book {{ str_contains(strtolower($meja->category->nama), 'vip') ? 'btn-book-vip' : '' }}" id="bookingBtn">
-                            <i class="bi bi-calendar-check"></i>Pesan Sekarang
+                        @php $profileComplete = isset($user) && !empty($user->no_telepon); @endphp
+                        <button type="submit" class="btn-book {{ str_contains(strtolower($meja->category->nama), 'vip') ? 'btn-book-vip' : '' }}" id="bookingBtn" @if(!$profileComplete) disabled @endif>
+                            <i class="bi bi-calendar-check"></i>
+                            @if($profileComplete)
+                                Pesan Sekarang
+                            @else
+                                Lengkapi Profil Dulu
+                            @endif
                         </button>
+                        @if(!$profileComplete)
+                            <div class="mt-3 text-muted small">
+                                Silakan lengkapi nomor telepon Anda di profil sebelum melakukan booking.
+                            </div>
+                        @endif
                     </form>
                     @else
                     <!-- User belum login - tampilkan pesan untuk login -->
@@ -557,6 +568,18 @@ function calculateTotal() {
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Validate profile completeness
+    const phoneInput = document.getElementById('noHp');
+    if (phoneInput && !phoneInput.value.trim()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Profil Belum Lengkap',
+            text: 'Silakan lengkapi nomor telepon di profil Anda terlebih dahulu sebelum melakukan booking.',
+            confirmButtonColor: '#ffc107'
+        });
+        return;
+    }
+
     // Validate form
     const ballType = document.getElementById('ballType').value;
     const tanggal = document.getElementById('bookingDate').value;

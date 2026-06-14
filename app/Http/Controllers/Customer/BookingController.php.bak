@@ -32,19 +32,6 @@ class BookingController extends Controller
     }
 
     /**
-     * Check if user profile is complete
-     */
-    private function isProfileComplete()
-    {
-        $user = Auth::user();
-        
-        // Check required fields: name and no_telepon
-        return $user 
-            && !empty($user->name)
-            && !empty($user->no_telepon);
-    }
-
-    /**
      * Get available time slots for a specific meja and date
      */
     public function getAvailableTimes(Request $request, $mejaId)
@@ -349,20 +336,6 @@ class BookingController extends Controller
                 ], 401);
             }
 
-            // Ensure profile is complete before booking
-            if (!$this->isProfileComplete()) {
-                if ($request->expectsJson() || $request->ajax()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Silakan lengkapi profil Anda terlebih dahulu, termasuk nomor telepon, sebelum melakukan booking.',
-                        'redirect' => route('customer.profil', ['from' => 'booking'])
-                    ], 422);
-                }
-
-                return redirect()->route('customer.profil', ['from' => 'booking'])
-                    ->with('error', 'Silakan lengkapi profil Anda terlebih dahulu, termasuk nomor telepon, sebelum melakukan booking.');
-            }
-
             // Validate request
             $validated = $request->validate([
                 'meja_id' => 'required|exists:mejas,id',
@@ -501,13 +474,6 @@ class BookingController extends Controller
         // Check if user owns this transaction
         if (Auth::id() !== $transaksi->user_id) {
             abort(403, 'Unauthorized access');
-        }
-
-        // Check if user profile is complete (must have phone number)
-        if (!$this->isProfileComplete()) {
-            return redirect()->route('customer.profil')
-                ->with('error', 'Silakan lengkapi profil Anda terlebih dahulu sebelum melakukan pembayaran. Kami memerlukan nomor telepon Anda.')
-                ->with('redirect_to_payment', route('customer.payment.page', $transaksiId));
         }
 
         // Check if already paid
